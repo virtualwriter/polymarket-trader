@@ -1,15 +1,15 @@
 {
-  "generatedAt": "2026-09-10T21:28:24.596Z",
+  "generatedAt": "2026-09-10T22:28:22.497Z",
   "dataFreshness": {
-    "valuationRows": 2901,
-    "latestValuationAt": "2026-09-10T21",
-    "macroRows": 2899,
+    "valuationRows": 2902,
+    "latestValuationAt": "2026-09-10T22",
+    "macroRows": 2900,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-09-10T21"
+    "latestInstrumentSnapshotAt": "2026-09-10T22"
   },
   "portfolio": {
-    "cash": 102.7902,
-    "openPositions": 1,
+    "cash": 101.7902,
+    "openPositions": 2,
     "realizedPnl": 7.0299,
     "totalTrades": 949,
     "winRatePct": 64.4,
@@ -22,15 +22,32 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": -0.96,
-      "currentPrice": 4327,
-      "underlyingPrice": 4327,
+      "pnlPct": -1.03,
+      "currentPrice": 4324,
+      "underlyingPrice": 4324,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
       "evidenceColumns": [
         "gold_gc_spot",
         "gold_gld_pc_ratio"
+      ]
+    },
+    {
+      "positionId": "T-1789075720480-f482",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "signalType": "FUNDING_EXTREME_LONG",
+      "pnlPct": 0.07,
+      "currentPrice": 4324,
+      "underlyingPrice": 4324,
+      "targetPct": 5,
+      "stopPct": 2,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "gold_gc_spot",
+        "gold_hl_funding_ann"
       ]
     }
   ],
@@ -199,8 +216,8 @@
   ],
   "blockedSummary": {
     "openCount": 32,
-    "resolvedCount": 1017,
-    "wouldHaveWon": 520,
+    "resolvedCount": 1018,
+    "wouldHaveWon": 521,
     "wouldHaveLost": 497,
     "bySignal": [
       {
@@ -269,21 +286,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "PC_RATIO_EXTREME_LOW",
-        "asset": "BTC",
-        "venue": "spot",
-        "direction": "short",
-        "blockedReason": "short_blocked_by_positive_trend",
-        "outcome": "win",
-        "closeReason": "target",
-        "pnlPct": 3.3,
-        "resolvedAt": "2026-09-07T16:28:15.490Z",
-        "trendMetrics": {
-          "aboveTrendPct": 4.12,
-          "momentumPct": 5.52
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "ETH",
@@ -428,6 +430,26 @@
           "proxyOutperformed": false,
           "correlation": "same_direction"
         }
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "OIL",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "outcome": "win",
+        "closeReason": "expiry",
+        "pnlPct": 7.3,
+        "resolvedAt": "2026-09-10T22:28:21.581Z",
+        "marketQuality": {
+          "yesBid": 0.069,
+          "yesAsk": 0.089,
+          "yesSpread": 0.02,
+          "liquidity": 31200.86,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
       }
     ],
     "openQualityWarnings": [
@@ -462,22 +484,6 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.8pt on GOLD, spread 1.0c, liquidity 35184. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "OIL",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-wti-hit-in-august-2026 — NO — Will WTI Crude Oil (WTI) hit (HIGH) $90 in August?",
-        "marketQuality": {
-          "yesBid": 0.069,
-          "yesAsk": 0.089,
-          "yesSpread": 0.02,
-          "liquidity": 31200.86,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.0pt on OIL, spread 2.0c, liquidity 31201. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
       },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
@@ -558,6 +564,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.4pt on ETH, spread 2.0c, liquidity 34630. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
+      },
+      {
+        "signalType": "FUNDING_EXTREME_LONG_PM_PROXY_SHORT",
+        "asset": "GOLD",
+        "blockedReason": "polymarket_proxy_short",
+        "instrumentLabel": "what-will-gold-gc-hit-by-end-of-december — NO — Will Gold (GC) hit (HIGH) $5,000 by end of December?",
+        "marketQuality": {
+          "yesBid": 0.45,
+          "yesAsk": 0.47,
+          "yesSpread": 0.02,
+          "liquidity": 7882.88,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[PM PROXY SHORT SHADOW] Real GOLD short via hyperliquid/hl_perp (FUNDING_EXTREME_LONG). Track buying NO on the comparable Polymarket upside contract."
       }
     ]
   },

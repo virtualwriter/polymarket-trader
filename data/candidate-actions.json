@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-10T21:28:24.766Z",
+  "generatedAt": "2026-09-10T22:28:22.888Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -8,11 +8,11 @@
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
-      "strength": 1,
-      "confidence": 0.4863350070584902,
-      "thesis": "GOLD HL funding 69.0% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "strength": 0.35085714285714287,
+      "confidence": 0.1706341110479503,
+      "thesis": "GOLD HL funding 27.3% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
       "hypothesisId": null,
-      "entryPrice": 4327,
+      "entryPrice": 4324,
       "targetPct": 5,
       "stopPct": 2,
       "expiryDays": 3,
@@ -28,7 +28,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 4327,
+      "entryPrice": 4324,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -57,45 +57,49 @@
         "hyperliquid_venue"
       ],
       "current": {
-        "totalGross": 1,
-        "totalNet": 1,
+        "totalGross": 2,
+        "totalNet": 0,
         "byAsset": {
-          "GOLD": 1
-        },
-        "bySignalType": {
-          "PC_RATIO_EXTREME_HIGH": 1
-        },
-        "byVenue": {
-          "spot": 1
-        },
-        "byCluster": {
-          "commodity": 1,
-          "gold_delta": 1,
-          "options_sentiment": 1,
-          "spot_venue": 1
-        }
-      },
-      "afterCandidate": {
-        "totalGross": 1,
-        "totalNet": 1,
-        "byAsset": {
-          "GOLD": 1
+          "GOLD": 0
         },
         "bySignalType": {
           "PC_RATIO_EXTREME_HIGH": 1,
-          "FUNDING_EXTREME_LONG": 0
+          "FUNDING_EXTREME_LONG": -1
         },
         "byVenue": {
           "spot": 1,
-          "hyperliquid": 0
+          "hyperliquid": -1
         },
         "byCluster": {
-          "commodity": 1,
-          "gold_delta": 1,
+          "commodity": 0,
+          "gold_delta": 0,
           "options_sentiment": 1,
           "spot_venue": 1,
-          "funding_reversion": 0,
-          "hyperliquid_venue": 0
+          "funding_reversion": -1,
+          "hyperliquid_venue": -1
+        }
+      },
+      "afterCandidate": {
+        "totalGross": 2,
+        "totalNet": 0,
+        "byAsset": {
+          "GOLD": 0
+        },
+        "bySignalType": {
+          "PC_RATIO_EXTREME_HIGH": 1,
+          "FUNDING_EXTREME_LONG": -1
+        },
+        "byVenue": {
+          "spot": 1,
+          "hyperliquid": -1
+        },
+        "byCluster": {
+          "commodity": 0,
+          "gold_delta": 0,
+          "options_sentiment": 1,
+          "spot_venue": 1,
+          "funding_reversion": -1,
+          "hyperliquid_venue": -1
         }
       },
       "warnings": []
@@ -132,12 +136,31 @@
         "gold_gc_spot",
         "gold_gld_pc_ratio"
       ],
-      "hoursOpen": 6,
-      "hoursToExpiry": 114,
+      "hoursOpen": 7,
+      "hoursToExpiry": 113,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.05,
+      "elapsedHoldPct": 0.0583,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 6.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 7.0h, requires at least 12h."
+    },
+    {
+      "positionId": "T-1789075720480-f482",
+      "signalType": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [
+        "gold_gc_spot",
+        "gold_hl_funding_ann"
+      ],
+      "hoursOpen": 1,
+      "hoursToExpiry": 71,
+      "plannedHoldHours": 72,
+      "elapsedHoldPct": 0.0138,
+      "minHoldHours": 12,
+      "reason": "Too new for discretionary LLM close: open 1.0h, requires at least 12h."
     }
   ]
 }
