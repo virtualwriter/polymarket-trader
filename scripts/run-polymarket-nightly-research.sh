@@ -33,6 +33,8 @@ NIGHTLY_FILES=(
   data/research-spot-panel-meta.json
   data/lessons.json
   data/nightly-llm-advice.json
+  data/nightly-explorer-advice.json
+  data/miner-proposed-strats.json
   data/nightly-research-report.json
   data/nightly-research-report.md
   data/research-findings.json

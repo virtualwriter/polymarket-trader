@@ -807,6 +807,9 @@ interface Hypothesis {
   promotedToSignal: boolean;
   postMortem: string | null;
   source: "llm" | "statistical" | "shadow_mined" | "informed_flow_study_v1";
+  /** "explorer" for hypotheses authored by the free-roaming nightly explorer
+   * (no originFindingId required); lets hit rates be compared by origin. */
+  origin?: "explorer";
 }
 
 interface HypothesisSetupFamily {
@@ -7917,6 +7920,18 @@ function parseLlmJson(text: string): { result: LlmAnalysisResult | null; error: 
 
 const NIGHTLY_LLM_ADVICE_FILE = "nightly-llm-advice.json";
 const NIGHTLY_LLM_ADVICE_INGESTED_FILE = "nightly-llm-advice-ingested.json";
+/** Output of the nightly explorer (free-roaming dataset analysis). */
+const NIGHTLY_EXPLORER_ADVICE_FILE = "nightly-explorer-advice.json";
+const NIGHTLY_EXPLORER_ADVICE_INGESTED_FILE = "nightly-explorer-advice-ingested.json";
+/**
+ * Freeform budget for explorer-authored hypotheses per night. Separate from
+ * the 10-slot mined/refinement budget so neither crowds the other out. The
+ * validation gauntlet is identical — catalog conditions, verdict-time cap,
+ * too-rare trigger check, shadow tests, promotion gate — only the requirement
+ * to trace to a ranked FIND is waived. Tracked via origin="explorer" so the
+ * hit rate of free-roaming ideas is measurable against mined ones.
+ */
+const EXPLORER_MAX_NEW_HYPOTHESES = 3;
 const REGISTRY_FILE = "registry.json";
 const SETUP_LEARNED_ASSUMPTIONS_FILE = "setup-invalid-assumptions.json";
 const LEARNED_ASSUMPTIONS_PER_FAMILY_CAP = 8;
@@ -8023,7 +8038,23 @@ function ingestNightlyLlmAdvice(
   const NIGHTLY_MIN_DESCRIPTION_CHARS = 40;
   const NIGHTLY_MIN_CONDITION_KEYS = 1;
   const rawHypotheses = Array.isArray(advice.newHypotheses) ? advice.newHypotheses : [];
+
+  // Explorer advice: freeform hypotheses from the nightly free-roaming data
+  // explorer. They join the same loop and face every gate below except the
+  // FIND-linkage/backlog requirement, under their own per-night budget.
+  const explorerAdvice = readJson<Record<string, unknown> | null>(NIGHTLY_EXPLORER_ADVICE_FILE, null);
+  const explorerGeneratedAt = explorerAdvice && typeof explorerAdvice.generatedAt === "string"
+    ? explorerAdvice.generatedAt
+    : null;
+  const explorerMarker = readJson<{ generatedAt?: string }>(NIGHTLY_EXPLORER_ADVICE_INGESTED_FILE, {});
+  const explorerRaws = new Set<unknown>();
+  if (explorerAdvice && explorerGeneratedAt && explorerMarker.generatedAt !== explorerGeneratedAt) {
+    const proposed = Array.isArray(explorerAdvice.proposedHypotheses) ? explorerAdvice.proposedHypotheses : [];
+    for (const raw of proposed.slice(0, EXPLORER_MAX_NEW_HYPOTHESES * 2)) explorerRaws.add(raw);
+  }
+
   let added = 0;
+  let explorerAdded = 0;
   let rejected = 0;
   const rejectReasons: Record<string, number> = {};
   const bumpReject = (reason: string) => {
@@ -8040,8 +8071,13 @@ function ingestNightlyLlmAdvice(
         `admitting FIND-linked hypotheses only.`,
     );
   }
-  for (const raw of rawHypotheses) {
-    if (added >= NIGHTLY_MAX_NEW_HYPOTHESES) {
+  for (const raw of [...rawHypotheses, ...explorerRaws]) {
+    const isExplorer = explorerRaws.has(raw);
+    if (isExplorer && explorerAdded >= EXPLORER_MAX_NEW_HYPOTHESES) {
+      bumpReject("explorer_cap");
+      continue;
+    }
+    if (!isExplorer && added >= NIGHTLY_MAX_NEW_HYPOTHESES) {
       bumpReject("daily_cap");
       continue;
     }
@@ -8071,14 +8107,16 @@ function ingestNightlyLlmAdvice(
         continue;
       }
     }
-    if (!backlog.complete && !isFindLinked && !isRefinement) {
+    if (!backlog.complete && !isFindLinked && !isRefinement && !isExplorer) {
       deferredForBacklog++;
       bumpReject("backlog");
       continue;
     }
     // FIND-authored and refinement hyps use a softer confidence floor; both
     // are evidence-grounded (mined statistics / diagnosed test outcomes).
-    const minConfidence = isFindLinked || isRefinement ? 0.55 : NIGHTLY_MIN_HYPOTHESIS_CONFIDENCE;
+    // Explorer hyps sit between: grounded in a dataset scan the model ran
+    // itself, but without holdout/FDR control — so a slightly higher floor.
+    const minConfidence = isExplorer ? 0.60 : isFindLinked || isRefinement ? 0.55 : NIGHTLY_MIN_HYPOTHESIS_CONFIDENCE;
     if (!(typeof nh.confidence === "number") || nh.confidence < minConfidence) {
       bumpReject("low_confidence");
       continue;
@@ -8116,7 +8154,13 @@ function ingestNightlyLlmAdvice(
       winRate: 0, status: "active", promotedToSignal: false, postMortem: null,
       source: nh.source ?? "llm",
     };
-    if (isFindLinked) {
+    if (isExplorer) {
+      // Each explorer idea is its own family with a clean 20-test record and
+      // an auditable origin tag — never pooled into legacy freeform setups.
+      hypothesis.origin = "explorer";
+      hypothesis.setupId = `explore_${id.toLowerCase().replace(/[^a-z0-9]+/g, "_")}`;
+      hypothesis.setupLabel = `Explorer: ${nh.description.slice(0, 60)}`;
+    } else if (isFindLinked) {
       // Stable per-FIND setup family so classifiers do not dump new research into retired other_mixed.
       hypothesis.setupId = `find_${nh.originFindingId!.replace(/^FIND-/i, "").toLowerCase()}`;
       hypothesis.setupLabel = `FIND-linked ${nh.originFindingId}`;
@@ -8132,7 +8176,7 @@ function ingestNightlyLlmAdvice(
     } else {
       ensureHypothesisSetupMetadata(hypothesis);
     }
-    if (!isFindLinked && !isRefinement && RETIRED_LLM_SETUP_IDS.has(hypothesis.setupId ?? "")) {
+    if (!isFindLinked && !isRefinement && !isExplorer && RETIRED_LLM_SETUP_IDS.has(hypothesis.setupId ?? "")) {
       notes.push(`Nightly advice: skipping retired LLM setup hypothesis: ${hypothesis.setupLabel}`);
       bumpReject("retired_setup");
       continue;
@@ -8142,8 +8186,8 @@ function ingestNightlyLlmAdvice(
       bumpReject("contaminated_setup");
       continue;
     }
-    // FIND-linked and refinement hyps already carry explicit direction from authoring.
-    if (!isFindLinked && !isRefinement && (!inferHypothesisAsset(hypothesis) || !inferHypothesisDirection(hypothesis))) {
+    // FIND-linked, refinement, and explorer hyps carry explicit direction from authoring.
+    if (!isFindLinked && !isRefinement && !isExplorer && (!inferHypothesisAsset(hypothesis) || !inferHypothesisDirection(hypothesis))) {
       notes.push(`Nightly advice: skipping direction/asset-ambiguous hypothesis: ${nh.description.slice(0, 60)}`);
       bumpReject("ambiguous_thesis");
       continue;
@@ -8178,7 +8222,8 @@ function ingestNightlyLlmAdvice(
     }
     stampInitialContractTest(hypothesis, relativeValueRows, hypotheses);
     hypotheses.push(hypothesis);
-    added++;
+    if (isExplorer) explorerAdded++;
+    else added++;
     if (isRefinement && refinementParent) {
       refinementParent.postMortem = appendPostMortemSegment(
         refinementParent.postMortem,
@@ -8198,6 +8243,14 @@ function ingestNightlyLlmAdvice(
     notes.push(
       `Nightly advice: deferred ${deferredForBacklog} freeform hypothesis record(s) until LLM setup backlog clears.`,
     );
+  }
+  // Explorer advice is consumed in one shot (its hypotheses bypass the
+  // backlog gate, so nothing is ever deferred for a later retry).
+  if (explorerGeneratedAt && explorerRaws.size > 0) {
+    notes.push(`Explorer advice: admitted ${explorerAdded}/${explorerRaws.size} free-roaming hypothesis record(s).`);
+    if (!MUTATION_DISABLED) {
+      writeJson(NIGHTLY_EXPLORER_ADVICE_INGESTED_FILE, { generatedAt: explorerGeneratedAt, ingestedAt: new Date().toISOString(), admitted: explorerAdded });
+    }
   }
   if (rejected > 0) {
     const detail = Object.entries(rejectReasons).map(([k, v]) => `${k}=${v}`).join(", ");
@@ -8268,7 +8321,7 @@ function ingestNightlyLlmAdvice(
     journalLines.push(`- Nightly journal: ${advice.journalEntry.slice(0, 600)}`);
   }
 
-  notes.push(`Nightly advice ingested (generatedAt=${generatedAt}): ${added} hypotheses, ${reviewsApplied} reviews, ${paramNotes.length} param changes.`);
+  notes.push(`Nightly advice ingested (generatedAt=${generatedAt}): ${added} hypotheses (+${explorerAdded} explorer), ${reviewsApplied} reviews, ${paramNotes.length} param changes.`);
   // Do not consume the advice file while freeform hyps remain deferred for backlog,
   // so the next hourly run can retry them. FIND-linked admissions still dedupe on description.
   if (!MUTATION_DISABLED) {

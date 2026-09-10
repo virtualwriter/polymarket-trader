@@ -70,7 +70,41 @@ export type ResearchQuery =
     horizonDays: 1 | 3 | 7;
     asset?: string;
     where?: PanelWhereClause[];
+  }
+  | {
+    /**
+     * Free-roaming scan over any research dataset: filter on any column,
+     * group by any column (numeric columns are quintile-bucketed), and
+     * aggregate any numeric metric per group. Groups below MIN_SCAN_GROUP_N
+     * rows are suppressed so one-off patterns cannot masquerade as findings.
+     * With no groupBy/metric it returns the dataset schema — columns, row
+     * count, date range — so the model can learn what exists before digging.
+     */
+    kind: "dataset_scan";
+    dataset: ScanDatasetName;
+    where?: PanelWhereClause[];
+    groupBy?: string;
+    metric?: string;
+    topK?: number;
   };
+
+export type ScanDatasetName =
+  | "panel"
+  | "spot_panel"
+  | "trades"
+  | "shadows"
+  | "valuations"
+  | "funding_history"
+  | "macro";
+
+export const SCAN_DATASET_NAMES: readonly ScanDatasetName[] = [
+  "panel", "spot_panel", "trades", "shadows", "valuations", "funding_history", "macro",
+];
+
+/** Groups smaller than this are dropped from scan results: repeatability floor. */
+export const MIN_SCAN_GROUP_N = 8;
+const MAX_SCAN_GROUPS = 20;
+const DEFAULT_SCAN_GROUPS = 10;
 
 export interface PanelWhereClause {
   column: string;
@@ -106,6 +140,8 @@ export interface ResearchDataset {
   valuationRows: Record<string, string>[];
   panelRows: Record<string, string>[];
   spotPanelRows: Record<string, string>[];
+  fundingRows: Record<string, string>[];
+  macroRows: Record<string, string>[];
 }
 
 export interface ShadowRecord {
@@ -171,6 +207,8 @@ export function loadResearchDataset(dataDir: string, maxValuationRows = 2400): R
     valuationRows: readCsvRows(join(dataDir, "daily-valuations.csv"), maxValuationRows),
     panelRows: readCsvRows(join(dataDir, "research-panel.csv")),
     spotPanelRows: readCsvRows(join(dataDir, "research-spot-panel.csv")),
+    fundingRows: readCsvRows(join(dataDir, "hl-funding-history.csv"), 40_000),
+    macroRows: readCsvRows(join(dataDir, "daily-macro.csv"), 5_000),
   };
 }
 
@@ -217,11 +255,11 @@ function parsePanelWhere(raw: unknown): PanelWhereClause[] {
  * and unknown fields are dropped rather than failing the batch, matching how
  * the rest of the nightly parsing degrades.
  */
-export function parseDataRequests(raw: unknown): ResearchQuery[] {
+export function parseDataRequests(raw: unknown, maxRequests: number = MAX_DATA_REQUESTS): ResearchQuery[] {
   const list = Array.isArray(raw) ? raw : [];
   const queries: ResearchQuery[] = [];
   for (const item of list) {
-    if (queries.length >= MAX_DATA_REQUESTS) break;
+    if (queries.length >= maxRequests) break;
     if (!item || typeof item !== "object") continue;
     const q = item as Record<string, unknown>;
     const kind = str(q.kind);
@@ -277,6 +315,18 @@ export function parseDataRequests(raw: unknown): ResearchQuery[] {
         horizonDays,
         asset: str(q.asset),
         where: parsePanelWhere(q.where),
+      });
+    } else if (kind === "dataset_scan") {
+      const dataset = SCAN_DATASET_NAMES.find((name) => name === q.dataset);
+      if (!dataset) continue;
+      const topK = Number(q.topK);
+      queries.push({
+        kind,
+        dataset,
+        where: parsePanelWhere(q.where),
+        groupBy: str(q.groupBy),
+        metric: str(q.metric),
+        topK: Number.isFinite(topK) ? Math.min(Math.max(1, Math.round(topK)), MAX_SCAN_GROUPS) : undefined,
       });
     }
   }
@@ -716,6 +766,10 @@ export function executeResearchQuery(query: ResearchQuery, data: ResearchDataset
     };
   }
 
+  if (query.kind === "dataset_scan") {
+    return executeDatasetScan(query, data);
+  }
+
   const windowRows = Math.max(1, Math.min(query.windowRows ?? 720, data.valuationRows.length));
   const slice = data.valuationRows.slice(-windowRows);
   // Number("") is 0, so empty cells must be rejected before conversion or a
@@ -746,8 +800,237 @@ export function executeResearchQuery(query: ResearchQuery, data: ResearchDataset
   };
 }
 
-export function executeResearchQueries(queries: ResearchQuery[], data: ResearchDataset): QueryResult[] {
-  return queries.slice(0, MAX_DATA_REQUESTS).map((q) => {
+// ─── Dataset scan (free-roaming exploration) ─────────────────────────────────
+
+/**
+ * Normalizes every scannable dataset to flat string-keyed rows so one scan
+ * engine covers all of them. Trades and shadows are projected from their
+ * native shapes; CSV datasets pass through.
+ */
+export function scanDatasetRows(name: ScanDatasetName, data: ResearchDataset): Record<string, string>[] {
+  if (name === "panel") return data.panelRows;
+  if (name === "spot_panel") return data.spotPanelRows;
+  if (name === "valuations") return data.valuationRows;
+  if (name === "funding_history") return data.fundingRows;
+  if (name === "macro") return data.macroRows;
+  if (name === "trades") {
+    return data.trades.map((t) => ({
+      opened_at: String(t.openedAt ?? ""),
+      closed_at: String(t.closedAt ?? ""),
+      asset: String(t.asset ?? ""),
+      venue: String(t.venue ?? ""),
+      direction: String(t.direction ?? ""),
+      signal_type: String(t.signalType ?? ""),
+      close_reason: String(t.closeReason ?? ""),
+      instrument_type: String(t.instrumentType ?? ""),
+      pnl: String(t.pnl ?? ""),
+      pnl_pct: String(t.pnlPct ?? ""),
+      month: String(t.closedAt ?? "").slice(0, 7),
+      day_of_week: dayOfWeekName(t.closedAt),
+    }));
+  }
+  return data.shadows
+    .filter((s) => s.status === "resolved" && s.hypotheticalResult && !s.learningExcluded)
+    .map((s) => ({
+      blocked_at: String(s.blockedAt ?? ""),
+      resolved_at: String(s.resolvedAt ?? ""),
+      asset: String(s.asset ?? ""),
+      venue: String(s.venue ?? ""),
+      direction: String(s.direction ?? ""),
+      signal_type: String(s.signalType ?? ""),
+      blocked_reason: String(s.blockedReason ?? ""),
+      close_reason: String(s.hypotheticalResult?.closeReason ?? ""),
+      pnl_pct: String(s.hypotheticalResult?.pnlPct ?? ""),
+      month: String(s.resolvedAt ?? "").slice(0, 7),
+      day_of_week: dayOfWeekName(s.blockedAt),
+    }));
+}
+
+function dayOfWeekName(iso: string | undefined): string {
+  const ms = Date.parse(String(iso ?? ""));
+  if (!Number.isFinite(ms)) return "";
+  return ["sun", "mon", "tue", "wed", "thu", "fri", "sat"][new Date(ms).getUTCDay()];
+}
+
+/** Default per-dataset metric so a groupBy scan works without naming one. */
+const SCAN_DEFAULT_METRIC: Partial<Record<ScanDatasetName, string>> = {
+  panel: "no_pnl_pct_7d",
+  spot_panel: "move_pct_3d",
+  trades: "pnl_pct",
+  shadows: "pnl_pct",
+};
+
+function datasetDateColumn(rows: Record<string, string>[]): string | null {
+  if (rows.length === 0) return null;
+  const candidates = ["entry_date", "date", "day", "closed_at", "resolved_at", "timestamp"];
+  return candidates.find((c) => c in rows[0]) ?? null;
+}
+
+function numericColumns(rows: Record<string, string>[]): string[] {
+  if (rows.length === 0) return [];
+  const sample = rows.slice(-50);
+  return Object.keys(rows[rows.length - 1]).filter((col) => {
+    let numeric = 0;
+    let present = 0;
+    for (const row of sample) {
+      const raw = String(row[col] ?? "").trim();
+      if (!raw) continue;
+      present++;
+      if (Number.isFinite(Number(raw))) numeric++;
+    }
+    return present > 0 && numeric / present > 0.8;
+  });
+}
+
+function scanSchemaResult(query: Extract<ResearchQuery, { kind: "dataset_scan" }>, rows: Record<string, string>[]): QueryResult {
+  const dateCol = datasetDateColumn(rows);
+  const dates = dateCol
+    ? rows.map((r) => String(r[dateCol] ?? "").slice(0, 10)).filter(Boolean).sort()
+    : [];
+  return {
+    query,
+    n: rows.length,
+    summary: {
+      dataset: query.dataset,
+      rows: rows.length,
+      columns: rows.length ? Object.keys(rows[rows.length - 1]) : [],
+      numericColumns: numericColumns(rows),
+      dateColumn: dateCol,
+      firstDate: dates[0] ?? null,
+      lastDate: dates[dates.length - 1] ?? null,
+    },
+  };
+}
+
+function executeDatasetScan(
+  query: Extract<ResearchQuery, { kind: "dataset_scan" }>,
+  data: ResearchDataset,
+): QueryResult {
+  const allRows = scanDatasetRows(query.dataset, data);
+  if (allRows.length === 0) {
+    return { query, n: 0, summary: {}, error: `dataset "${query.dataset}" is missing or empty` };
+  }
+
+  // Schema-discovery mode: no groupBy and no metric.
+  if (!query.groupBy && !query.metric) {
+    return scanSchemaResult(query, allRows);
+  }
+
+  const rows = allRows.filter((row) => (query.where ?? []).every((clause) => matchesPanelWhere(row, clause)));
+  const metric = query.metric ?? SCAN_DEFAULT_METRIC[query.dataset];
+  if (!metric) {
+    return {
+      query, n: rows.length, summary: { availableNumericColumns: numericColumns(allRows) },
+      error: `dataset "${query.dataset}" needs an explicit "metric" column`,
+    };
+  }
+  if (rows.length > 0 && !(metric in rows[rows.length - 1])) {
+    return {
+      query, n: rows.length, summary: { availableNumericColumns: numericColumns(allRows) },
+      error: `metric column "${metric}" not found in dataset "${query.dataset}"`,
+    };
+  }
+
+  const metricValue = (row: Record<string, string>): number | null => {
+    const raw = String(row[metric] ?? "").trim();
+    if (!raw) return null;
+    const v = Number(raw);
+    return Number.isFinite(v) ? v : null;
+  };
+
+  if (!query.groupBy) {
+    const values = rows.map(metricValue).filter((v): v is number => v !== null);
+    return {
+      query,
+      n: values.length,
+      summary: { dataset: query.dataset, metric, ...summarizePanelPnls(values) },
+      samples: rows.slice(-MAX_SAMPLE_ROWS),
+    };
+  }
+
+  // Grouped scan. Numeric group columns with many distinct values are
+  // quintile-bucketed so the model can scan continuous features.
+  const groupCol = query.groupBy;
+  if (!(groupCol in allRows[allRows.length - 1])) {
+    return {
+      query, n: rows.length, summary: { availableColumns: Object.keys(allRows[allRows.length - 1]) },
+      error: `groupBy column "${groupCol}" not found in dataset "${query.dataset}"`,
+    };
+  }
+  const rawGroupValues = rows.map((r) => String(r[groupCol] ?? "").trim());
+  const distinct = new Set(rawGroupValues.filter(Boolean));
+  const numericGroup = [...distinct].every((v) => Number.isFinite(Number(v))) && distinct.size > 12;
+  let keyFor: (row: Record<string, string>) => string;
+  if (numericGroup) {
+    const sorted = rows
+      .map((r) => Number(String(r[groupCol] ?? "").trim()))
+      .filter((v) => Number.isFinite(v))
+      .sort((a, b) => a - b);
+    const q = (p: number) => sorted[Math.min(sorted.length - 1, Math.floor(p * sorted.length))];
+    const edges = [q(0.2), q(0.4), q(0.6), q(0.8)];
+    keyFor = (row) => {
+      const v = Number(String(row[groupCol] ?? "").trim());
+      if (!Number.isFinite(v)) return "";
+      const bucket = edges.findIndex((e) => v <= e);
+      const lo = bucket <= 0 ? "min" : String(edges[bucket - 1]);
+      const hi = bucket === -1 ? "max" : String(edges[bucket]);
+      return bucket === -1 ? `${groupCol} > ${edges[3]}` : `${groupCol} in (${lo}, ${hi}]`;
+    };
+  } else {
+    keyFor = (row) => String(row[groupCol] ?? "").trim();
+  }
+
+  const byKey = new Map<string, number[]>();
+  for (const row of rows) {
+    const key = keyFor(row);
+    if (!key) continue;
+    const v = metricValue(row);
+    if (v === null) continue;
+    const arr = byKey.get(key);
+    if (arr) arr.push(v);
+    else byKey.set(key, [v]);
+  }
+
+  const topK = query.topK ?? DEFAULT_SCAN_GROUPS;
+  const groups: QueryGroupResult[] = [...byKey.entries()]
+    .filter(([, values]) => values.length >= MIN_SCAN_GROUP_N)
+    .map(([key, values]) => {
+      const wins = values.filter((v) => v > 0).length;
+      const { mean } = sampleMoments(values);
+      return {
+        key,
+        n: values.length,
+        wins,
+        winRate: Number((wins / values.length).toFixed(4)),
+        meanPnlPct: Number(mean.toFixed(4)),
+        totalPnl: Number(values.reduce((a, b) => a + b, 0).toFixed(4)),
+      };
+    })
+    .sort((a, b) => Math.abs(b.meanPnlPct) - Math.abs(a.meanPnlPct))
+    .slice(0, topK);
+
+  const suppressed = byKey.size - groups.length;
+  return {
+    query,
+    n: rows.length,
+    summary: {
+      dataset: query.dataset,
+      metric,
+      groupBy: groupCol,
+      groupsReturned: groups.length,
+      groupsSuppressedBelowMinN: suppressed > 0 ? suppressed : 0,
+      minGroupN: MIN_SCAN_GROUP_N,
+    },
+    groups,
+  };
+}
+
+export function executeResearchQueries(
+  queries: ResearchQuery[],
+  data: ResearchDataset,
+  maxRequests: number = MAX_DATA_REQUESTS,
+): QueryResult[] {
+  return queries.slice(0, maxRequests).map((q) => {
     try {
       return executeResearchQuery(q, data);
     } catch (e: any) {
@@ -777,6 +1060,8 @@ Available query kinds:
       Historical forward returns from the outcome panel (all listed contracts, not just shadow trades). Use this to pre-check a hypothesis idea — e.g. "when sell_yes_edge_pts >= 5 on BTC NO 7d, what was win rate vs the unfiltered base rate?" Rows must have mineable outcome_quality; entries are de-duplicated per contract so forward windows do not overlap. At most 4 where-clauses.
   - {"kind":"spot_panel", "side":"long"|"short", "horizonDays":1|3|7, "asset"?:"BTC|ETH|SOL|HYPE|GOLD|SILVER|OIL|AMZN|SPY", "where"?:[{"column":"<spot panel column>", "gte"?, "lte"?, "eq"?}]}
       Historical forward SPOT returns per asset-day (the non-Polymarket panel). Use this to pre-check a spot/perp thesis — e.g. "long BTC 3d when ret_24h_pct <= -2, how often did it beat the exam threshold vs base?" Columns: price, fund_ann, fund_z30, ret_24h_pct, pct_from_7d_high, pct_vs_30d_sma, pc_ratio, pc_pctile_30d, iv_term_spread_pts, realized_vol_30d_pct, day_of_week, is_weekend, macro_composite. Stale windows (closed markets) are excluded; entries de-duplicated per asset so forward windows do not overlap.
+  - {"kind":"dataset_scan", "dataset":"panel"|"spot_panel"|"trades"|"shadows"|"valuations"|"funding_history"|"macro", "where"?:[{"column", "gte"?, "lte"?, "eq"?}], "groupBy"?:"<any column>", "metric"?:"<any numeric column>", "topK"?:10}
+      Free-roaming scan over any dataset. With no groupBy/metric it returns the SCHEMA (columns, numeric columns, row count, date range) — use that first to learn what exists. With groupBy it buckets rows by that column (numeric columns are quintile-bucketed automatically) and reports n / win-share / mean / total of the metric per bucket, sorted by |mean|. Groups with n < ${MIN_SCAN_GROUP_N} are suppressed — patterns must repeat to be visible. Default metrics: panel=no_pnl_pct_7d, spot_panel=move_pct_3d, trades/shadows=pnl_pct.
 
 Every result includes n, win rate, Wilson 95% lower bound, total and mean PnL, a one-sided t-test p-value that mean PnL is positive, optional group breakdowns, and up to ${MAX_SAMPLE_ROWS} example rows. Panel results also include meanPnlPct, stdPnlPct, and baseRate (win rate of all mineable rows for the same asset/side/horizon without where-filters). Spot-panel results additionally include examThresholdPct (the move the engine's scorer requires for a win at that horizon: 0.5%/1d, 1%/3d, 2%/7d), examWinRate and baseExamWinRate — compare those two to judge real edge on the exam the test will actually sit.
 If you do not need extra evidence, skip this and answer directly.`;

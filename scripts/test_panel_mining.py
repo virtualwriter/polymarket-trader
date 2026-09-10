@@ -268,5 +268,49 @@ class ConditionRenderingTest(unittest.TestCase):
         self.assertEqual(text, "touch_direction >= 1 AND sell_yes_edge_pts between 3 and 8")
 
 
+class ProposedStratificationsTest(unittest.TestCase):
+    """Explorer-proposed strat combos: validated, deduped, capped."""
+
+    def _write(self, tmp_path: Path, payload) -> Path:
+        import json
+
+        path = tmp_path / "miner-proposed-strats.json"
+        path.write_text(json.dumps(payload))
+        return path
+
+    def test_accepts_valid_combos_and_drops_junk(self) -> None:
+        import tempfile
+
+        feature_names = {f.name for f in panel_features()}
+        with tempfile.TemporaryDirectory() as tmp:
+            path = self._write(
+                Path(tmp),
+                {
+                    "proposals": [
+                        {"features": ["fund", "liq"], "rationale": "funding x liquidity"},
+                        {"features": ["liq", "fund"], "rationale": "dup, other order"},
+                        {"features": ["fund", "not_a_feature"], "rationale": "unknown"},
+                        {"features": ["fund"], "rationale": "too short"},
+                        {"features": ["money", "dow", "spread"], "rationale": "triple"},
+                        {"features": ["dir", "edge"], "rationale": "already built-in"},
+                    ]
+                },
+            )
+            combos = miner.load_proposed_stratifications(path, feature_names)
+        self.assertEqual(combos, [("fund", "liq"), ("money", "dow", "spread")])
+
+    def test_missing_or_corrupt_file_is_empty(self) -> None:
+        import tempfile
+
+        feature_names = {f.name for f in panel_features()}
+        self.assertEqual(
+            miner.load_proposed_stratifications(Path("/nonexistent.json"), feature_names), []
+        )
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "miner-proposed-strats.json"
+            path.write_text("{corrupt")
+            self.assertEqual(miner.load_proposed_stratifications(path, feature_names), [])
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -536,7 +536,7 @@ function sanitizeParameterUpdates(raw: unknown): NightlyAdviceParameterUpdates |
  * so a model that volunteers `dataRequests` alongside its conclusions is not
  * sent round the loop again.
  */
-export function extractDataRequests(text: string): ResearchQuery[] {
+export function extractDataRequests(text: string, maxRequests?: number): ResearchQuery[] {
   const jsonText = extractLlmJsonObject(text);
   if (!jsonText) return [];
   let raw: unknown;
@@ -548,9 +548,9 @@ export function extractDataRequests(text: string): ResearchQuery[] {
   if (!raw || typeof raw !== "object") return [];
   const obj = raw as Record<string, unknown>;
   if (!Array.isArray(obj.dataRequests) || obj.dataRequests.length === 0) return [];
-  const answered = ["strategyReview", "newHypotheses", "hypothesisReviews", "failureClusters", "journalEntry"];
+  const answered = ["strategyReview", "newHypotheses", "hypothesisReviews", "failureClusters", "journalEntry", "observations", "proposedHypotheses"];
   if (answered.some((key) => obj[key] !== undefined)) return [];
-  return parseDataRequests(obj.dataRequests);
+  return parseDataRequests(obj.dataRequests, maxRequests);
 }
 
 export function parseNightlyAdvice(

@@ -50,6 +50,11 @@ from assign_research_themes import assign_research_themes  # noqa: E402
 DEFAULT_PANEL = REPO / "data" / "research-panel.csv"
 DEFAULT_REGISTRY = default_registry_path()
 DEFAULT_REPORT = REPO / "data" / "panel-mine-report.json"
+# Stratification combos proposed by the nightly explorer (free-roaming LLM
+# data analysis). Validated below against the miner's own feature registry;
+# accepted combos run through the identical stats pipeline as built-ins.
+DEFAULT_PROPOSED_STRATS = REPO / "data" / "miner-proposed-strats.json"
+MAX_PROPOSED_STRATS = 10
 MODEL = "panel_miner_v1"
 FEATURE_SET = "outcome_panel_v1"
 SCORING_VERSION = "panel_mine_v1"
@@ -135,9 +140,47 @@ def render_condition(conditions: dict[str, Any] | None) -> str:
     return " AND ".join(f"{key} {expr}" for key, expr in conditions.items())
 
 
+def load_proposed_stratifications(
+    path: Path, feature_names: set[str]
+) -> list[tuple[str, ...]]:
+    """Explorer-proposed feature combos, validated against the miner's own
+    feature registry. Only known feature names, 2-3 per combo, deduped against
+    built-in pairs/triples (order-insensitive), capped at MAX_PROPOSED_STRATS.
+    Bad entries are dropped silently: the explorer is advisory, never load-bearing.
+    """
+    if not path.is_file():
+        return []
+    try:
+        raw = json.loads(path.read_text())
+    except (json.JSONDecodeError, OSError):
+        return []
+    proposals = raw.get("proposals") if isinstance(raw, dict) else None
+    if not isinstance(proposals, list):
+        return []
+    built_in = {tuple(sorted(c)) for c in (*PANEL_PAIR_STRATIFICATIONS, *PANEL_TRIPLE_STRATIFICATIONS)}
+    out: list[tuple[str, ...]] = []
+    seen: set[tuple[str, ...]] = set()
+    for item in proposals:
+        if len(out) >= MAX_PROPOSED_STRATS:
+            break
+        features = item.get("features") if isinstance(item, dict) else None
+        if not isinstance(features, list):
+            continue
+        combo = tuple(f for f in features if isinstance(f, str) and f in feature_names)
+        if len(combo) not in (2, 3) or len(set(combo)) != len(combo):
+            continue
+        key = tuple(sorted(combo))
+        if key in built_in or key in seen:
+            continue
+        seen.add(key)
+        out.append(combo)
+    return out
+
+
 def mine_panel(
     panel_rows: list[dict[str, Any]],
     max_findings: int,
+    proposed_strats: list[tuple[str, ...]] | None = None,
 ) -> dict[str, Any]:
     features = panel_features()
     feature_by_name = {f.name: f for f in features}
@@ -193,6 +236,10 @@ def mine_panel(
                 strat_specs.append((pair, "+".join(pair)))
             for triple in PANEL_TRIPLE_STRATIFICATIONS:
                 strat_specs.append((triple, "+".join(triple)))
+            # Explorer-proposed combos: same bucketing, same stats, same BH
+            # correction — the search space grows, the rigor does not.
+            for combo in proposed_strats or []:
+                strat_specs.append((combo, "+".join(combo)))
 
             for dims, _label in strat_specs:
                 disc_cells: dict[tuple[str, str], list[tuple[dict, float]]] = defaultdict(list)
@@ -362,7 +409,12 @@ def main() -> int:
         return 0
 
     panel_rows = load_panel(args.panel)
-    result = mine_panel(panel_rows, args.max_findings)
+    proposed = load_proposed_stratifications(
+        DEFAULT_PROPOSED_STRATS, {f.name for f in panel_features()}
+    )
+    if proposed:
+        print(f"explorer-proposed stratifications accepted: {['+'.join(c) for c in proposed]}")
+    result = mine_panel(panel_rows, args.max_findings, proposed)
     git_sha = git_sha_short()
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 

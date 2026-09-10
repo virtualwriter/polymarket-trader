@@ -50,6 +50,8 @@ const dataset: ResearchDataset = {
   valuationRows: Array.from({ length: 300 }, (_, i) => ({ date: `row-${i}`, btc_spot: String(100 + i), blank_col: "" })),
   panelRows: [],
   spotPanelRows: [],
+  fundingRows: [],
+  macroRows: [],
 };
 
 describe("parseDataRequests", () => {
@@ -312,8 +314,74 @@ describe("batch execution and formatting", () => {
 
   it("documents every executable kind in the prompt catalog", () => {
     const catalog = buildQueryCatalogPromptSection();
-    for (const kind of ["trades", "shadows", "hypothesis_tests", "market_stats", "panel", "spot_panel"]) {
+    for (const kind of ["trades", "shadows", "hypothesis_tests", "market_stats", "panel", "spot_panel", "dataset_scan"]) {
       expect(catalog).toContain(`"${kind}"`);
     }
+  });
+});
+
+describe("dataset_scan query", () => {
+  const fundingRows = Array.from({ length: 40 }, (_, i) => ({
+    date: `2026-08-${String((i % 28) + 1).padStart(2, "0")}`,
+    asset: i % 2 === 0 ? "TSLA" : "NVDA",
+    funding_ann: String(i % 2 === 0 ? -0.6 - (i % 5) * 0.05 : 0.2),
+    ret_next_24h_pct: String(i % 2 === 0 ? 1.5 : -0.4),
+  }));
+  const scanDataset = { ...dataset, fundingRows };
+
+  it("parses dataset_scan requests and rejects unknown datasets", () => {
+    const parsed = parseDataRequests([
+      { kind: "dataset_scan", dataset: "funding_history", groupBy: "asset", metric: "ret_next_24h_pct" },
+      { kind: "dataset_scan", dataset: "not_a_dataset" },
+    ]);
+    expect(parsed).toHaveLength(1);
+    expect(parsed[0]).toMatchObject({ kind: "dataset_scan", dataset: "funding_history" });
+  });
+
+  it("returns the schema when no groupBy or metric is given", () => {
+    const [result] = executeResearchQueries(
+      [{ kind: "dataset_scan", dataset: "funding_history" }],
+      scanDataset,
+    );
+    expect(result.error).toBeUndefined();
+    expect(result.summary.columns).toContain("funding_ann");
+    expect(result.summary.numericColumns).toContain("ret_next_24h_pct");
+    expect(result.summary.firstDate).toBe("2026-08-01");
+  });
+
+  it("groups by a categorical column and suppresses tiny groups", () => {
+    const [result] = executeResearchQueries(
+      [{ kind: "dataset_scan", dataset: "funding_history", groupBy: "asset", metric: "ret_next_24h_pct" }],
+      scanDataset,
+    );
+    expect(result.error).toBeUndefined();
+    expect(result.groups?.length).toBe(2);
+    const tsla = result.groups?.find((g) => g.key === "TSLA");
+    expect(tsla?.n).toBe(20);
+    expect(tsla?.meanPnlPct).toBeCloseTo(1.5, 3);
+  });
+
+  it("quintile-buckets numeric group columns", () => {
+    const rows = Array.from({ length: 100 }, (_, i) => ({
+      date: "2026-08-01",
+      value: String(i),
+      metric: String(i < 50 ? -1 : 2),
+    }));
+    const [result] = executeResearchQueries(
+      [{ kind: "dataset_scan", dataset: "funding_history", groupBy: "value", metric: "metric" }],
+      { ...dataset, fundingRows: rows },
+    );
+    expect(result.error).toBeUndefined();
+    expect(result.groups?.length).toBe(5);
+    expect(result.groups?.every((g) => g.n >= 8)).toBe(true);
+  });
+
+  it("errors helpfully on unknown metric, listing numeric columns", () => {
+    const [result] = executeResearchQueries(
+      [{ kind: "dataset_scan", dataset: "funding_history", groupBy: "asset", metric: "nope" }],
+      scanDataset,
+    );
+    expect(result.error).toContain("not found");
+    expect(result.summary.availableNumericColumns).toContain("funding_ann");
   });
 });

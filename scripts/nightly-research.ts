@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { aggregateNoBiasCalibrationBuckets, writeCalibrationBucketsSummary } from "./lib/research/calibration-summary.js";
 import { compactJournalFile } from "./lib/research/journal-compaction.js";
 import { buildLessonsArtifactFromFiles, writeLessonsArtifact } from "./lib/research/lessons.js";
+import { runNightlyExplorerStep } from "./lib/research/nightly-explorer.js";
 import { runNightlyLlmStep } from "./lib/research/nightly-llm.js";
 
 /**
@@ -81,6 +82,21 @@ async function stepNightlyLlm(): Promise<void> {
   console.log("[nightly-research] nightly-llm: wrote data/nightly-llm-advice.json");
 }
 
+// Free-roaming exploration runs after the disciplined pass: it shares the
+// same LLM route but gets open dataset access and a small freeform
+// hypothesis budget (enforced at ingest by the hourly engine).
+async function stepNightlyExplorer(): Promise<void> {
+  const result = await runNightlyExplorerStep({ dataDir: DATA_DIR });
+  if (result.skipped) {
+    console.log("[nightly-research] nightly-explorer: skipped (no API key configured or NIGHTLY_EXPLORER_DISABLE=1)");
+    return;
+  }
+  if (!result.wrote) {
+    throw new Error(result.error ?? "nightly-explorer step failed without a specific error");
+  }
+  console.log("[nightly-research] nightly-explorer: wrote data/nightly-explorer-advice.json");
+}
+
 async function main(): Promise<void> {
   const failures: string[] = [];
   for (const [name, fn] of [
@@ -88,6 +104,7 @@ async function main(): Promise<void> {
     ["lessons", stepLessons],
     ["journal-compaction", stepJournalCompaction],
     ["nightly-llm", stepNightlyLlm],
+    ["nightly-explorer", stepNightlyExplorer],
   ] as const) {
     const failure = await runStep(name, fn);
     if (failure) failures.push(failure);
