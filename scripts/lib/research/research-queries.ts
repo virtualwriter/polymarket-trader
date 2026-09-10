@@ -105,6 +105,17 @@ export const SCAN_DATASET_NAMES: readonly ScanDatasetName[] = [
 export const MIN_SCAN_GROUP_N = 8;
 const MAX_SCAN_GROUPS = 20;
 const DEFAULT_SCAN_GROUPS = 10;
+/**
+ * Free-roaming scans over the outcome panels never see the miners' temporal
+ * holdout (the most recent ~30% of panel days — mirror of HOLDOUT_FRACTION
+ * and split_days in scripts/mine_panel_findings.py). Without this mask, an
+ * explorer that has looked at all data could propose stratifications the
+ * miner then "confirms" on days the proposer already saw — adaptive-search
+ * leakage into the one dataset whose virginity the confirmation step depends
+ * on. Forward shadow tests stay untouched either way; this protects the
+ * historical confirmation layer.
+ */
+export const SCAN_PANEL_HOLDOUT_FRACTION = 0.30;
 
 export interface PanelWhereClause {
   column: string;
@@ -817,9 +828,19 @@ export function executeResearchQuery(query: ResearchQuery, data: ResearchDataset
  * engine covers all of them. Trades and shadows are projected from their
  * native shapes; CSV datasets pass through.
  */
+/** Drops rows in the miners' temporal-holdout window (most recent days). */
+export function maskPanelHoldout(rows: Record<string, string>[]): Record<string, string>[] {
+  const days = [...new Set(rows.map((r) => String(r.entry_date ?? "").slice(0, 10)).filter(Boolean))].sort();
+  if (days.length < 4) return rows;
+  let cut = Math.max(1, Math.round(days.length * (1 - SCAN_PANEL_HOLDOUT_FRACTION)));
+  cut = Math.min(cut, days.length - 1);
+  const discovery = new Set(days.slice(0, cut));
+  return rows.filter((r) => discovery.has(String(r.entry_date ?? "").slice(0, 10)));
+}
+
 export function scanDatasetRows(name: ScanDatasetName, data: ResearchDataset): Record<string, string>[] {
-  if (name === "panel") return data.panelRows;
-  if (name === "spot_panel") return data.spotPanelRows;
+  if (name === "panel") return maskPanelHoldout(data.panelRows);
+  if (name === "spot_panel") return maskPanelHoldout(data.spotPanelRows);
   if (name === "valuations") return data.valuationRows;
   if (name === "funding_history") return data.fundingRows;
   if (name === "macro") return data.macroRows;
@@ -1072,7 +1093,7 @@ Available query kinds:
   - {"kind":"spot_panel", "side":"long"|"short", "horizonDays":1|3|7, "asset"?:"BTC|ETH|SOL|HYPE|GOLD|SILVER|OIL|AMZN|SPY", "where"?:[{"column":"<spot panel column>", "gte"?, "lte"?, "eq"?}]}
       Historical forward SPOT returns per asset-day (the non-Polymarket panel). Use this to pre-check a spot/perp thesis — e.g. "long BTC 3d when ret_24h_pct <= -2, how often did it beat the exam threshold vs base?" Columns: price, fund_ann, fund_z30, ret_24h_pct, pct_from_7d_high, pct_vs_30d_sma, pc_ratio, pc_pctile_30d, iv_term_spread_pts, realized_vol_30d_pct, day_of_week, is_weekend, macro_composite. Stale windows (closed markets) are excluded; entries de-duplicated per asset so forward windows do not overlap.
   - {"kind":"dataset_scan", "dataset":"panel"|"spot_panel"|"trades"|"shadows"|"valuations"|"funding_history"|"macro", "where"?:[{"column", "gte"?, "lte"?, "eq"?}], "groupBy"?:"<any column>", "metric"?:"<any numeric column>", "topK"?:10}
-      Free-roaming scan over any dataset. With no groupBy/metric it returns the SCHEMA (columns, numeric columns, row count, date range) — use that first to learn what exists. With groupBy it buckets rows by that column (numeric columns are quintile-bucketed automatically) and reports n / win-share / mean / total of the metric per bucket, sorted by |mean|. Groups with n < ${MIN_SCAN_GROUP_N} are suppressed — patterns must repeat to be visible. Default metrics: panel=no_pnl_pct_7d, spot_panel=move_pct_3d, trades/shadows=pnl_pct.
+      Free-roaming scan over any dataset. With no groupBy/metric it returns the SCHEMA (columns, numeric columns, row count, date range) — use that first to learn what exists. With groupBy it buckets rows by that column (numeric columns are quintile-bucketed automatically) and reports n / win-share / mean / total of the metric per bucket, sorted by |mean|. Groups with n < ${MIN_SCAN_GROUP_N} are suppressed — patterns must repeat to be visible. Default metrics: panel=no_pnl_pct_7d, spot_panel=move_pct_3d, trades/shadows=pnl_pct. Note: panel and spot_panel scans exclude the most recent ~30% of days — that window is the miners' locked confirmation set, and ideas sourced from scans must be confirmable on data the scanner never saw.
 
 Every result includes n, win rate, Wilson 95% lower bound, total and mean PnL, a one-sided t-test p-value that mean PnL is positive, optional group breakdowns, and up to ${MAX_SAMPLE_ROWS} example rows. Panel results also include meanPnlPct, stdPnlPct, and baseRate (win rate of all mineable rows for the same asset/side/horizon without where-filters). Spot-panel results additionally include examThresholdPct (the move the engine's scorer requires for a win at that horizon: 0.5%/1d, 1%/3d, 2%/7d), examWinRate and baseExamWinRate — compare those two to judge real edge on the exam the test will actually sit.
 If you do not need extra evidence, skip this and answer directly.`;

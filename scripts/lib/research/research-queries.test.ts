@@ -383,6 +383,21 @@ describe("dataset_scan query", () => {
     expect(result.groups?.every((g) => g.n >= 8)).toBe(true);
   });
 
+  it("masks the miners' temporal holdout from panel scans", () => {
+    // 10 distinct days: cut = round(10 * 0.7) = 7 discovery days, 3 holdout.
+    const panelRows = Array.from({ length: 20 }, (_, i) => ({
+      entry_date: `2026-08-${String((i % 10) + 1).padStart(2, "0")}`,
+      asset: "BTC",
+      no_pnl_pct_7d: "1.0",
+    }));
+    const [result] = executeResearchQueries(
+      [{ kind: "dataset_scan", dataset: "panel" }],
+      { ...dataset, panelRows },
+    );
+    expect(result.summary.lastDate).toBe("2026-08-07");
+    expect(result.n).toBe(14);
+  });
+
   it("errors helpfully on unknown metric, listing numeric columns", () => {
     const [result] = executeResearchQueries(
       [{ kind: "dataset_scan", dataset: "funding_history", groupBy: "asset", metric: "nope" }],
