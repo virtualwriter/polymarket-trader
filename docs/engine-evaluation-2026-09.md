@@ -208,3 +208,49 @@ exploration as the legislature.
 (`data/trades-detailed.csv`, `hypotheses.json`, `registry.json`,
 `blocked-signals.json`), promotion-group evaluators, and the nightly research
 reports.*
+
+---
+
+## Addendum — evening of 2026-09-10 (response to external assessment)
+
+Four changes were shipped and deployed the same day this document was
+reviewed, directly addressing the assessment's critique:
+
+1. **Holdout integrity (assessment point: locked confirmation environment).**
+   The identified leak was real: the free-roaming explorer could scan all
+   panel days, then propose stratifications the miner "confirms" on the
+   holdout window the proposer had already seen. Fixed: `dataset_scan` over
+   the outcome panels now excludes the most recent ~30% of days — the miners'
+   confirmation set is invisible to the explorer by construction. Forward
+   shadow tests (20 tests on future contracts) were never affected and remain
+   the primary untouchable validation layer.
+2. **Discovery-yield measurement (assessment point: learning how to learn).**
+   A daily scoreboard now records per-origin cohort yield: hypotheses
+   authored/killed, mature survivors (≥10 resolved tests, still alive),
+   resolved-test consumption, and tests-per-survivor. Day-0 baseline: mined
+   FINDs 53.1 resolved tests per survivor; refinements 144; legacy freeform
+   105; explorer 0 authored (cohort opens tonight). This is the running
+   evidence for the proposed decisive experiment — explorer vs. pipeline over
+   60 days under a frozen statistical constitution and fixed budget, both of
+   which already held by policy.
+3. **Research allocation as a learned policy (assessment point #5).** The
+   nightly authoring prompt now carries the yield scoreboard with an explicit
+   instruction to allocate the 10-slot hypothesis budget by measured survival
+   economics (and to justify the night's allocation in its strategy review).
+   The budget is now a decision informed by the system's own discovery
+   history, not a reflex.
+4. **Adversarial self-criticism (assessment point #6).** When a promotion
+   group's deduplicated pooled record reaches 15 of the 20 required tests, a
+   dedicated LLM session is instructed to assume the edge is false and
+   construct the strongest case that the evidence is misleading —
+   pseudo-replication, selection effects, regime dependence, base-rate
+   illusion, execution assumptions, multiple comparisons. The adversary
+   cannot modify evidence or block promotion; its objections are recorded and
+   stamped into the promotion record, so no promotion occurs without the
+   strongest known counter-case filed beside it.
+
+Not yet built, in planned order: regime stamps on validation records (#4),
+explorer-proposed derived features / new representations (#2), and autonomous
+data acquisition (#3) — the last gated deliberately on the 60-day scoreboard
+verdict: a system that has not yet proven its explorer beats its miners has
+not earned the budget to acquire new datasets.
