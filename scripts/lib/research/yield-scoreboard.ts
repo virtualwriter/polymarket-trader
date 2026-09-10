@@ -52,14 +52,40 @@ export interface CohortYield {
   matureSurvivors: number;
   /** Resolved tests spent per mature survivor (lower = more efficient). */
   testsPerSurvivor: number | null;
+  /** Hypotheses that completed the full 20-test gauntlet and are still alive:
+   * the prospective-survival bar, not the halfway mark. */
+  gateSurvivors: number;
+  /** Gate survivors per 100 hypotheses authored — the budget-normalized
+   * "prospective discoveries per research experiment" metric. Comparable
+   * across cohorts with different nightly slot budgets. */
+  gateSurvivorsPer100Authored: number | null;
+}
+
+/** Novelty accounting for the explorer cohort: are its survivors genuinely
+ * outside the mined taxonomy, and are they independent discoveries rather
+ * than variants of one? */
+export interface ExplorerNovelty {
+  /** Condition keys used by explorer hypotheses that no mined/refinement
+   * hypothesis has ever used. */
+  novelConditionKeys: string[];
+  matureSurvivors: number;
+  /** Mature survivors using at least one condition key outside the mined
+   * vocabulary. */
+  novelMatureSurvivors: number;
+  /** novelMatureSurvivors / matureSurvivors. */
+  novelSurvivorRate: number | null;
+  /** Distinct condition-key signatures among mature survivors — a proxy for
+   * independent mechanisms (15 survivors with 2 signatures is 2 discoveries,
+   * not 15). */
+  distinctConditionSignatures: number;
 }
 
 export interface YieldSnapshot {
   date: string;
   cohorts: Record<OriginCohort, CohortYield>;
-  /** Condition keys used by explorer hypotheses that no mined/refinement
-   * hypothesis has ever used — a proxy for "outside the existing taxonomy". */
+  /** Kept for continuity with early rows; superseded by explorerNovelty. */
   explorerNovelConditionKeys: string[];
+  explorerNovelty: ExplorerNovelty;
 }
 
 export function cohortForHypothesis(h: ScoreboardHypothesis): OriginCohort {
@@ -73,11 +99,14 @@ export function cohortForHypothesis(h: ScoreboardHypothesis): OriginCohort {
 }
 
 const MATURE_TEST_COUNT = 10;
+/** The full gauntlet: same as HYPOTHESIS_SHADOW_TESTS_REQUIRED / PROMOTE_MIN_TESTS. */
+const GATE_TEST_COUNT = 20;
 
 function emptyYield(): CohortYield {
   return {
     authored: 0, active: 0, killed: 0, archived: 0, promoted: 0,
     testsResolved: 0, testsWon: 0, matureSurvivors: 0, testsPerSurvivor: null,
+    gateSurvivors: 0, gateSurvivorsPer100Authored: null,
   };
 }
 
@@ -86,7 +115,9 @@ export function buildYieldSnapshot(hypotheses: ScoreboardHypothesis[], date: str
     mined: emptyYield(), refinement: emptyYield(), explorer: emptyYield(), legacy: emptyYield(),
   };
   const nonExplorerKeys = new Set<string>();
-  const explorerKeys = new Set<string>();
+  interface ExplorerSurvivorInfo { keys: string[]; signature: string }
+  const explorerAllKeys = new Set<string>();
+  const explorerMatureSurvivorInfo: ExplorerSurvivorInfo[] = [];
 
   for (const h of hypotheses) {
     const cohort = cohortForHypothesis(h);
@@ -107,23 +138,47 @@ export function buildYieldSnapshot(hypotheses: ScoreboardHypothesis[], date: str
       }
     }
     const alive = status !== "killed" && status !== "archived";
-    if (alive && resolved >= MATURE_TEST_COUNT) y.matureSurvivors++;
+    const isMatureSurvivor = alive && resolved >= MATURE_TEST_COUNT;
+    if (isMatureSurvivor) y.matureSurvivors++;
+    if (alive && resolved >= GATE_TEST_COUNT) y.gateSurvivors++;
 
-    const keys = Object.keys(h.conditions ?? {});
-    if (cohort === "explorer") keys.forEach((k) => explorerKeys.add(k));
-    else keys.forEach((k) => nonExplorerKeys.add(k));
+    const keys = Object.keys(h.conditions ?? {}).sort();
+    if (cohort === "explorer") {
+      keys.forEach((k) => explorerAllKeys.add(k));
+      if (isMatureSurvivor) explorerMatureSurvivorInfo.push({ keys, signature: keys.join("|") });
+    } else {
+      keys.forEach((k) => nonExplorerKeys.add(k));
+    }
   }
 
   for (const y of Object.values(cohorts)) {
     y.testsPerSurvivor = y.matureSurvivors > 0
       ? Number((y.testsResolved / y.matureSurvivors).toFixed(1))
       : null;
+    y.gateSurvivorsPer100Authored = y.authored > 0
+      ? Number(((y.gateSurvivors / y.authored) * 100).toFixed(2))
+      : null;
   }
+
+  const novelKeys = [...explorerAllKeys].filter((k) => !nonExplorerKeys.has(k)).sort();
+  const novelKeySet = new Set(novelKeys);
+  const novelMatureSurvivors = explorerMatureSurvivorInfo
+    .filter((info) => info.keys.some((k) => novelKeySet.has(k)))
+    .length;
 
   return {
     date,
     cohorts,
-    explorerNovelConditionKeys: [...explorerKeys].filter((k) => !nonExplorerKeys.has(k)).sort(),
+    explorerNovelConditionKeys: novelKeys,
+    explorerNovelty: {
+      novelConditionKeys: novelKeys,
+      matureSurvivors: explorerMatureSurvivorInfo.length,
+      novelMatureSurvivors,
+      novelSurvivorRate: explorerMatureSurvivorInfo.length > 0
+        ? Number((novelMatureSurvivors / explorerMatureSurvivorInfo.length).toFixed(3))
+        : null,
+      distinctConditionSignatures: new Set(explorerMatureSurvivorInfo.map((i) => i.signature)).size,
+    },
   };
 }
 
@@ -165,6 +220,14 @@ export function appendYieldScoreboard(dataDir: string, now: Date = new Date()): 
   writeFileSync(scoreboardPath, JSON.stringify({
     updatedAt: now.toISOString(),
     experiment: "explorer-vs-pipeline discovery yield (60-day assessment criteria, Sep 2026)",
+    // Verdict thresholds agreed with the external assessor on 2026-09-10.
+    // The statistical constitution stays frozen for the experiment's duration.
+    verdictCriteria: {
+      efficiency: "explorer testsPerSurvivor <= 35 (mined baseline 53.1 at day 0); tiers: >50 none, 40-50 promising, 35-40 meaningful, <=35 additive, <=30 strong, <=25 extraordinary",
+      scale: ">= 15 explorer mature survivors (prefer 20+), across independent mechanisms (see distinctConditionSignatures, not raw count)",
+      novelty: "substantial explorerNovelty.novelSurvivorRate — survivors outside the mined condition vocabulary, not rediscoveries",
+      prospectiveSurvival: "explorer gateSurvivorsPer100Authored at or above the mined cohort's — survivors must finish the full 20-test future-contract gauntlet",
+    },
     rows,
   }, null, 2) + "\n");
   return snapshot;

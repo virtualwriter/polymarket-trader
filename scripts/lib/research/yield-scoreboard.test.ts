@@ -59,6 +59,39 @@ describe("buildYieldSnapshot", () => {
     expect(snapshot.explorerNovelConditionKeys).toEqual(["oil_hl_funding_ann_zscore_30d"]);
   });
 
+  it("counts full-gauntlet gate survivors per 100 authored", () => {
+    const gated = buildYieldSnapshot([
+      // 20 resolved, alive -> gate survivor.
+      { status: "active", originFindingId: "FIND-0001", tests: Array.from({ length: 20 }, () => win) },
+      // 20 resolved but killed -> not a survivor.
+      { status: "killed", setupId: "find_0002", tests: Array.from({ length: 20 }, () => loss) },
+      // 12 resolved, alive -> mature but not gate.
+      { status: "active", setupId: "find_0003", tests: Array.from({ length: 12 }, () => win) },
+      { status: "active", setupId: "find_0004", tests: [win] },
+    ], "2026-09-10");
+    expect(gated.cohorts.mined.gateSurvivors).toBe(1);
+    expect(gated.cohorts.mined.matureSurvivors).toBe(2);
+    expect(gated.cohorts.mined.gateSurvivorsPer100Authored).toBe(25);
+  });
+
+  it("computes explorer novelty: novel survivor rate and independence signatures", () => {
+    const mk = (conditions: Record<string, string>, n: number): ScoreboardHypothesis => ({
+      status: "active", origin: "explorer", conditions,
+      tests: Array.from({ length: n }, () => win),
+    });
+    const s = buildYieldSnapshot([
+      { status: "active", originFindingId: "FIND-0001", conditions: { yesAsk: "< 0.5" }, tests: [] },
+      mk({ oil_hl_funding_ann_zscore_30d: "<= -0.4" }, 10), // novel key, mature
+      mk({ oil_hl_funding_ann_zscore_30d: "<= -0.4" }, 10), // same signature — not independent
+      mk({ yesAsk: "> 0.5" }, 10),                          // mined vocabulary — mature but not novel
+      mk({ eth_hl_funding_ann_zscore_30d: ">= 0.5" }, 3),   // novel key but immature
+    ], "2026-09-10");
+    expect(s.explorerNovelty.matureSurvivors).toBe(3);
+    expect(s.explorerNovelty.novelMatureSurvivors).toBe(2);
+    expect(s.explorerNovelty.novelSurvivorRate).toBeCloseTo(0.667, 2);
+    expect(s.explorerNovelty.distinctConditionSignatures).toBe(2);
+  });
+
   it("does not flag explorer keys that mined hypotheses also use", () => {
     const shared = buildYieldSnapshot([
       { status: "active", origin: "explorer", conditions: { yesAsk: "< 0.5" } },
