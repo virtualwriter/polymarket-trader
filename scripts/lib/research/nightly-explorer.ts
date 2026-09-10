@@ -27,7 +27,7 @@
  *   base-rate/holdout/BH pipeline.
  */
 
-import { writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import {
   executeResearchQueries,
@@ -41,10 +41,31 @@ import { extractDataRequests } from "./nightly-llm.js";
 import { buildConditionCatalogPromptSection } from "./condition-catalog.js";
 import { resolveLlmRoute, requestLlmText, extractLlmJsonObject, type LlmMessage, type LlmRoute } from "../trading/llm-transport.js";
 
-export const EXPLORER_MAX_ROUNDS = 3;
+export const EXPLORER_MAX_ROUNDS = 4;
 export const EXPLORER_MAX_QUERIES_PER_ROUND = 8;
 export const EXPLORER_MAX_PROPOSED_HYPOTHESES = 3;
-export const EXPLORER_MAX_PROPOSED_STRATS = 5;
+export const EXPLORER_MAX_PROPOSED_STRATS = 8;
+
+/**
+ * Nightly focus rotation: each night one under-explored territory gets a
+ * mandatory deep dive, so within a week every never-mined archive has had a
+ * dedicated session instead of waiting for the model to wander there. The
+ * PM panel is deliberately absent — the disciplined miners already own it,
+ * and unsteered scans kept rediscovering its known edge.
+ */
+export const EXPLORER_FOCUS_ROTATION: ReadonlyArray<{ name: string; brief: string }> = [
+  { name: "funding_history", brief: "the raw Hyperliquid funding archive: funding regimes, persistence, extremes by asset — then verify any spot-return implication on the spot_panel via fund_ann/fund_z30" },
+  { name: "macro", brief: "the daily macro dataset crossed against panel and spot_panel outcomes: do macro states change which contract or spot cuts win?" },
+  { name: "spot_panel", brief: "spot forward returns: funding x day-of-week, momentum vs mean-reversion by asset, vol regimes (realized_vol_30d_pct, iv_term_spread_pts)" },
+  { name: "trades_and_shadows", brief: "the live trade ledger and resolved shadow cohort: close-reason patterns, day-of-week or venue asymmetries, signal types whose blocked shadows outperform" },
+  { name: "valuations", brief: "the daily valuations history: cross-venue IV gaps, basis, and derived columns as regime markers for the panels" },
+  { name: "panel_interactions", brief: "the PM outcome panel, but ONLY feature interactions the miners never cross (fund, money, macro, spotret, liq, dow crossed with each other or with price/dte) — single-feature or known-cluster cuts are null results tonight" },
+];
+
+export function explorerFocusForDate(date: Date): { name: string; brief: string } {
+  const dayIndex = Math.floor(date.getTime() / 86_400_000);
+  return EXPLORER_FOCUS_ROTATION[dayIndex % EXPLORER_FOCUS_ROTATION.length];
+}
 
 const EXPLORER_TIMEOUT_MS = Number(process.env.NIGHTLY_EXPLORER_TIMEOUT_MS ?? 900_000);
 const EXPLORER_MAX_TOKENS = 32_768;
@@ -62,6 +83,8 @@ const KNOWN_PANEL_FEATURES = new Set([
 
 export interface ExplorerAdvice {
   generatedAt: string;
+  /** Which rotation territory this session was mandated to dig into. */
+  focus: string;
   rounds: number;
   queriesRun: number;
   observations: Array<{ finding: string; evidence: string }>;
@@ -69,7 +92,20 @@ export interface ExplorerAdvice {
   proposedStratifications: Array<{ features: string[]; rationale: string }>;
 }
 
-export function buildExplorerPrompt(inventoryText: string, valuationColumns: string[]): string {
+export function buildExplorerPrompt(
+  inventoryText: string,
+  valuationColumns: string[],
+  opts: { focus?: { name: string; brief: string }; knownClusters?: string[] } = {},
+): string {
+  const knownSection = opts.knownClusters && opts.knownClusters.length > 0
+    ? `\nALREADY KNOWN — REDISCOVERING THESE IS A NULL RESULT:
+The disciplined miners have already registered these edge clusters. Confirming them again teaches us nothing; a scan that lands on one should be noted in one line and abandoned. Novelty means a pattern OUTSIDE this list.
+${opts.knownClusters.map((c) => `- ${c}`).join("\n")}\n`
+    : "";
+  const focusSection = opts.focus
+    ? `\nTONIGHT'S MANDATORY FOCUS: ${opts.focus.name}
+Spend at least half of your queries on: ${opts.focus.brief}. The focus rotates nightly so every archive gets deep coverage; whatever else you chase, this territory must get a real dive tonight, and a well-evidenced null ("scanned X cuts, nothing beat base") is an acceptable outcome.\n`
+    : "";
   return `You are the nightly DATA EXPLORER for a quantitative paper trading system. You are not the disciplined researcher — that run already happened tonight. Your job is different: roam the raw archives freely and find repeatable patterns nobody told the miners to look for.
 
 You have full read access to every research dataset through the query language below. The dataset schemas are listed under DATASET INVENTORY. Standing instructions:
@@ -78,7 +114,8 @@ You have full read access to every research dataset through the query language b
 2. REPEATABLE RULES ONLY. A finding must be a rule over many rows (contract-days, asset-days, trades) — never a story about one market or one week. Groups below the minimum sample size are suppressed by the engine; do not try to reason around that.
 3. FOLLOW UP. You get up to ${EXPLORER_MAX_ROUNDS} query rounds of up to ${EXPLORER_MAX_QUERIES_PER_ROUND} queries each. When a cut looks promising, drill in: tighten the where-clause, check it on a second dataset or side, check the base rate of the pool it came from. A pattern that only exists in one grouping is probably noise.
 4. BE HONEST ABOUT NULLS. Reporting "I scanned X and found nothing" is a valid, useful observation. Do not dress up noise as discovery.
-
+5. HUNT INTERACTIONS. The highest-value discovery is a conditional effect: a cut that only works in a funding regime, on certain weekdays, in a liquidity tier, or under a macro state. Single-feature effects are mostly already mined.
+${knownSection}${focusSection}
 ${inventoryText}
 
 WHAT YOU MAY PROPOSE (final response):
@@ -139,6 +176,34 @@ export function sanitizeStratProposals(raw: unknown): Array<{ features: string[]
   return out;
 }
 
+/**
+ * Already-registered edge clusters from the ranked opportunities file: shown
+ * to the explorer so rediscovering them reads as a null result, steering the
+ * session toward genuine novelty.
+ */
+export function loadKnownClusters(opportunitiesPath: string): string[] {
+  if (!existsSync(opportunitiesPath)) return [];
+  try {
+    const raw = JSON.parse(readFileSync(opportunitiesPath, "utf-8"));
+    const ops = Array.isArray(raw?.opportunities) ? raw.opportunities : [];
+    const out: string[] = [];
+    const seen = new Set<string>();
+    for (const op of ops) {
+      if (!op || typeof op !== "object") continue;
+      const clusterKey = typeof op.clusterKey === "string" ? op.clusterKey : "";
+      const title = typeof op.title === "string" ? op.title : "";
+      const key = clusterKey || title;
+      if (!key || seen.has(key)) continue;
+      seen.add(key);
+      out.push(title ? title.slice(0, 140) : clusterKey);
+      if (out.length >= 15) break;
+    }
+    return out;
+  } catch {
+    return [];
+  }
+}
+
 export function buildDatasetInventory(data: ResearchDataset): string {
   const schemaQueries: ResearchQuery[] = SCAN_DATASET_NAMES.map((dataset) => ({ kind: "dataset_scan", dataset }));
   const results = executeResearchQueries(schemaQueries, data, schemaQueries.length);
@@ -167,8 +232,10 @@ export async function runNightlyExplorerStep(opts: { dataDir: string }): Promise
   const data = loadResearchDataset(opts.dataDir);
   const inventory = buildDatasetInventory(data);
   const valuationColumns = data.valuationRows.length > 0 ? Object.keys(data.valuationRows[data.valuationRows.length - 1]) : [];
-  const prompt = buildExplorerPrompt(inventory, valuationColumns);
-  log(`prompt: ${prompt.length} chars (provider=${route.provider}, model=${route.model}).`);
+  const focus = explorerFocusForDate(new Date());
+  const knownClusters = loadKnownClusters(join(opts.dataDir, "research-opportunities.json"));
+  const prompt = buildExplorerPrompt(inventory, valuationColumns, { focus, knownClusters });
+  log(`prompt: ${prompt.length} chars (provider=${route.provider}, model=${route.model}, focus=${focus.name}, knownClusters=${knownClusters.length}).`);
 
   const messages: LlmMessage[] = [{ role: "user", content: prompt }];
   let queriesRun = 0;
@@ -226,6 +293,7 @@ export async function runNightlyExplorerStep(opts: { dataDir: string }): Promise
 
     const advice: ExplorerAdvice = {
       generatedAt: new Date().toISOString(),
+      focus: focus.name,
       rounds,
       queriesRun,
       observations,

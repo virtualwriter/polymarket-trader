@@ -2,8 +2,10 @@ import { describe, expect, it } from "vitest";
 import {
   buildDatasetInventory,
   buildExplorerPrompt,
+  EXPLORER_FOCUS_ROTATION,
   EXPLORER_MAX_PROPOSED_HYPOTHESES,
   EXPLORER_MAX_PROPOSED_STRATS,
+  explorerFocusForDate,
   sanitizeStratProposals,
 } from "./nightly-explorer.js";
 import type { ResearchDataset } from "./research-queries.js";
@@ -63,16 +65,55 @@ describe("sanitizeStratProposals", () => {
   });
 
   it("caps at the proposal budget", () => {
-    const combos = [
-      ["fund", "liq"], ["fund", "dow"], ["fund", "money"], ["fund", "spread"],
-      ["liq", "dow"], ["liq", "money"], ["liq", "spread"],
-    ].map((features) => ({ features, rationale: "x" }));
+    const names = ["fund", "liq", "dow", "money", "spread", "macro", "spotret"];
+    const combos: Array<{ features: string[]; rationale: string }> = [];
+    for (let i = 0; i < names.length; i++) {
+      for (let j = i + 1; j < names.length; j++) {
+        combos.push({ features: [names[i], names[j]], rationale: "x" });
+      }
+    }
+    expect(combos.length).toBeGreaterThan(EXPLORER_MAX_PROPOSED_STRATS);
     expect(sanitizeStratProposals(combos)).toHaveLength(EXPLORER_MAX_PROPOSED_STRATS);
   });
 
   it("returns empty on non-array input", () => {
     expect(sanitizeStratProposals(undefined)).toEqual([]);
     expect(sanitizeStratProposals({})).toEqual([]);
+  });
+});
+
+describe("novelty steering", () => {
+  it("lists known clusters as null results when provided", () => {
+    const prompt = buildExplorerPrompt("INVENTORY", [], {
+      knownClusters: ["Panel FIND: buy NO 7d ALL | yesAsk between 0.35 and 0.65 | WR=58%"],
+    });
+    expect(prompt).toContain("REDISCOVERING THESE IS A NULL RESULT");
+    expect(prompt).toContain("yesAsk between 0.35 and 0.65");
+  });
+
+  it("mandates the nightly focus territory when provided", () => {
+    const prompt = buildExplorerPrompt("INVENTORY", [], {
+      focus: { name: "funding_history", brief: "funding regimes and persistence" },
+    });
+    expect(prompt).toContain("TONIGHT'S MANDATORY FOCUS: funding_history");
+    expect(prompt).toContain("at least half of your queries");
+  });
+
+  it("rotates the focus deterministically across the full territory list", () => {
+    const names = new Set<string>();
+    for (let day = 0; day < EXPLORER_FOCUS_ROTATION.length; day++) {
+      names.add(explorerFocusForDate(new Date(Date.UTC(2026, 8, 10 + day, 7))).name);
+    }
+    expect(names.size).toBe(EXPLORER_FOCUS_ROTATION.length);
+    // Same night (before/after midnight UTC shifts within the same UTC day) is stable.
+    expect(explorerFocusForDate(new Date(Date.UTC(2026, 8, 10, 1))).name)
+      .toBe(explorerFocusForDate(new Date(Date.UTC(2026, 8, 10, 23))).name);
+  });
+
+  it("keeps the PM panel out of the rotation except for never-crossed interactions", () => {
+    const panelEntries = EXPLORER_FOCUS_ROTATION.filter((f) => f.name.includes("panel"));
+    expect(panelEntries.map((f) => f.name)).toEqual(["spot_panel", "panel_interactions"]);
+    expect(panelEntries.find((f) => f.name === "panel_interactions")?.brief).toContain("never cross");
   });
 });
 
