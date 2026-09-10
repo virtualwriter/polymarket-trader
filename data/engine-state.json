@@ -1,21 +1,39 @@
 {
-  "generatedAt": "2026-09-10T15:28:20.829Z",
+  "generatedAt": "2026-09-10T16:28:25.923Z",
   "dataFreshness": {
-    "valuationRows": 2895,
-    "latestValuationAt": "2026-09-10T15",
-    "macroRows": 2893,
+    "valuationRows": 2896,
+    "latestValuationAt": "2026-09-10T16",
+    "macroRows": 2894,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-09-10T15"
+    "latestInstrumentSnapshotAt": "2026-09-10T16"
   },
   "portfolio": {
-    "cash": 103.7902,
-    "openPositions": 0,
+    "cash": 102.7902,
+    "openPositions": 1,
     "realizedPnl": 7.0299,
     "totalTrades": 949,
     "winRatePct": 64.4,
-    "unrealizedPnl": 0
+    "unrealizedPnl": -0.0016
   },
-  "openPositions": [],
+  "openPositions": [
+    {
+      "positionId": "T-1789054112407-n7k2",
+      "asset": "GOLD",
+      "venue": "spot",
+      "direction": "long",
+      "signalType": "PC_RATIO_EXTREME_HIGH",
+      "pnlPct": -0.16,
+      "currentPrice": 4362,
+      "underlyingPrice": 4362,
+      "targetPct": 3,
+      "stopPct": 1.5,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": [
+        "gold_gc_spot",
+        "gold_gld_pc_ratio"
+      ]
+    }
+  ],
   "signalHealth": [
     {
       "type": "PM_IV_GT_OPT_IV",
@@ -180,7 +198,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 31,
+    "openCount": 32,
     "resolvedCount": 1017,
     "wouldHaveWon": 520,
     "wouldHaveLost": 497,
