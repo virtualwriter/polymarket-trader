@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { aggregateNoBiasCalibrationBuckets, writeCalibrationBucketsSummary } from "./lib/research/calibration-summary.js";
 import { compactJournalFile } from "./lib/research/journal-compaction.js";
 import { buildLessonsArtifactFromFiles, writeLessonsArtifact } from "./lib/research/lessons.js";
+import { runAdversarialReviewStep } from "./lib/research/adversarial-review.js";
 import { runNightlyExplorerStep } from "./lib/research/nightly-explorer.js";
 import { runNightlyLlmStep } from "./lib/research/nightly-llm.js";
 import { appendYieldScoreboard } from "./lib/research/yield-scoreboard.js";
@@ -98,6 +99,15 @@ async function stepNightlyExplorer(): Promise<void> {
   console.log("[nightly-research] nightly-explorer: wrote data/nightly-explorer-advice.json");
 }
 
+// Devil's advocate at the promotion gate: when a group's deduped record
+// nears 20 tests, an LLM session argues the strongest case the evidence is
+// misleading. Objections are recorded, never enforced.
+async function stepAdversarialReview(): Promise<void> {
+  const result = await runAdversarialReviewStep({ dataDir: DATA_DIR });
+  if (result.error) throw new Error(result.error);
+  console.log(`[nightly-research] adversarial-review: ${result.reviewed}/${result.candidates} candidate group(s) reviewed${result.skipped ? " (skipped)" : ""}`);
+}
+
 // One row per day of per-origin discovery yield (mined vs refinement vs
 // explorer): the running evidence for the explorer-vs-pipeline comparison.
 function stepYieldScoreboard(): void {
@@ -120,6 +130,7 @@ async function main(): Promise<void> {
     ["journal-compaction", stepJournalCompaction],
     ["nightly-llm", stepNightlyLlm],
     ["nightly-explorer", stepNightlyExplorer],
+    ["adversarial-review", stepAdversarialReview],
     ["yield-scoreboard", stepYieldScoreboard],
   ] as const) {
     const failure = await runStep(name, fn);

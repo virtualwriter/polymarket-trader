@@ -105,6 +105,10 @@ export interface BuildNightlyResearchPromptInputs {
    * style insights only ever reached journalctl, never the model.
    */
   shadowLearning?: unknown;
+  /** Per-origin discovery-yield snapshot (research-yield-scoreboard.json):
+   * latest row plus a week-ago row for trend, so the model can allocate its
+   * hypothesis budget by measured productivity instead of novelty appeal. */
+  researchYield?: unknown;
 }
 
 function jsonOrUnavailable(value: unknown, indent: number): string {
@@ -317,6 +321,10 @@ ${jsonOrUnavailable(inputs.shadowLearning, 1)}
 CURRENT LEARNABLE PARAMETERS:
 ${jsonOrUnavailable(inputs.learningParams, 2)}
 
+RESEARCH YIELD SCOREBOARD (allocate the hypothesis budget by measured productivity):
+Effort-normalized discovery yield per origin cohort. testsPerSurvivor = resolved shadow tests spent per hypothesis that reached 10+ resolved tests and is still alive — lower is cheaper discovery. Treat this as the allocation signal for tonight's budget: spend slots where survival economics are best, cut back where a cohort burns tests without producing survivors, and say in strategyReview how tonight's allocation follows (or justifiably departs from) this data. "latest" is today; "weekAgo" shows the trend.
+${jsonOrUnavailable(inputs.researchYield, 1)}
+
 ${buildConditionCatalogPromptSection(inputs.valuationColumns ?? [])}
 
 ${buildQueryCatalogPromptSection()}
@@ -331,6 +339,7 @@ IMPORTANT RULES:
 - For promoted setup-family variants, describe the reusable setup in relative terms such as "within 3% of 7d high", "bottom 15th percentile P/C ratio", "PM IV z-score below -2", or "spot above 24h SMA" instead of "BTC above 78k".
 - Every newHypothesis MUST include a direction field: "long" if the spot/perp price is predicted to go up, "short" if predicted down, "neutral" for vol/IV/spread/basis theses that do NOT carry a directional spot view (e.g. "BTC IV expands as PM IV mean reverts" — the price could go either way). Direction is enforced as the authoritative signal when the hypothesis is later promoted; do NOT rely on the engine to infer direction from prose. If the thesis is contrarian, "long" still means buy spot (e.g. "P/C extreme high → contrarian long" is direction=long, not short).
 - Similar hypotheses are grouped into setup families. Promotion/kill decisions happen at the setup-family level, not per wording variant. Prefer reviewing whether the parent setup is working over proposing near-duplicate threshold variants.
+- Budget allocation is a decision, not a reflex: use the RESEARCH YIELD SCOREBOARD. If refinements are costing several times more resolved tests per survivor than FIND-authored hypotheses, author from fresh FINDs instead of another refinement round (and vice versa when the data says the opposite).
 - ${retiredLine}
 - Keep parameter updates inside these bounds:
   - macroMomentum24hThresholdPts: 2 to 20
@@ -633,6 +642,18 @@ function loadValuationColumns(path: string): string[] {
   }
 }
 
+/** Latest scoreboard row + the closest row to 7 days back, for trend. */
+function loadResearchYieldDigest(path: string): unknown {
+  const raw = readJsonOrNull(path) as { rows?: Array<{ date?: string }> } | null;
+  const rows = Array.isArray(raw?.rows) ? raw.rows : [];
+  if (rows.length === 0) return null;
+  const latest = rows[rows.length - 1];
+  const weekAgoDate = new Date(Date.parse(`${latest.date}T00:00:00Z`) - 7 * 86_400_000)
+    .toISOString().slice(0, 10);
+  const weekAgo = [...rows].reverse().find((r) => (r.date ?? "") <= weekAgoDate) ?? null;
+  return weekAgo && weekAgo !== latest ? { latest, weekAgo } : { latest };
+}
+
 function readJsonOrNull(path: string): unknown {
   if (!existsSync(path)) return null;
   try {
@@ -814,6 +835,7 @@ export async function runNightlyLlmStep(opts: RunNightlyLlmStepOptions): Promise
     | { ingestedAt?: string; lines?: string[] }
     | null;
   const shadowLearning = readJsonOrNull(join(opts.dataDir, "shadow-learning.json"));
+  const researchYield = loadResearchYieldDigest(join(opts.dataDir, "research-yield-scoreboard.json"));
 
   const prompt = buildNightlyResearchPrompt({
     truthState,
@@ -827,6 +849,7 @@ export async function runNightlyLlmStep(opts: RunNightlyLlmStepOptions): Promise
     valuationColumns,
     priorRejections,
     shadowLearning,
+    researchYield,
   });
   console.log(`[nightly-llm] prompt: ${prompt.length} chars (provider=${route.provider}, model=${route.model}, opportunities=${opportunities.length}).`);
 

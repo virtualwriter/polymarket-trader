@@ -6819,6 +6819,25 @@ function evaluateHypotheses(
     }
     if (!alreadyPromoted) {
       observations.push(`🎯 Setup family ${family.setupId} PROMOTED via ${primary.id} (${gateScope}: ${gateWins}/${gateCount} = ${(gateWinRate * 100).toFixed(0)}%${groupStats ? `, pooled across ${groupStats.group.setupIds.length} sibling families` : ""}): ${family.setupLabel}`);
+      // A promotion is never recorded without the strongest known case
+      // against it beside it. The adversarial reviewer (nightly) files
+      // objections for groups nearing the gate; they are advisory — the
+      // statistical gates decide — but they travel with the decision.
+      if (groupStats) {
+        const reviewsFile = readJson<{ reviews?: Record<string, { recommendation?: string; overallAssessment?: string; objections?: Array<{ severity?: string; argument?: string }>; testCountAtReview?: number }> }>("adversarial-reviews.json", {});
+        const review = reviewsFile.reviews?.[groupStats.group.groupId];
+        if (review) {
+          const worst = (review.objections ?? []).find((o) => o.severity === "high")
+            ?? (review.objections ?? []).find((o) => o.severity === "medium")
+            ?? (review.objections ?? [])[0];
+          observations.push(
+            `🧨 Adversarial review of ${groupStats.group.groupId} (at ${review.testCountAtReview ?? "?"} tests): ${review.recommendation ?? "n/a"}`
+            + (worst ? ` — strongest objection: ${String(worst.argument).slice(0, 200)}` : " — no objections filed"),
+          );
+        } else {
+          observations.push(`🧨 Adversarial review of ${groupStats.group.groupId}: none on file — promoted without a counter-case (reviewer may not have run yet).`);
+        }
+      }
     }
   }
 

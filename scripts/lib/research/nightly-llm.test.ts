@@ -104,6 +104,20 @@ describe("buildNightlyResearchPrompt", () => {
     expect(prompt).not.toContain("PREVIOUS RUN'S INGEST REJECTIONS");
   });
 
+  it("shows the research yield scoreboard with the allocation instruction", () => {
+    const prompt = buildNightlyResearchPrompt({
+      ...emptyInputs,
+      researchYield: {
+        latest: { date: "2026-09-10", cohorts: { mined: { testsPerSurvivor: 53.1 }, refinement: { testsPerSurvivor: 144 } } },
+      },
+    });
+    expect(prompt).toContain("RESEARCH YIELD SCOREBOARD");
+    expect(prompt).toContain("allocate the hypothesis budget by measured productivity");
+    expect(prompt).toContain("testsPerSurvivor");
+    expect(prompt).toContain("53.1");
+    expect(prompt).toContain("Budget allocation is a decision, not a reflex");
+  });
+
   it("shows the hourly shadow-learning digest with the weekend-clustering caution", () => {
     const prompt = buildNightlyResearchPrompt({
       ...emptyInputs,
