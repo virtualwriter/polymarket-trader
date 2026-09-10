@@ -143,6 +143,17 @@ import {
 } from "./lib/research/hypothesis-shadow-eval.js";
 import { formatConditionIssues, validateHypothesisConditions } from "./lib/research/condition-catalog.js";
 import {
+  buildRegimeSeries,
+  formatRegimeEnvelope,
+  formatRegimeLabels,
+  outOfEnvelopeDimensions,
+  regimeEnvelopeForDates,
+  regimeOn,
+  type RegimeLabels,
+  type RegimeSeries,
+} from "./lib/research/regime.js";
+import { runHealthWatchdog } from "./lib/ops/health-watchdog.js";
+import {
   PARTIAL_CLOSE_REASON,
   type ScaleOutRecord,
   decideBinaryScaleExit,
@@ -777,6 +788,10 @@ interface HypothesisTest {
    * the trade be marked on its own instrument days later instead of falling
    * back to the underlying's move. */
   contractEntry?: ContractEntryStamp;
+  /** Market regime (vol/funding/macro) on the day the test opened. Audit
+   * trail only — envelope math re-derives labels from test dates so the whole
+   * historical record participates without a backfill. */
+  regime?: RegimeLabels;
 }
 
 interface Hypothesis {
@@ -6534,9 +6549,11 @@ function generatePromotedHypothesisSignals(
   latestSnapshot: InstrumentSnapshotFile | null,
   blockedSignals: BlockedSignalShadow[],
   relativeValueRows: RelativeValueObservation[] = [],
+  regimeSeries: RegimeSeries | null = null,
 ): Signal[] {
   const signals: Signal[] = [];
   const risk = riskForSignal(learningParams, "PROMOTED_HYPOTHESIS");
+  const currentRegime = regimeSeries ? regimeOn(regimeSeries, String(latestRow.date).slice(0, 10)) : null;
   const promotedFamilies = hypothesisSetupFamilies(hypotheses)
     .filter((family) => !RETIRED_LLM_SETUP_IDS.has(family.setupId))
     .filter((family) => meetsLivePromotedGate(family, family.primary))
@@ -6590,14 +6607,29 @@ function generatePromotedHypothesisSignals(
       if (evidenceDirection !== direction) continue;
       const entryPrice = getAssetPrice(latestRow, asset);
       if (!entryPrice) continue;
+      // Regime envelope check: the family's win rate was measured under
+      // specific vol/funding/macro conditions (derived from its test dates).
+      // If today's regime never appeared in that evidence, the measured edge
+      // is an extrapolation — trade it at half size and say so in the thesis
+      // instead of discovering the regime dependence via drawdown.
+      let regimeHaircut = 1;
+      let regimeNote = "";
+      if (regimeSeries && currentRegime) {
+        const envelope = regimeEnvelopeForDates(regimeSeries, family.completed.map((t) => t.date));
+        const outDims = outOfEnvelopeDimensions(currentRegime, envelope);
+        if (outDims.length > 0) {
+          regimeHaircut = 0.5;
+          regimeNote = ` [OUT-OF-REGIME, size halved: ${outDims.join("; ")} | today: ${formatRegimeLabels(currentRegime)}]`;
+        }
+      }
       const signal = finalizeSignal({
         type: "PROMOTED_HYPOTHESIS",
         asset,
         venue: "spot",
         direction,
-        strength: Math.max(0.2, family.winRate, hypothesis.winRate),
-        confidence: Math.min(0.9, Math.max(0.2, hypothesis.confidence * Math.max(family.winRate, hypothesis.winRate, 0.5))),
-        thesis: `[PROMOTED ${family.setupLabel} via ${hypothesis.id}] ${hypothesis.description}`,
+        strength: Math.max(0.2, family.winRate, hypothesis.winRate) * regimeHaircut,
+        confidence: Math.min(0.9, Math.max(0.2, hypothesis.confidence * Math.max(family.winRate, hypothesis.winRate, 0.5))) * regimeHaircut,
+        thesis: `[PROMOTED ${family.setupLabel} via ${hypothesis.id}] ${hypothesis.description}${regimeNote}`,
         hypothesisId: hypothesis.id,
         entryPrice,
         targetPct: risk.targetPct,
@@ -6614,6 +6646,7 @@ function evaluateHypotheses(
   hypotheses: Hypothesis[],
   valuationRows: SnapshotRow[],
   relativeValueRows: RelativeValueObservation[] = [],
+  regimeSeries: RegimeSeries | null = null,
 ): string[] {
   const observations: string[] = [];
   const now = new Date();
@@ -6838,6 +6871,14 @@ function evaluateHypotheses(
           observations.push(`🧨 Adversarial review of ${groupStats.group.groupId}: none on file — promoted without a counter-case (reviewer may not have run yet).`);
         }
       }
+      // Stamp the promotion with the regimes its evidence was collected
+      // under. When today's regime later falls outside this envelope, live
+      // entries for this family are haircut instead of trading at full size
+      // on out-of-distribution evidence.
+      if (regimeSeries) {
+        const envelope = regimeEnvelopeForDates(regimeSeries, gateTests.map((t) => t.date));
+        observations.push(`🗺️ ${family.setupId} validated-regime envelope: ${formatRegimeEnvelope(envelope)}. Out-of-envelope live entries will be sized down.`);
+      }
     }
   }
 
@@ -6938,6 +6979,7 @@ function evaluateHypotheses(
         outcome: "pending",
         actualMove: `Setup ${family.setupId} shadow test ${nextTestNumber}/${HYPOTHESIS_SHADOW_TESTS_REQUIRED} opened via ${candidate.id} after current row satisfied variant conditions.`,
         contractEntry,
+        regime: regimeSeries ? regimeOn(regimeSeries, latestDate) : undefined,
       });
       // Group siblings processed later in this same run must see the contract
       // as taken; for grouped families pendingMarketIds is the shared group set.
@@ -9044,6 +9086,11 @@ async function main() {
 
   console.log(`  Data: ${valRows.length} valuation snapshots, ${macroRows.length} macro snapshots`);
 
+  // Date → coarse vol/funding/macro regime labels, built from the two series
+  // above. Used to stamp new shadow tests and to haircut promoted-family
+  // entries whose current regime never appeared in their validation evidence.
+  const regimeSeries = buildRegimeSeries(valRows, macroRows);
+
   // Load state
   const portfolio = loadPortfolio();
   let learningParams = loadLearningParams();
@@ -9300,7 +9347,7 @@ async function main() {
   for (const note of shadowMinedIngest.notes) console.log(`  ${note}`);
 
   // Step 3: Evaluate hypotheses
-  const hypothesisObs = evaluateHypotheses(hypotheses, valRows, relativeValueRows);
+  const hypothesisObs = evaluateHypotheses(hypotheses, valRows, relativeValueRows, regimeSeries);
   for (const o of hypothesisObs) console.log(`  ${o}`);
 
   // Step 4: Statistical scan
@@ -9314,7 +9361,7 @@ async function main() {
 
   // Step 5: Generate rule-based signals
   const signals = generateSignals(valRows, macroRows, weights, learningParams, latestSnapshot, blockedSignals);
-  const promotedSignals = generatePromotedHypothesisSignals(hypotheses, valRows, latestRow, learningParams, latestSnapshot, blockedSignals, relativeValueRows);
+  const promotedSignals = generatePromotedHypothesisSignals(hypotheses, valRows, latestRow, learningParams, latestSnapshot, blockedSignals, relativeValueRows, regimeSeries);
   signals.push(...promotedSignals);
   signals.push(...oneTouchHighEdgeNoLiveSignals);
   // Strip observation-only signals before anything downstream can trade them.
@@ -9461,6 +9508,14 @@ async function main() {
   } else {
     console.log("\n  Dry-run verification: executor skipped; portfolio, trade ledger, journal, and learning state were not saved.");
   }
+
+  // Operational dead-man's switch: catches the silent failure modes (nightly
+  // LLM skipping on exhausted credits, expired TradingView cookie, stale
+  // scanner, disk pressure) and alerts Telegram, deduped to once/day per key.
+  // Runs even in dry-run — observing health mutates nothing but its own state
+  // file — and never throws.
+  const watchdog = await runHealthWatchdog({ dataDir: DATA_DIR, valRows });
+  for (const note of watchdog.notes) console.log(`  ${note}`);
 
   // Summary
   const totalValue = portfolio.cash + portfolio.positions.length * TRADE_SIZE;

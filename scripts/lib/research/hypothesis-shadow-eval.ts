@@ -22,6 +22,9 @@ export interface HypothesisTest {
   /** The contract a Polymarket thesis entered, recorded at open so the trade
    * can be marked on its own instrument when the horizon comes due. */
   contractEntry?: ContractEntryStamp;
+  /** Market regime (vol/funding/macro) on the day the test opened — audit
+   * trail; envelope math re-derives labels from dates (see regime.ts). */
+  regime?: import("./regime.js").RegimeLabels;
 }
 
 export interface Hypothesis {
