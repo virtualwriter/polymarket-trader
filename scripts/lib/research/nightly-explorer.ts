@@ -100,7 +100,12 @@ Rules for proposedStratifications: they extend the panel miner's search space an
 ${buildConditionCatalogPromptSection(valuationColumns)}
 
 To query, reply with ONLY: {"dataRequests": [ ... ]}
-Available query kinds are documented in the inventory results you already have; the most useful for you is dataset_scan.
+The most useful kind is dataset_scan. groupBy and metric are plain strings naming a single column. Worked example:
+{"dataRequests": [
+  {"kind": "dataset_scan", "dataset": "panel", "where": [{"column": "dte_days", "lte": 30}], "groupBy": "yes_ask", "metric": "no_pnl_pct_7d"},
+  {"kind": "dataset_scan", "dataset": "trades", "groupBy": "close_reason"}
+]}
+The first returns mean/win-share of 7-day NO P&L per yes_ask quintile among sub-30-DTE contracts; the second groups closed live trades by close reason with default metric pnl_pct. A grouped result returns "groups"; if you get back only a schema summary, your groupBy/metric did not parse — fix the shape and retry. The panel/spot_panel kinds from the classic query language also work when you want base-rate comparison and dedupe.
 When you are done exploring, reply with ONLY the final JSON object described above.`;
 }
 
@@ -182,9 +187,10 @@ export async function runNightlyExplorerStep(opts: { dataDir: string }): Promise
       queriesRun += requested.length;
       log(`round ${rounds}: model requested ${requested.length} queries: ${requested.map((q) => q.kind).join(", ")}`);
       const results = executeResearchQueries(requested, data, EXPLORER_MAX_QUERIES_PER_ROUND);
+      const body = formatQueryResults(results, { withFinalInstruction: false });
       const followup = rounds >= EXPLORER_MAX_ROUNDS
-        ? `${formatQueryResults(results)}\n\nThis was your final query round. Produce the final JSON now.`
-        : `${formatQueryResults(results)}\n\nYou may run ${EXPLORER_MAX_ROUNDS - rounds} more query round(s) with {"dataRequests":[...]}, or produce the final JSON now.`;
+        ? `${body}\n\nThis was your final query round. Produce the final JSON now.`
+        : `${body}\n\nYou may run ${EXPLORER_MAX_ROUNDS - rounds} more query round(s) with {"dataRequests":[...]} — drill into anything promising before concluding — or produce the final JSON now.`;
       messages.push({ role: "assistant", content: text });
       messages.push({ role: "user", content: followup });
       text = await timedCall(`response#${rounds + 1}`, route, messages);

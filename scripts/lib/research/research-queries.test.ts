@@ -338,6 +338,13 @@ describe("dataset_scan query", () => {
     expect(parsed[0]).toMatchObject({ kind: "dataset_scan", dataset: "funding_history" });
   });
 
+  it("coerces array and object shapes for groupBy/metric instead of dropping them", () => {
+    const parsed = parseDataRequests([
+      { kind: "dataset_scan", dataset: "panel", groupBy: ["day_of_week"], metric: { column: "no_pnl_pct_7d" } },
+    ]);
+    expect(parsed[0]).toMatchObject({ groupBy: "day_of_week", metric: "no_pnl_pct_7d" });
+  });
+
   it("returns the schema when no groupBy or metric is given", () => {
     const [result] = executeResearchQueries(
       [{ kind: "dataset_scan", dataset: "funding_history" }],

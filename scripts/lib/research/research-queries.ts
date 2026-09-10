@@ -319,13 +319,23 @@ export function parseDataRequests(raw: unknown, maxRequests: number = MAX_DATA_R
     } else if (kind === "dataset_scan") {
       const dataset = SCAN_DATASET_NAMES.find((name) => name === q.dataset);
       if (!dataset) continue;
+      // Models pass groupBy/metric as "col", ["col"], or {"column":"col"};
+      // dropping the malformed shapes silently would collapse a grouped scan
+      // into a schema query and read like a broken tool, so coerce instead.
+      const columnish = (v: unknown): string | undefined => {
+        if (Array.isArray(v)) v = v[0];
+        if (v && typeof v === "object" && typeof (v as Record<string, unknown>).column === "string") {
+          v = (v as Record<string, unknown>).column;
+        }
+        return str(v);
+      };
       const topK = Number(q.topK);
       queries.push({
         kind,
         dataset,
         where: parsePanelWhere(q.where),
-        groupBy: str(q.groupBy),
-        metric: str(q.metric),
+        groupBy: columnish(q.groupBy),
+        metric: columnish(q.metric),
         topK: Number.isFinite(topK) ? Math.min(Math.max(1, Math.round(topK)), MAX_SCAN_GROUPS) : undefined,
       });
     }
@@ -898,6 +908,7 @@ function scanSchemaResult(query: Extract<ResearchQuery, { kind: "dataset_scan" }
       dateColumn: dateCol,
       firstDate: dates[0] ?? null,
       lastDate: dates[dates.length - 1] ?? null,
+      hint: "schema only — pass groupBy (any column, string) and optionally metric (numeric column) to get per-group stats",
     },
   };
 }
@@ -1067,7 +1078,10 @@ Every result includes n, win rate, Wilson 95% lower bound, total and mean PnL, a
 If you do not need extra evidence, skip this and answer directly.`;
 }
 
-export function formatQueryResults(results: QueryResult[]): string {
+export function formatQueryResults(
+  results: QueryResult[],
+  opts: { withFinalInstruction?: boolean } = {},
+): string {
   const blocks = results.map((r, i) => {
     const head = `[${i + 1}] ${JSON.stringify(r.query)}`;
     if (r.error) return `${head}\n  ERROR: ${r.error}`;
@@ -1076,5 +1090,8 @@ export function formatQueryResults(results: QueryResult[]): string {
     if (r.samples?.length) parts.push(`  samples: ${JSON.stringify(r.samples)}`);
     return parts.join("\n");
   });
-  return `DATA REQUEST RESULTS:\n${blocks.join("\n\n")}\n\nNow produce the final advice JSON. Do not request more data.`;
+  const footer = opts.withFinalInstruction === false
+    ? ""
+    : "\n\nNow produce the final advice JSON. Do not request more data.";
+  return `DATA REQUEST RESULTS:\n${blocks.join("\n\n")}${footer}`;
 }
