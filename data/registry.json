@@ -4455,7 +4455,7 @@
         "created": "2026-04-09",
         "setupId": "cross_asset_iv_compression_vol_expansion",
         "setupLabel": "Cross-asset IV compression / vol expansion",
-        "postMortem": "The cross-asset HYPE-confirmation setup has 9/25 wins across many near-duplicate variants and includes losses such as BTC -3.47% despite spot being above the 24h SMA and HYPE risk-on participation. HYPE acts as a late echo, not a reliable BTC confirmer. | The HYPE-confirmed BTC long family is 9/25. Near 7d highs with HYPE above its SMA, BTC frequently failed to make >2% and sometimes reversed. | The family has 9/25 scorable wins. Many entries fired after BTC had already rallied to within 4% of its 7d high, and HYPE risk-on participation acted as a confirmation echo rather than independent timing, leaving long BTC exposed to consolidation or pullback. | H-108 buys BTC near its 7d high when HYPE is also above its 24h SMA. The family is 9/25 and losses cluster when BTC is extended; HYPE is behaving as a late-stage risk-on echo rather than independent confirmation of durable BTC upside."
+        "postMortem": "The HYPE-confirmed BTC long family is 9/25. Near 7d highs with HYPE above its SMA, BTC frequently failed to make >2% and sometimes reversed. | The family has 9/25 scorable wins. Many entries fired after BTC had already rallied to within 4% of its 7d high, and HYPE risk-on participation acted as a confirmation echo rather than independent timing, leaving long BTC exposed to consolidation or pullback. | H-108 buys BTC near its 7d high when HYPE is also above its 24h SMA. The family is 9/25 and losses cluster when BTC is extended; HYPE is behaving as a late-stage risk-on echo rather than independent confirmation of durable BTC upside. | The HYPE-confirmation long BTC set is 36% across 25 tests; wins cluster in the strong late-summer BTC trend while losses occur when HYPE risk-on is present near local BTC highs, indicating the condition marks late participation rather than durable continuation."
       },
       "links": {},
       "created": "2026-07-15T19:00:44Z",
@@ -19317,11 +19317,11 @@
         "confidence": 0.9,
         "timeframeDays": 7,
         "testStats": {
-          "total": 21,
-          "completed": 21,
+          "total": 22,
+          "completed": 22,
           "wins": 11,
           "pending": 0,
-          "winRate": 0.5454545454545454
+          "winRate": 0.5
         },
         "promotedToSignal": false,
         "source": "llm",
@@ -20115,18 +20115,18 @@
         "confidence": 0.7,
         "timeframeDays": 2,
         "testStats": {
-          "total": 55,
-          "completed": 51,
-          "wins": 14,
-          "pending": 4,
-          "winRate": 0.56
+          "total": 57,
+          "completed": 54,
+          "wins": 15,
+          "pending": 3,
+          "winRate": 0.5357142857142857
         },
         "promotedToSignal": false,
         "source": "shadow_mined",
         "created": "2026-07-16",
         "setupId": "shadow_no_bias_adjusted_gap_shadow_gold_short_rich_tail_no",
         "setupLabel": "Shadow-mined NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short-rich-tail",
-        "postMortem": "Discarded 20 verdicts that graded this contract thesis on the underlying's spot move. The trade is a contract position whose return depends on its entry price and barrier, not on how far spot travelled, so those results measured a different question. Retesting under the contract scorer. | Refined by H-716 (2026-09-07): Refinement of H-532: re-author the no-bias adjusted gap rich-tail signal as a co | 11/21 scorable tests won but 5 burned unscorable. Representative outcomes show NO contracts moving favorably in premium terms while the >2% spot decline criterion failed, so the rich-tail gap signal is being graded on the wrong instrument. | H-532 was scored as a GOLD spot-decline call, but the actual examples are pm_contract_pnl outcomes with small gains/losses on the NO contract. The setup is a rich premium fade and loses test power by being attached to a 2% spot move criterion."
+        "postMortem": "11/21 scorable tests won but 5 burned unscorable. Representative outcomes show NO contracts moving favorably in premium terms while the >2% spot decline criterion failed, so the rich-tail gap signal is being graded on the wrong instrument. | H-532 was scored as a GOLD spot-decline call, but the actual examples are pm_contract_pnl outcomes with small gains/losses on the NO contract. The setup is a rich premium fade and loses test power by being attached to a 2% spot move criterion. | Refined by H-725 (2026-09-10): Refinement of H-532: re-author the GOLD no-bias rich-tail signal as a contract p | Tests are 15/28 scorable and 5 unscorable because the prediction is written as a >2% GOLD spot decline while the signal is a NO-contract edge; realized contract moves are a few cents and do not correspond to spot declines."
       },
       "links": {},
       "created": "2026-07-16T16:57:20Z",
@@ -20194,7 +20194,7 @@
         "created": "2026-07-16",
         "setupId": "shadow_one_touch_high_edge_no_gold_heatmap_no",
         "setupLabel": "Shadow-mined ONE_TOUCH_HIGH_EDGE_NO GOLD heatmap",
-        "postMortem": "Only 8/23 scorable tests won and 7 tests were burned unscorable. The winning examples often show positive contract P&L on the NO side, while the spot-decline exam missed, proving the trade is a premium fade, not a short spot call. | Refined by H-722 (2026-09-08): Refinement of H-534: re-author the GOLD one-touch high-edge as a contract premiu | H-534 has only 8/23 scorable tests because the prediction was a spot decline while the actual strategy is a one-touch NO premium fade. The observed wins and losses are contract price moves, not spot moves, so the thesis must be re-authored as a contract P&L prediction. | The gold one-touch variant is being graded on contract prices while the thesis predicts a >2% spot decline. Examples show NO contracts barely moving or winning on terminal settlement, so the spot-decline formulation is wrong."
+        "postMortem": "Refined by H-722 (2026-09-08): Refinement of H-534: re-author the GOLD one-touch high-edge as a contract premiu | H-534 has only 8/23 scorable tests because the prediction was a spot decline while the actual strategy is a one-touch NO premium fade. The observed wins and losses are contract price moves, not spot moves, so the thesis must be re-authored as a contract P&L prediction. | The gold one-touch variant is being graded on contract prices while the thesis predicts a >2% spot decline. Examples show NO contracts barely moving or winning on terminal settlement, so the spot-decline formulation is wrong. | H-534's parent is 8/23 scorable with 7 unscorable; examples are contract P&L and terminal outcomes, not spot declines, and several gold one-touch NO contracts simply sat unchanged, confirming the spot-direction test is the wrong exam."
       },
       "links": {},
       "created": "2026-07-16T16:57:20Z",
@@ -20228,7 +20228,7 @@
         "created": "2026-07-16",
         "setupId": "shadow_weekend_hl_funding_reversion_long_mu_weekend_hl_funding_shadow_long",
         "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG MU weekend_hl_funding_shadow",
-        "postMortem": "MU is the weakest of the weekend funding shadow singles at 7/19; most triggers were not in a truly extreme funding state and the >2% spot claim did not materialize. | 8/20 scorable tests won. The losing examples include funding moving from 5.5% to -28.6% and 29.1% to 3.4%, showing the threshold is not tight enough to identify a real stressed tail or a reversal of a deeply negative funding regime. | H-535 is failing for the same reason as the other weekend funding shadow variants: it enters on shallow negative prints rather than true extremes. Wins come from very deep negative readings like -317% or -48.8%, while losses come from minor or already-normalized funding prints. | The MU -10% funding trigger is weak; funding can go further negative or fade without the expected spot move. Only the deepest relative extremes normalize reliably."
+        "postMortem": "H-535 is failing for the same reason as the other weekend funding shadow variants: it enters on shallow negative prints rather than true extremes. Wins come from very deep negative readings like -317% or -48.8%, while losses come from minor or already-normalized funding prints. | The MU -10% funding trigger is weak; funding can go further negative or fade without the expected spot move. Only the deepest relative extremes normalize reliably. | Refined by H-726 (2026-09-10): Refinement of H-535: same static threshold problem—require MU funding to be in t | Single MU funding < -10 is weak (8/21) and examples show frequent oscillation from 5.5% to negative and back; no stable normalization edge from a single threshold."
       },
       "links": {},
       "created": "2026-07-16T16:57:20Z",
@@ -20285,10 +20285,10 @@
         "confidence": 0.7,
         "timeframeDays": 2,
         "testStats": {
-          "total": 26,
+          "total": 27,
           "completed": 26,
           "wins": 13,
-          "pending": 0,
+          "pending": 1,
           "winRate": 0.5
         },
         "promotedToSignal": false,
@@ -20296,7 +20296,7 @@
         "created": "2026-07-16",
         "setupId": "shadow_weekend_hl_funding_reversion_long_aapl_weekend_hl_funding_shadow_long",
         "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG AAPL weekend_hl_funding_shadow",
-        "postMortem": "AAPL tests show poor timing: many entries started around 5.5% funding and failed to normalize; 13/25 wins is not enough for promotion. | 13/25 scorable tests won. The losses are mostly near-normal readings where the threshold fires but funding has not actually reached a tail (e.g. 5.5% -> 0.6%), so the signal is not reliably capturing a reversion setup. | H-537's single threshold is firing on noise. The failing tests include AAPL funding around +5.5 and small negative prints that do not represent capitulation, so the variant is effectively a coin flip. | AAPL variant barely beats coin flip, and many triggers occur when funding is already mild. Losses cluster when funding stays flat or falls."
+        "postMortem": "13/25 scorable tests won. The losses are mostly near-normal readings where the threshold fires but funding has not actually reached a tail (e.g. 5.5% -> 0.6%), so the signal is not reliably capturing a reversion setup. | H-537's single threshold is firing on noise. The failing tests include AAPL funding around +5.5 and small negative prints that do not represent capitulation, so the variant is effectively a coin flip. | AAPL variant barely beats coin flip, and many triggers occur when funding is already mild. Losses cluster when funding stays flat or falls. | The static AAPL funding < -10 test is coin-flip; examples show flat 5.5% and small moves, and wins are inconsistent. The single 24h threshold does not isolate weekend panic events."
       },
       "links": {},
       "created": "2026-07-16T16:57:20Z",
@@ -20364,7 +20364,7 @@
         "created": "2026-07-16",
         "setupId": "shadow_weekend_hl_funding_reversion_long_cbrs_weekend_hl_funding_shadow_long",
         "setupLabel": "Shadow-mined WEEKEND_HL_FUNDING_REVERSION_LONG CBRS weekend_hl_funding_shadow",
-        "postMortem": "H-539 fired on CBRS funding readings that were only mildly negative or already positive and then often worsened; the spot-decline/higher funding criterion won only 14/31. | 15/32 scorable tests won, but losing examples show the fixed < -10 threshold fires on CBRS funding that is only mildly negative and can immediately resume its decline (-6.2% -> -33.6%), so the setup is not isolating genuine extreme/reversal conditions. | H-539 only requires cbrs_hl_funding_ann < -10. The wins tend to follow genuinely deep negatives and sharp normalization, while losses occur when funding is only mildly negative or already positive and then continues down. The trigger is too loose to isolate a tail or turnaround. | The single -10% CBRS funding trigger is not extreme enough; outcomes show funding repeatedly falling further or staying pinned instead of normalizing. The >2% spot move does not follow reliably."
+        "postMortem": "H-539 only requires cbrs_hl_funding_ann < -10. The wins tend to follow genuinely deep negatives and sharp normalization, while losses occur when funding is only mildly negative or already positive and then continues down. The trigger is too loose to isolate a tail or turnaround. | The single -10% CBRS funding trigger is not extreme enough; outcomes show funding repeatedly falling further or staying pinned instead of normalizing. The >2% spot move does not follow reliably. | Refined by H-724 (2026-09-10): Refinement of H-539: replace the single static threshold with a regime-relative | Single cbrs_hl_funding_ann < -10 triggers both noise and genuine panics; test outcomes show funding oscillating around -10% to +14% with multiple false signals, and the family is 15/33 (45%) with no stable normalization edge."
       },
       "links": {},
       "created": "2026-07-16T16:57:20Z",
@@ -66179,7 +66179,7 @@
           "sumPnl": 2.5147,
           "avgPnl": 0.00994,
           "pnlStd": 0.0435,
-          "pValue": 0.0,
+          "pValue": 0,
           "pnlPValue": 0.00017,
           "qValue": 0.01819
         },
@@ -66188,7 +66188,7 @@
           "wins": 188,
           "winRate": 0.7431,
           "sumPnl": 2.5147,
-          "pValue": 0.0,
+          "pValue": 0,
           "pnlPValue": 0.00017,
           "hasHeatmap": false,
           "sampleIds": [
@@ -68026,10 +68026,10 @@
         "confidence": 0.6,
         "timeframeDays": 7,
         "testStats": {
-          "total": 42,
+          "total": 43,
           "completed": 39,
           "wins": 14,
-          "pending": 3,
+          "pending": 4,
           "winRate": 0.6
         },
         "promotedToSignal": false,
@@ -72707,10 +72707,10 @@
         "timeframeDays": 3,
         "testStats": {
           "total": 18,
-          "completed": 14,
-          "wins": 6,
-          "pending": 4,
-          "winRate": 1
+          "completed": 18,
+          "wins": 9,
+          "pending": 0,
+          "winRate": 0.8571428571428571
         },
         "promotedToSignal": false,
         "source": "llm",
@@ -72853,11 +72853,11 @@
         "confidence": 0.6,
         "timeframeDays": 14,
         "testStats": {
-          "total": 23,
-          "completed": 19,
-          "wins": 0,
+          "total": 24,
+          "completed": 20,
+          "wins": 1,
           "pending": 4,
-          "winRate": 0
+          "winRate": 1
         },
         "promotedToSignal": false,
         "source": "llm",
@@ -73790,11 +73790,11 @@
         "confidence": 0.7,
         "timeframeDays": 14,
         "testStats": {
-          "total": 7,
-          "completed": 3,
+          "total": 9,
+          "completed": 5,
           "wins": 2,
           "pending": 4,
-          "winRate": 1
+          "winRate": 0.5
         },
         "promotedToSignal": false,
         "source": "llm",
@@ -79835,10 +79835,10 @@
         "confidence": 0.8,
         "timeframeDays": 30,
         "testStats": {
-          "total": 1,
+          "total": 2,
           "completed": 1,
           "wins": 0,
-          "pending": 0,
+          "pending": 1,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -80206,10 +80206,10 @@
         "confidence": 0.75,
         "timeframeDays": 10,
         "testStats": {
-          "total": 7,
+          "total": 10,
           "completed": 7,
           "wins": 5,
-          "pending": 0,
+          "pending": 3,
           "winRate": 1
         },
         "promotedToSignal": false,
@@ -80426,9 +80426,9 @@
         "confidence": 0.66,
         "timeframeDays": 14,
         "testStats": {
-          "total": 7,
-          "completed": 3,
-          "wins": 1,
+          "total": 8,
+          "completed": 4,
+          "wins": 2,
           "pending": 4,
           "winRate": 1
         },
@@ -89173,7 +89173,7 @@
         "bucket": "short_blocked_by_positive_trend",
         "evidence": {
           "n": 8,
-          "winRate": 1.0,
+          "winRate": 1,
           "sumPnl": 0.1325,
           "avgPnl": 0.01656,
           "pnlStd": 0.01046,
@@ -89184,7 +89184,7 @@
         "mineStats": {
           "n": 8,
           "wins": 8,
-          "winRate": 1.0,
+          "winRate": 1,
           "sumPnl": 0.1325,
           "pValue": 0.00391,
           "pnlPValue": 0.00144,
@@ -90820,10 +90820,10 @@
         "confidence": 0.6,
         "timeframeDays": 7,
         "testStats": {
-          "total": 6,
+          "total": 7,
           "completed": 3,
           "wins": 2,
-          "pending": 3,
+          "pending": 4,
           "winRate": 1
         },
         "promotedToSignal": false,
@@ -102667,10 +102667,10 @@
         "confidence": 0.6,
         "timeframeDays": 3,
         "testStats": {
-          "total": 2,
+          "total": 3,
           "completed": 2,
           "wins": 0,
-          "pending": 0,
+          "pending": 1,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -104509,7 +104509,7 @@
         },
         "detectedAt": "2026-08-24T16:32:31Z",
         "lastSeenAt": "2026-09-10T07:05:29Z",
-        "opportunityScore": 1.0,
+        "opportunityScore": 1,
         "confidenceScore": 0.5944,
         "scoreHistory": [
           {
@@ -104820,19 +104820,19 @@
           },
           {
             "at": "2026-09-10T07:05:31Z",
-            "opportunityScore": 1.0,
+            "opportunityScore": 1,
             "confidenceScore": 0.5944,
             "scoringVersion": "research_score_v3"
           },
           {
             "at": "2026-09-10T07:12:22Z",
-            "opportunityScore": 1.0,
+            "opportunityScore": 1,
             "confidenceScore": 0.5944,
             "scoringVersion": "research_score_v3"
           },
           {
             "at": "2026-09-10T07:15:00Z",
-            "opportunityScore": 1.0,
+            "opportunityScore": 1,
             "confidenceScore": 0.5944,
             "scoringVersion": "research_score_v3"
           }
@@ -105373,7 +105373,7 @@
         },
         "detectedAt": "2026-08-24T16:32:31Z",
         "lastSeenAt": "2026-09-10T07:05:29Z",
-        "opportunityScore": 1.0,
+        "opportunityScore": 1,
         "confidenceScore": 0.5579,
         "scoreHistory": [
           {
@@ -105684,19 +105684,19 @@
           },
           {
             "at": "2026-09-10T07:05:31Z",
-            "opportunityScore": 1.0,
+            "opportunityScore": 1,
             "confidenceScore": 0.5579,
             "scoringVersion": "research_score_v3"
           },
           {
             "at": "2026-09-10T07:12:22Z",
-            "opportunityScore": 1.0,
+            "opportunityScore": 1,
             "confidenceScore": 0.5579,
             "scoringVersion": "research_score_v3"
           },
           {
             "at": "2026-09-10T07:15:00Z",
-            "opportunityScore": 1.0,
+            "opportunityScore": 1,
             "confidenceScore": 0.5579,
             "scoringVersion": "research_score_v3"
           }
@@ -106284,7 +106284,7 @@
         },
         "detectedAt": "2026-08-25T18:18:10Z",
         "lastSeenAt": "2026-09-10T07:05:28Z",
-        "opportunityScore": 1.0,
+        "opportunityScore": 1,
         "confidenceScore": 0.5849,
         "scoreHistory": [
           {
@@ -106565,19 +106565,19 @@
           },
           {
             "at": "2026-09-10T07:05:31Z",
-            "opportunityScore": 1.0,
+            "opportunityScore": 1,
             "confidenceScore": 0.5849,
             "scoringVersion": "research_score_v3"
           },
           {
             "at": "2026-09-10T07:12:22Z",
-            "opportunityScore": 1.0,
+            "opportunityScore": 1,
             "confidenceScore": 0.5849,
             "scoringVersion": "research_score_v3"
           },
           {
             "at": "2026-09-10T07:15:00Z",
-            "opportunityScore": 1.0,
+            "opportunityScore": 1,
             "confidenceScore": 0.5849,
             "scoringVersion": "research_score_v3"
           }
@@ -106942,10 +106942,11 @@
           "H-684",
           "H-708",
           "H-711",
-          "H-719"
+          "H-719",
+          "H-727"
         ],
-        "lastLinkedHypothesisId": "H-719",
-        "lastLinkedHypothesisAt": "2026-09-08T07:28:17.195Z"
+        "lastLinkedHypothesisId": "H-727",
+        "lastLinkedHypothesisAt": "2026-09-10T07:28:27.256Z"
       },
       "links": {
         "hypotheses": [
@@ -106953,7 +106954,8 @@
           "H-684",
           "H-708",
           "H-711",
-          "H-719"
+          "H-719",
+          "H-727"
         ]
       },
       "created": "2026-08-25T18:18:10Z",
@@ -108117,10 +108119,11 @@
           "H-699",
           "H-706",
           "H-713",
-          "H-720"
+          "H-720",
+          "H-728"
         ],
-        "lastLinkedHypothesisId": "H-720",
-        "lastLinkedHypothesisAt": "2026-09-08T07:28:17.299Z",
+        "lastLinkedHypothesisId": "H-728",
+        "lastLinkedHypothesisAt": "2026-09-10T07:28:27.592Z",
         "provenanceHistory": [
           {
             "generatedBy": "panel_miner_v1",
@@ -108485,7 +108488,8 @@
           "H-699",
           "H-706",
           "H-713",
-          "H-720"
+          "H-720",
+          "H-728"
         ]
       },
       "created": "2026-08-25T18:18:11Z",
@@ -109803,10 +109807,10 @@
         "confidence": 0.55,
         "timeframeDays": 3,
         "testStats": {
-          "total": 2,
+          "total": 3,
           "completed": 2,
           "wins": 0,
-          "pending": 0,
+          "pending": 1,
           "winRate": 0
         },
         "promotedToSignal": false,
@@ -110640,11 +110644,11 @@
         "confidence": 0.55,
         "timeframeDays": 2,
         "testStats": {
-          "total": 4,
-          "completed": 3,
-          "wins": 2,
+          "total": 5,
+          "completed": 4,
+          "wins": 3,
           "pending": 1,
-          "winRate": 0.6666666666666666
+          "winRate": 0.75
         },
         "promotedToSignal": false,
         "source": "llm",
@@ -111103,10 +111107,10 @@
         "confidence": 0.55,
         "timeframeDays": 3,
         "testStats": {
-          "total": 2,
+          "total": 3,
           "completed": 2,
           "wins": 2,
-          "pending": 0,
+          "pending": 1,
           "winRate": 1
         },
         "promotedToSignal": false,
@@ -111523,10 +111527,10 @@
         "timeframeDays": 3,
         "testStats": {
           "total": 2,
-          "completed": 1,
+          "completed": 2,
           "wins": 1,
-          "pending": 1,
-          "winRate": 1
+          "pending": 0,
+          "winRate": 0.5
         },
         "promotedToSignal": false,
         "source": "llm",
@@ -111816,6 +111820,182 @@
       },
       "links": {},
       "created": "2026-09-09T14:10:06Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "EXP-0731",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "running",
+      "title": "H-724: Refinement of H-539: replace the single static threshold with a regime-relative CBRS funding panic that is already turning higher. The original < -10 ...",
+      "body": {
+        "hypothesisId": "H-724",
+        "hypothesisStatus": "active",
+        "description": "Refinement of H-539: replace the single static threshold with a regime-relative CBRS funding panic that is already turning higher. The original < -10 trigger captured flat/pre-crash states; requiring bottom-20% 7-day percentile and positive 24h change targets the actual normalization event.",
+        "prediction": "CBRS perp rises >1% within 2 days after a deep funding panic has begun normalizing.",
+        "conditions": {
+          "cbrs_hl_funding_ann_percentile_7d": "< 20",
+          "cbrs_hl_funding_ann_change_pct_24h": "> 0",
+          "cbrs_hl_funding_ann": "< 0"
+        },
+        "confidence": 0.6,
+        "timeframeDays": 2,
+        "testStats": {
+          "total": 1,
+          "completed": 0,
+          "wins": 0,
+          "pending": 1,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "llm",
+        "created": "2026-09-10",
+        "setupId": "other_mixed",
+        "setupLabel": "Other / mixed"
+      },
+      "links": {},
+      "created": "2026-09-10T14:10:04Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "EXP-0732",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "running",
+      "title": "H-725: Refinement of H-532: re-author the GOLD no-bias rich-tail signal as a contract premium decay trade, not a spot-decline call. The original spot >2% cal...",
+      "body": {
+        "hypothesisId": "H-725",
+        "hypothesisStatus": "active",
+        "description": "Refinement of H-532: re-author the GOLD no-bias rich-tail signal as a contract premium decay trade, not a spot-decline call. The original spot >2% call is unscorable because the signal pays via NO premium holding/edging higher as overpriced YES premium deflates.",
+        "prediction": "Selling YES / holding NO on qualifying GOLD above-strike tail contracts is profitable over 3 days as the cap edge compresses.",
+        "conditions": {
+          "asset": "GOLD",
+          "gold_pm_underlying_cap_edge_pts_max": ">= 12.3",
+          "yesAsk": "between 0.5 and 0.95",
+          "days_to_expiry": "between 1 and 30"
+        },
+        "confidence": 0.65,
+        "timeframeDays": 3,
+        "testStats": {
+          "total": 1,
+          "completed": 0,
+          "wins": 0,
+          "pending": 1,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "llm",
+        "created": "2026-09-10",
+        "setupId": "gold_pm_premium_futures_spread_mean_reversion",
+        "setupLabel": "Gold PM premium / futures spread mean reversion"
+      },
+      "links": {},
+      "created": "2026-09-10T14:10:04Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "EXP-0733",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "running",
+      "title": "H-726: Refinement of H-535: same static threshold problem—require MU funding to be in the bottom 20% of its 7-day range and already rising, not just below -10.",
+      "body": {
+        "hypothesisId": "H-726",
+        "hypothesisStatus": "active",
+        "description": "Refinement of H-535: same static threshold problem—require MU funding to be in the bottom 20% of its 7-day range and already rising, not just below -10.",
+        "prediction": "MU spot/perp rises >1% within 2 days after an extreme funding panic begins normalizing.",
+        "conditions": {
+          "mu_hl_funding_ann_percentile_7d": "< 20",
+          "mu_hl_funding_ann_change_pct_24h": "> 0",
+          "mu_hl_funding_ann": "< 0"
+        },
+        "confidence": 0.6,
+        "timeframeDays": 2,
+        "testStats": {
+          "total": 1,
+          "completed": 0,
+          "wins": 0,
+          "pending": 1,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "llm",
+        "created": "2026-09-10",
+        "setupId": "other_mixed",
+        "setupLabel": "Other / mixed"
+      },
+      "links": {},
+      "created": "2026-09-10T14:10:04Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "EXP-0734",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "running",
+      "title": "H-727: Outcome-panel NO edge, tight-spread near-dated: buy NO/sell YES when the cheapest YES ask is 35-65c, the tightest YES spread is <2c, and nearest expir...",
+      "body": {
+        "hypothesisId": "H-727",
+        "hypothesisStatus": "active",
+        "description": "Outcome-panel NO edge, tight-spread near-dated: buy NO/sell YES when the cheapest YES ask is 35-65c, the tightest YES spread is <2c, and nearest expiry is <30 days.",
+        "prediction": "Buying NO on qualifying contracts is profitable over 7 days as overpriced YES premium decays.",
+        "conditions": {
+          "yesAsk": "between 0.35 and 0.65",
+          "yesSpread": "< 0.02",
+          "days_to_expiry": "< 30"
+        },
+        "confidence": 0.7,
+        "timeframeDays": 7,
+        "testStats": {
+          "total": 1,
+          "completed": 0,
+          "wins": 0,
+          "pending": 1,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "llm",
+        "created": "2026-09-10",
+        "setupId": "find_0067",
+        "setupLabel": "FIND-linked FIND-0067"
+      },
+      "links": {},
+      "created": "2026-09-10T14:10:04Z",
+      "source": "sync_hypotheses_registry"
+    },
+    {
+      "id": "EXP-0735",
+      "type": "experiment",
+      "evidenceClass": "HYPOTHESIS",
+      "status": "running",
+      "title": "H-728: Outcome-panel NO edge, near-dated mid-price with liquidity guard: buy NO/sell YES when YES ask is 35-65c, nearest expiry <30 days, and at least one co...",
+      "body": {
+        "hypothesisId": "H-728",
+        "hypothesisStatus": "active",
+        "description": "Outcome-panel NO edge, near-dated mid-price with liquidity guard: buy NO/sell YES when YES ask is 35-65c, nearest expiry <30 days, and at least one contract has >=10k order-book liquidity.",
+        "prediction": "Buying NO on qualifying contracts is profitable over 7 days as overpriced YES premium decays.",
+        "conditions": {
+          "yesAsk": "between 0.35 and 0.65",
+          "days_to_expiry": "< 30",
+          "liquidity": ">= 10000"
+        },
+        "confidence": 0.7,
+        "timeframeDays": 7,
+        "testStats": {
+          "total": 1,
+          "completed": 0,
+          "wins": 0,
+          "pending": 1,
+          "winRate": 0
+        },
+        "promotedToSignal": false,
+        "source": "llm",
+        "created": "2026-09-10",
+        "setupId": "find_0069",
+        "setupLabel": "FIND-linked FIND-0069"
+      },
+      "links": {},
+      "created": "2026-09-10T14:10:04Z",
       "source": "sync_hypotheses_registry"
     }
   ]
