@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-10T07:28:28.560Z",
+  "generatedAt": "2026-09-10T08:28:21.732Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,7 +12,7 @@
       "confidence": 0.0728791348206773,
       "thesis": "GOLD P/C ratio 1.31 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 4413,
+      "entryPrice": 4408,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -27,7 +27,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 4413,
+      "entryPrice": 4408,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -125,18 +125,22 @@
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
-      "allowed": false,
-      "allowedCategories": [],
+      "allowed": true,
+      "allowedCategories": [
+        "thesis_invalidated",
+        "data_quality_issue",
+        "hard_portfolio_risk"
+      ],
       "evidenceColumns": [
         "gold_gc_spot",
         "gold_hl_funding_ann"
       ],
-      "hoursOpen": 11,
-      "hoursToExpiry": 61,
+      "hoursOpen": 12,
+      "hoursToExpiry": 60,
       "plannedHoldHours": 72,
-      "elapsedHoldPct": 0.1528,
+      "elapsedHoldPct": 0.1667,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 11.0h, requires at least 12h."
+      "reason": "Mechanical FUNDING_EXTREME_LONG setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
     }
   ]
 }

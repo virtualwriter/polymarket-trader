@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-09-10T07:28:28.215Z",
+  "generatedAt": "2026-09-10T08:28:21.567Z",
   "dataFreshness": {
-    "valuationRows": 2888,
-    "latestValuationAt": "2026-09-10T07",
-    "macroRows": 2886,
+    "valuationRows": 2889,
+    "latestValuationAt": "2026-09-10T08",
+    "macroRows": 2887,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-09-10T07"
+    "latestInstrumentSnapshotAt": "2026-09-10T08"
   },
   "portfolio": {
     "cash": 102.792,
@@ -13,7 +13,7 @@
     "realizedPnl": 7.0317,
     "totalTrades": 948,
     "winRatePct": 64.5,
-    "unrealizedPnl": -0.003
+    "unrealizedPnl": -0.0018
   },
   "openPositions": [
     {
@@ -22,9 +22,9 @@
       "venue": "hyperliquid",
       "direction": "short",
       "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": -0.3,
-      "currentPrice": 4413,
-      "underlyingPrice": 4413,
+      "pnlPct": -0.18,
+      "currentPrice": 4408,
+      "underlyingPrice": 4408,
       "targetPct": 5,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -198,7 +198,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 25,
+    "openCount": 29,
     "resolvedCount": 1017,
     "wouldHaveWon": 520,
     "wouldHaveLost": 497,
@@ -535,6 +535,22 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.6pt on ETH, spread 1.0c, liquidity 39073. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "ETH",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-ethereum-hit-in-september-2026 — NO — Will Ethereum reach $3,000 in September?",
+        "marketQuality": {
+          "yesBid": 0.14,
+          "yesAsk": 0.16,
+          "yesSpread": 0.02,
+          "liquidity": 34630.11,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.4pt on ETH, spread 2.0c, liquidity 34630. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
       }
     ]
   },
