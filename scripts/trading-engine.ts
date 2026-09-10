@@ -8042,6 +8042,12 @@ function ingestNightlyLlmAdvice(
   // Explorer advice: freeform hypotheses from the nightly free-roaming data
   // explorer. They join the same loop and face every gate below except the
   // FIND-linkage/backlog requirement, under their own per-night budget.
+  // Note the coupling: this function early-returns before this point when the
+  // main nightly advice is absent or already ingested, so explorer advice is
+  // only picked up alongside fresh nightly advice. Both files are written by
+  // the same nightly run minutes apart, so in steady state they always arrive
+  // paired; if the nightly-llm step fails one night, that night's explorer
+  // output waits for the next successful run rather than being lost.
   const explorerAdvice = readJson<Record<string, unknown> | null>(NIGHTLY_EXPLORER_ADVICE_FILE, null);
   const explorerGeneratedAt = explorerAdvice && typeof explorerAdvice.generatedAt === "string"
     ? explorerAdvice.generatedAt
