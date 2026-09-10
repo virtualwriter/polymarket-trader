@@ -1,11 +1,11 @@
 {
-  "generatedAt": "2026-09-10T22:28:22.497Z",
+  "generatedAt": "2026-09-10T23:28:24.571Z",
   "dataFreshness": {
-    "valuationRows": 2902,
-    "latestValuationAt": "2026-09-10T22",
-    "macroRows": 2900,
+    "valuationRows": 2903,
+    "latestValuationAt": "2026-09-10T23",
+    "macroRows": 2901,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-09-10T22"
+    "latestInstrumentSnapshotAt": "2026-09-10T23"
   },
   "portfolio": {
     "cash": 101.7902,
@@ -22,9 +22,9 @@
       "venue": "spot",
       "direction": "long",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": -1.03,
-      "currentPrice": 4324,
-      "underlyingPrice": 4324,
+      "pnlPct": -1.1,
+      "currentPrice": 4321,
+      "underlyingPrice": 4321,
       "targetPct": 3,
       "stopPct": 1.5,
       "closeReasonIfMechanical": null,
@@ -39,9 +39,9 @@
       "venue": "hyperliquid",
       "direction": "short",
       "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": 0.07,
-      "currentPrice": 4324,
-      "underlyingPrice": 4324,
+      "pnlPct": 0.14,
+      "currentPrice": 4321,
+      "underlyingPrice": 4321,
       "targetPct": 5,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -215,7 +215,7 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 32,
+    "openCount": 33,
     "resolvedCount": 1018,
     "wouldHaveWon": 521,
     "wouldHaveLost": 497,
@@ -455,22 +455,6 @@
     "openQualityWarnings": [
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
-        "asset": "ETH",
-        "blockedReason": "one_touch_high_edge_shadow",
-        "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum reach $6,500 by December 31, 2026?",
-        "marketQuality": {
-          "yesBid": 0.017,
-          "yesAsk": 0.03,
-          "yesSpread": 0.013,
-          "liquidity": 49863.46,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 1.4pt on ETH, spread 1.3c, liquidity 49863. Shadow-promotion guidance: avoid YES contracts and sell_yes_edge_pts < 1; exit when sell-YES edge disappears; keep bucketing edge size because current evidence supports edge as a gate, not a sizing multiplier."
-      },
-      {
-        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "GOLD",
         "blockedReason": "one_touch_high_edge_shadow",
         "instrumentLabel": "what-will-gold-gc-hit-by-end-of-december — NO — Will Gold (GC) hit (HIGH) $6,000 by end of December?",
@@ -580,6 +564,22 @@
           ]
         },
         "thesis": "[PM PROXY SHORT SHADOW] Real GOLD short via hyperliquid/hl_perp (FUNDING_EXTREME_LONG). Track buying NO on the comparable Polymarket upside contract."
+      },
+      {
+        "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
+        "asset": "ETH",
+        "blockedReason": "one_touch_high_edge_shadow",
+        "instrumentLabel": "what-price-will-ethereum-hit-before-2027 — NO — Will Ethereum reach $3,000 by December 31, 2026?",
+        "marketQuality": {
+          "yesBid": 0.48,
+          "yesAsk": 0.49,
+          "yesSpread": 0.01,
+          "liquidity": 23932.56,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        },
+        "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 3.6pt on ETH, spread 1.0c, liquidity 23933. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
       }
     ]
   },
