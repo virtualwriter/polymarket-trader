@@ -809,3 +809,38 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-09-10 21:28 UTC
+
+**Portfolio:** $103.79 total | Cash $101.79 | 2 open | P&L $7.0299 | 64% win rate (949 trades)
+
+**Opened 1 positions:**
+- GOLD short @ $4327 via hyperliquid/hl_perp [HL GOLD perp] (FUNDING_EXTREME_LONG)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 26 active families did not trigger; 0 later families waiting.
+- 🧪 Opened 1 shadow_mined setup-family shadow tests (active cap 80, maxPending/family 4).
+- 🧪 shadow_mined retest queue: 4 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] oil_hl_funding_ann = -460.22 is -5.6 std devs from mean since 2026-04-28 (-15.62 ± 79.65)
+- [anomaly] gold_hl_funding_ann = 69.04 is 3.8 std devs from mean (7.98 ± 16.23)
+- [anomaly] btc_med_min = 68684 is 2.1 std devs from mean (54503.83 ± 6743.25)
+
+**Blocked signal learning:**
+- Open blocked shadows: 32
+- Resolved blocked shadows: 1017 (520 wins / 497 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have closed with thesis validated profitably (+3.45%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-1.89%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-3.64%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have hit stop (-3.64%)
+
+**LLM analysis:**
+GOLD PC_RATIO_EXTREME_HIGH long is only 6h into a 12h minimum hold, so no discretionary close is allowed yet. The signal-family evidence has deteriorated: gold_gld_pc_ratio fell from 2.046 to 1.128, round-tripping through the entry threshold, and spot is -0.96% against a -1.5% mechanical stop. This looks like thesis invalidation developing, but it is not actionable until the position is eligible for a discretionary close. Monitor for mechanical stop first; if still open after 12h and P/C remains normalized, a thesis_invalidated close should be considered. Funding spike to 69% is context-only and not close evidence.
+
+---
+
