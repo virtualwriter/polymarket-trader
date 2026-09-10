@@ -5,6 +5,7 @@ import { compactJournalFile } from "./lib/research/journal-compaction.js";
 import { buildLessonsArtifactFromFiles, writeLessonsArtifact } from "./lib/research/lessons.js";
 import { runNightlyExplorerStep } from "./lib/research/nightly-explorer.js";
 import { runNightlyLlmStep } from "./lib/research/nightly-llm.js";
+import { appendYieldScoreboard } from "./lib/research/yield-scoreboard.js";
 
 /**
  * Nightly research orchestrator (July 2026 infrastructure plan, Phase 4-5).
@@ -97,6 +98,20 @@ async function stepNightlyExplorer(): Promise<void> {
   console.log("[nightly-research] nightly-explorer: wrote data/nightly-explorer-advice.json");
 }
 
+// One row per day of per-origin discovery yield (mined vs refinement vs
+// explorer): the running evidence for the explorer-vs-pipeline comparison.
+function stepYieldScoreboard(): void {
+  const snapshot = appendYieldScoreboard(DATA_DIR);
+  if (!snapshot) {
+    console.log("[nightly-research] yield-scoreboard: hypotheses.json missing or unreadable; skipped");
+    return;
+  }
+  const summary = (["mined", "refinement", "explorer"] as const)
+    .map((c) => `${c}=${snapshot.cohorts[c].authored}auth/${snapshot.cohorts[c].matureSurvivors}surv`)
+    .join(" ");
+  console.log(`[nightly-research] yield-scoreboard: ${summary}, novelKeys=${snapshot.explorerNovelConditionKeys.length}`);
+}
+
 async function main(): Promise<void> {
   const failures: string[] = [];
   for (const [name, fn] of [
@@ -105,6 +120,7 @@ async function main(): Promise<void> {
     ["journal-compaction", stepJournalCompaction],
     ["nightly-llm", stepNightlyLlm],
     ["nightly-explorer", stepNightlyExplorer],
+    ["yield-scoreboard", stepYieldScoreboard],
   ] as const) {
     const failure = await runStep(name, fn);
     if (failure) failures.push(failure);
