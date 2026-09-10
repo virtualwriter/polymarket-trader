@@ -1,23 +1,10 @@
 {
-  "generatedAt": "2026-09-10T08:28:49.413Z",
+  "generatedAt": "2026-09-10T09:28:33.985Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [
-    {
-      "action": "close",
-      "positionId": "T-1788985701424-wtmc",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "closeReasonCategory": "thesis_invalidated",
-      "evidenceColumns": [
-        "gold_hl_funding_ann"
-      ],
-      "thesis": "FUNDING_EXTREME_LONG short thesis invalidated: gold_hl_funding_ann fell from 32.8% at entry to 10.7% latest, crossing back below the +15% entry threshold and normalizing materially toward zero. Spot has also drifted against the short, from 4399 to 4408."
-    }
-  ],
+  "llmCloses": [],
   "entrySignals": [
     {
       "type": "PC_RATIO_EXTREME_HIGH",
@@ -28,16 +15,31 @@
       "confidence": 0.0728791348206773,
       "thesis": "GOLD P/C ratio 1.31 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 4408,
+      "entryPrice": 4396,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
+    },
+    {
+      "type": "FUNDING_EXTREME_LONG",
+      "asset": "GOLD",
+      "venue": "hyperliquid",
+      "direction": "short",
+      "strength": 0.05628571428571425,
+      "confidence": 0.027373713254435002,
+      "thesis": "GOLD HL funding 17.0% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "hypothesisId": null,
+      "entryPrice": 4396,
+      "targetPct": 5,
+      "stopPct": 2,
+      "expiryDays": 3,
+      "leverage": 1
     }
   ],
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }

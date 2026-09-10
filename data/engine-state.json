@@ -1,39 +1,21 @@
 {
-  "generatedAt": "2026-09-10T08:28:21.567Z",
+  "generatedAt": "2026-09-10T09:28:21.501Z",
   "dataFreshness": {
-    "valuationRows": 2889,
-    "latestValuationAt": "2026-09-10T08",
-    "macroRows": 2887,
+    "valuationRows": 2890,
+    "latestValuationAt": "2026-09-10T09",
+    "macroRows": 2888,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-09-10T08"
+    "latestInstrumentSnapshotAt": "2026-09-10T09"
   },
   "portfolio": {
-    "cash": 102.792,
-    "openPositions": 1,
-    "realizedPnl": 7.0317,
-    "totalTrades": 948,
-    "winRatePct": 64.5,
-    "unrealizedPnl": -0.0018
+    "cash": 103.7902,
+    "openPositions": 0,
+    "realizedPnl": 7.0299,
+    "totalTrades": 949,
+    "winRatePct": 64.4,
+    "unrealizedPnl": 0
   },
-  "openPositions": [
-    {
-      "positionId": "T-1788985701424-wtmc",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": -0.18,
-      "currentPrice": 4408,
-      "underlyingPrice": 4408,
-      "targetPct": 5,
-      "stopPct": 2,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "gold_gc_spot",
-        "gold_hl_funding_ann"
-      ]
-    }
-  ],
+  "openPositions": [],
   "signalHealth": [
     {
       "type": "PM_IV_GT_OPT_IV",
@@ -56,10 +38,10 @@
     {
       "type": "FUNDING_EXTREME_LONG",
       "enabled": true,
-      "weight": 0.4839,
-      "trades": 43,
+      "weight": 0.4863,
+      "trades": 44,
       "wins": 22,
-      "avgPnlPct": -0.3796,
+      "avgPnlPct": -0.3751,
       "disabledAssets": [
         "AMZN",
         "HYPE"
@@ -420,6 +402,13 @@
           "flags": [
             "wide_pm_spread"
           ]
+        },
+        "sourceComparison": {
+          "sourceClosedAt": "2026-09-10T08:28:49.447Z",
+          "sourcePnl": -0.0018,
+          "sourcePnlPct": -0.18,
+          "proxyOutperformed": false,
+          "correlation": "same_direction"
         }
       }
     ],
