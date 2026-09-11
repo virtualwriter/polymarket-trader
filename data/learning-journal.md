@@ -1089,3 +1089,37 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-09-11 06:29 UTC
+
+**Portfolio:** $103.79 total | Cash $102.79 | 1 open | P&L $7.0269 | 64% win rate (950 trades)
+
+**Closed 1 trades:**
+- ❌ GOLD long via spot/spot [GOLD spot] (PC_RATIO_EXTREME_HIGH) → llm_decision: $-0.0030 (-0.3%, market -0.0030, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 27 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 4 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved wider by 5.9pp (was -33.6, now -27.7)
+- [anomaly] oil_hl_funding_ann = -248.78 is -2.9 std devs from mean since 2026-04-28 (-16.25 ± 80.30)
+- [anomaly] btc_med_min = 68590 is 2.1 std devs from mean (54547.85 ± 6778.96)
+
+**Blocked signal learning:**
+- Open blocked shadows: 31
+- Resolved blocked shadows: 1020 (523 wins / 497 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have hit stop (-3.64%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have expired (+7.30%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have expired (+154.38%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have expired (+83.09%)
+
+**LLM analysis:**
+Closed the GOLD spot PC_RATIO_EXTREME_HIGH long because the signal input (gold_gld_pc_ratio) fell from ~2.05 to 1.13 and stayed normalized, invalidating the contrarian long thesis. The GOLD hyperliquid funding short remains below its 12h minimum close window at 9.0h open; its funding cooled from 69% to 18.4% while spot rose ~0.7% against it, so I will recheck at the next eligible window. No hard portfolio risk or data-quality close triggers otherwise.
+
+---
+
