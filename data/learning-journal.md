@@ -1191,3 +1191,38 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 3/12; ne
 
 ---
 
+### 2026-09-11 10:28 UTC
+
+**Portfolio:** $103.79 total | Cash $102.79 | 1 open | P&L $7.0269 | 64% win rate (950 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 2 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 26 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 4 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] oil_hl_funding_ann = -278.98 is -3.3 std devs from mean since 2026-04-28 (-16.51 ± 80.64)
+- [anomaly] btc_med_min = 68333 is 2.0 std devs from mean (54562.04 ± 6789.84)
+
+**Blocked signal learning:**
+- Open blocked shadows: 32
+- Resolved blocked shadows: 1020 (523 wins / 497 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have hit stop (-3.64%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have expired (+7.30%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have expired (+154.38%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have expired (+83.09%)
+
+**LLM analysis:**
+Closed the GOLD Hyperliquid short on thesis invalidation: gold_hl_funding_ann round-tripped from 69.04% at entry to 9.23%, below the +15% trigger. Price moved only modestly against the position (+0.53% since open) and the stop was not hit, but the signal input no longer supports the fade. No other open positions required discretionary review.
+
+**LLM close rejections today (2026-09-11, token-burn signal):**
+- Total rejected close instructions: 1
+- Top signal/asset pairs: FUNDING_EXTREME_LONG / GOLD (1)
+
+---
+
