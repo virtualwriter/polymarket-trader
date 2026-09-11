@@ -998,3 +998,33 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 1/12; ne
 
 ---
 
+### 2026-09-11 03:28 UTC
+
+**Portfolio:** $103.79 total | Cash $101.79 | 2 open | P&L $7.0299 | 64% win rate (949 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 27 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 4 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] oil_hl_funding_ann = -204.37 is -2.4 std devs from mean since 2026-04-28 (-16.00 ± 79.98)
+- [anomaly] btc_med_min = 68780 is 2.1 std devs from mean (54533.25 ± 6767.22)
+
+**Blocked signal learning:**
+- Open blocked shadows: 31
+- Resolved blocked shadows: 1020 (523 wins / 497 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have hit stop (-3.64%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have expired (+7.30%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have expired (+154.38%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have expired (+83.09%)
+
+**LLM analysis:**
+No discretionary closes executed: both open GOLD positions are below min hold / not LLM-close eligible this run. The PC_RATIO_EXTREME_HIGH long (T-1789054112407-n7k2) shows the signal input round-tripping sharply—gold_gld_pc_ratio fell from 2.046 to 1.128 and spot is at 1st percentile on 7d/30d—which would support thesis_invalidated if eligible. The FUNDING_EXTREME_LONG short (T-1789075720480-f482) also shows gold_hl_funding_ann normalizing from 69.04% to 10.39%, below the +15% entry trigger, but it is only 6h old. Monitor both at next run for eligible thesis-invalidated closes if the normalized inputs persist.
+
+---
+
