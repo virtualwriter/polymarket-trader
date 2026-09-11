@@ -204,6 +204,56 @@ class MinePanelTest(unittest.TestCase):
         keys = [miner.cluster_key_for(c) for c in result["covered"]]
         self.assertFalse(any("e3-8" in k for k in keys), f"holdout should block: {keys}")
 
+    def test_screening_shrinks_the_bh_family(self) -> None:
+        """With screening active, tests billed to BH must be only the screened
+        winners — strictly fewer than the cells evaluated."""
+        result = miner.mine_panel(self._panel(4.0, 4.0), max_findings=10)
+        screening = result["screening"]
+        self.assertTrue(screening["active"])
+        self.assertGreater(screening["cellsEvaluated"], 0)
+        self.assertLess(screening["cellsPassedScreen"], screening["cellsEvaluated"])
+        self.assertEqual(screening["confirmFamilySize"], result["tested"])
+
+    def test_edge_only_in_screen_days_dies_at_confirm(self) -> None:
+        """A pattern that exists only in the earliest discovery days passes
+        the screen but must fail on the confirm partition (and holdout)."""
+        rows = []
+        import random
+
+        rng = random.Random(13)
+        for d in range(1, 61):
+            day_str = date.fromordinal(date(2026, 6, 1).toordinal() + d - 1).isoformat()
+            # Discovery = days 1-42; screen = first ~21, confirm = rest.
+            # The pattern is strong on screen days and mildly negative after.
+            effect = 6.0 if d <= 21 else -1.0
+            for k in range(4):
+                rows.append(
+                    panel_row(
+                        day_str, f"e{k}-{d}",
+                        effect + rng.gauss(0, 4.0),
+                        sell_yes_edge_pts="5.0",
+                    )
+                )
+        result = miner.mine_panel(rows, max_findings=10)
+        self.assertTrue(result["screening"]["active"])
+        self.assertEqual(
+            result["covered"], [],
+            "screen-only mirage must not survive the confirm partition",
+        )
+
+    def test_small_panel_falls_back_to_single_stage(self) -> None:
+        rows = []
+        for d in range(1, 6):
+            day_str = date.fromordinal(date(2026, 6, 1).toordinal() + d - 1).isoformat()
+            for k in range(40):
+                rows.append(panel_row(day_str, f"m{k}-{d}", 2.0))
+        result = miner.mine_panel(rows, max_findings=10)
+        self.assertFalse(result["screening"]["active"])
+        # Single-stage: every evaluated cell is billed.
+        self.assertEqual(
+            result["screening"]["cellsEvaluated"], result["tested"]
+        )
+
     def test_high_priced_no_pool_needs_more_than_its_base_rate(self) -> None:
         """A NO bought at 20c wins ~80% of the time with zero edge; the
         binomial null must come from the pool, not a coin flip."""

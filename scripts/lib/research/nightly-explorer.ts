@@ -25,6 +25,9 @@
  *   stratifications (feature-name combos); the Python miner validates them
  *   against its own feature registry and runs them through the identical
  *   base-rate/holdout/BH pipeline.
+ * - data/sports-proposals.json — falsifiable rules over the sports/weather
+ *   datasets, consumed by sports-arb's prospective evaluators (the PM
+ *   gauntlet cannot validate those domains).
  */
 
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
@@ -34,6 +37,9 @@ import {
   formatQueryResults,
   loadResearchDataset,
   SCAN_DATASET_NAMES,
+  SPORTS_DATASET_NAMES,
+  parsePanelWhere,
+  type PanelWhereClause,
   type ResearchDataset,
   type ResearchQuery,
 } from "./research-queries.js";
@@ -46,6 +52,7 @@ export const EXPLORER_MAX_QUERIES_PER_ROUND = 8;
 export const EXPLORER_MAX_PROPOSED_HYPOTHESES = 3;
 export const EXPLORER_MAX_PROPOSED_STRATS = 8;
 export const EXPLORER_MAX_PROPOSED_FEATURES = 4;
+export const EXPLORER_MAX_SPORTS_PROPOSALS = 4;
 
 /** transform name → number of input columns (mirror of
  * DERIVED_TRANSFORM_ARITY in scripts/mine_panel_findings.py). */
@@ -82,6 +89,7 @@ export const EXPLORER_FOCUS_ROTATION: ReadonlyArray<{ name: string; brief: strin
   { name: "trades_and_shadows", brief: "the live trade ledger and resolved shadow cohort: close-reason patterns, day-of-week or venue asymmetries, signal types whose blocked shadows outperform" },
   { name: "valuations", brief: "the daily valuations history: cross-venue IV gaps, basis, and derived columns as regime markers for the panels" },
   { name: "panel_interactions", brief: "the PM outcome panel, but ONLY feature interactions the miners never cross (fund, money, macro, spotret, liq, dow crossed with each other or with price/dte) — single-feature or known-cluster cuts are null results tonight" },
+  { name: "sports", brief: "the weather and softball datasets (settled sports/weather outcomes from the sports-arb collectors): where do the predictor snapshots beat the market's implied prices, which signal configs settle profitably, which conditions flip the sign? Route anything you find to sportsProposals — the PM gauntlet cannot test it" },
 ];
 
 export function explorerFocusForDate(date: Date): { name: string; brief: string } {
@@ -113,6 +121,7 @@ export interface ExplorerAdvice {
   proposedHypotheses: unknown[];
   proposedStratifications: Array<{ features: string[]; rationale: string }>;
   proposedFeatures: FeatureProposal[];
+  sportsProposals: SportsProposal[];
 }
 
 export interface FeatureProposal {
@@ -120,6 +129,21 @@ export interface FeatureProposal {
   transform: string;
   columns: string[];
   edges?: number[];
+  rationale: string;
+}
+
+/**
+ * A falsifiable rule over FUTURE rows of a sports dataset: "on settled rows
+ * matching `where`, the mean of `metric` will be positive/negative." The PM
+ * gauntlet cannot validate these; sports-arb's prospective evaluators consume
+ * them from data/sports-proposals.json and track them against rows that did
+ * not exist when the proposal was made.
+ */
+export interface SportsProposal {
+  dataset: string;
+  where: PanelWhereClause[];
+  metric: string;
+  direction: "positive" | "negative";
   rationale: string;
 }
 
@@ -154,7 +178,8 @@ WHAT YOU MAY PROPOSE (final response):
   "observations": [ {"finding": "<one-sentence pattern>", "evidence": "<the group stats that support it, with n>"} ],
   "proposedHypotheses": [ up to ${EXPLORER_MAX_PROPOSED_HYPOTHESES} objects: {"description", "prediction", "conditions": {<catalog keys only>}, "timeframeDays": <1-7>, "direction": "long"|"short"|"neutral", "confidence": <0.6-1>, "source": "llm"} ],
   "proposedStratifications": [ up to ${EXPLORER_MAX_PROPOSED_STRATS} objects: {"features": [2-3 of: dir, edge, dte, price, spread, liq, stance, ivgap, nogap, dow, fund, money, macro, spotret — or the x_<name> of a derived feature you propose below], "rationale": "<why this combo>"} ],
-  "proposedFeatures": [ up to ${EXPLORER_MAX_PROPOSED_FEATURES} objects: {"name": "<short_snake_case>", "transform": "ratio"|"diff"|"product"|"abs"|"log10", "columns": [1-2 raw panel columns], "edges": [optional 1-4 ascending bucket edges], "rationale": "<why this representation should carry signal>"} ]
+  "proposedFeatures": [ up to ${EXPLORER_MAX_PROPOSED_FEATURES} objects: {"name": "<short_snake_case>", "transform": "ratio"|"diff"|"product"|"abs"|"log10", "columns": [1-2 raw panel columns], "edges": [optional 1-4 ascending bucket edges], "rationale": "<why this representation should carry signal>"} ],
+  "sportsProposals": [ up to ${EXPLORER_MAX_SPORTS_PROPOSALS} objects: {"dataset": "weather"|"softball", "where": [1-4 clauses {"column", "gte"?, "lte"?, "eq"?}], "metric": "<numeric column of that dataset>", "direction": "positive"|"negative", "rationale": "<the scan evidence, with n>"} ]
 }
 
 Rules for proposedHypotheses:
@@ -171,6 +196,12 @@ Rules for proposedFeatures (NEW REPRESENTATIONS — the strongest thing you can 
 - Allowed raw columns: ${DERIVABLE_PANEL_COLUMNS.join(", ")}.
 - Propose a feature only when your scans give a REASON to believe the combination carries signal the raw columns miss (a ratio that normalizes scale, an interaction your grouped scans showed). Speculative features burn shared false-discovery budget: every extra representation makes every other finding's q-value worse.
 - Derived features have no engine catalog key yet, so their findings surface as coverage-gap evidence in the mine report rather than instantly authorable FINDs. That is the point: prove the representation matters first.
+
+Rules for sportsProposals (weather / softball findings — DIFFERENT VALIDATION VENUE):
+- This trading engine holds Polymarket crypto contracts; it has no weather or sports instruments, so NOTHING you find on the weather/softball datasets may become a proposedHypothesis, proposedStratification, or proposedFeature. The only legitimate output for a sports finding is a sportsProposal.
+- A sportsProposal is a falsifiable rule about FUTURE rows: "on settled rows matching these where-clauses, mean(metric) will be positive/negative." The sports-arb side evaluates it prospectively on rows that did not exist tonight (weather settles ~daily per city, so a rule reaching ~20 matched rows gets a verdict in a few weeks).
+- Make the where-clauses tight enough to mean something and loose enough to trigger: a rule matching one row a month never resolves. Cite the historical n and group stats in the rationale.
+- These proposals burn no PM false-discovery budget, but junk still costs evaluator capacity: propose only rules your scans actually support.
 
 ${buildConditionCatalogPromptSection(valuationColumns)}
 
@@ -251,6 +282,34 @@ export function sanitizeFeatureProposals(raw: unknown): FeatureProposal[] {
       }
     }
     out.push({ name, transform, columns, ...(edges ? { edges } : {}), rationale: String(rec.rationale ?? "").slice(0, 240) });
+  }
+  return out;
+}
+
+const SPORTS_DATASET_SET = new Set<string>(SPORTS_DATASET_NAMES);
+const SANE_COLUMN_RE = /^[a-z][a-z0-9_]{0,40}$/;
+
+export function sanitizeSportsProposals(raw: unknown): SportsProposal[] {
+  if (!Array.isArray(raw)) return [];
+  const out: SportsProposal[] = [];
+  const seen = new Set<string>();
+  for (const item of raw) {
+    if (out.length >= EXPLORER_MAX_SPORTS_PROPOSALS) break;
+    if (!item || typeof item !== "object") continue;
+    const rec = item as Record<string, unknown>;
+    const dataset = String(rec.dataset ?? "");
+    if (!SPORTS_DATASET_SET.has(dataset)) continue;
+    const metric = String(rec.metric ?? "").trim();
+    if (!SANE_COLUMN_RE.test(metric)) continue;
+    const direction = rec.direction === "negative" ? "negative" : rec.direction === "positive" ? "positive" : null;
+    if (!direction) continue;
+    const where = parsePanelWhere(rec.where).filter((c) => SANE_COLUMN_RE.test(c.column));
+    // A proposal with no conditions is just "the dataset mean" — not a rule.
+    if (where.length === 0) continue;
+    const key = `${dataset}|${metric}|${direction}|${JSON.stringify(where)}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push({ dataset, where, metric, direction, rationale: String(rec.rationale ?? "").slice(0, 240) });
   }
   return out;
 }
@@ -370,6 +429,7 @@ export async function runNightlyExplorerStep(opts: { dataDir: string }): Promise
       : [];
     const proposedStratifications = sanitizeStratProposals(parsed.proposedStratifications);
     const proposedFeatures = sanitizeFeatureProposals(parsed.proposedFeatures);
+    const sportsProposals = sanitizeSportsProposals(parsed.sportsProposals);
 
     const advice: ExplorerAdvice = {
       generatedAt: new Date().toISOString(),
@@ -380,6 +440,7 @@ export async function runNightlyExplorerStep(opts: { dataDir: string }): Promise
       proposedHypotheses,
       proposedStratifications,
       proposedFeatures,
+      sportsProposals,
     };
     writeFileSync(join(opts.dataDir, "nightly-explorer-advice.json"), JSON.stringify(advice, null, 2) + "\n");
     if (proposedStratifications.length > 0) {
@@ -394,7 +455,15 @@ export async function runNightlyExplorerStep(opts: { dataDir: string }): Promise
         JSON.stringify({ proposedAt: advice.generatedAt, proposals: proposedFeatures }, null, 2) + "\n",
       );
     }
-    log(`wrote nightly-explorer-advice.json (observations=${observations.length}, hypotheses=${proposedHypotheses.length}, strats=${proposedStratifications.length}, features=${proposedFeatures.length}, rounds=${rounds}, queries=${queriesRun})`);
+    if (sportsProposals.length > 0) {
+      // Consumed by sports-arb's prospective evaluators (which keep their own
+      // dedupe ledger keyed on rule signature — this file is stateless).
+      writeFileSync(
+        join(opts.dataDir, "sports-proposals.json"),
+        JSON.stringify({ proposedAt: advice.generatedAt, proposals: sportsProposals }, null, 2) + "\n",
+      );
+    }
+    log(`wrote nightly-explorer-advice.json (observations=${observations.length}, hypotheses=${proposedHypotheses.length}, strats=${proposedStratifications.length}, features=${proposedFeatures.length}, sports=${sportsProposals.length}, rounds=${rounds}, queries=${queriesRun})`);
     return { skipped: false, wrote: true };
   } catch (e: any) {
     log(`failed: ${e?.message ?? e}`);

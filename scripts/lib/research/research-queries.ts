@@ -18,6 +18,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { cleanLedgerTrades, type LedgerTrade } from "../../portfolio-ledger.js";
 import { meanPositivePValue, sampleMoments, wilsonLowerBound } from "./alpha-stats.js";
+import { loadSoftballRows, loadWeatherRows } from "./sports-datasets.js";
 
 /** Hard cap on queries executed per nightly run. */
 export const MAX_DATA_REQUESTS = 6;
@@ -95,11 +96,21 @@ export type ScanDatasetName =
   | "shadows"
   | "valuations"
   | "funding_history"
-  | "macro";
+  | "macro"
+  | "weather"
+  | "softball";
 
 export const SCAN_DATASET_NAMES: readonly ScanDatasetName[] = [
   "panel", "spot_panel", "trades", "shadows", "valuations", "funding_history", "macro",
+  "weather", "softball",
 ];
+
+/**
+ * Datasets whose findings the PM gauntlet cannot validate. Explorer
+ * observations here must route to sportsProposals (prospective sports-side
+ * evaluation), never to miner strat/feature proposals or PM hypotheses.
+ */
+export const SPORTS_DATASET_NAMES: readonly ScanDatasetName[] = ["weather", "softball"];
 
 /** Groups smaller than this are dropped from scan results: repeatability floor. */
 export const MIN_SCAN_GROUP_N = 8;
@@ -153,6 +164,8 @@ export interface ResearchDataset {
   spotPanelRows: Record<string, string>[];
   fundingRows: Record<string, string>[];
   macroRows: Record<string, string>[];
+  weatherRows: Record<string, string>[];
+  softballRows: Record<string, string>[];
 }
 
 export interface ShadowRecord {
@@ -220,6 +233,10 @@ export function loadResearchDataset(dataDir: string, maxValuationRows = 2400): R
     spotPanelRows: readCsvRows(join(dataDir, "research-spot-panel.csv")),
     fundingRows: readCsvRows(join(dataDir, "hl-funding-history.csv"), 40_000),
     macroRows: readCsvRows(join(dataDir, "daily-macro.csv"), 5_000),
+    // Sports/weather exports live outside the PM data dir (synced from the
+    // sports-arb collectors); missing files degrade to empty datasets.
+    weatherRows: loadWeatherRows(),
+    softballRows: loadSoftballRows(),
   };
 }
 
@@ -240,7 +257,7 @@ const MAX_PANEL_WHERE_CLAUSES = 4;
  */
 export const SPOT_EXAM_THRESHOLD_PCT: Record<number, number> = { 1: 0.5, 3: 1.0, 7: 2.0 };
 
-function parsePanelWhere(raw: unknown): PanelWhereClause[] {
+export function parsePanelWhere(raw: unknown): PanelWhereClause[] {
   if (!Array.isArray(raw)) return [];
   const clauses: PanelWhereClause[] = [];
   for (const item of raw.slice(0, MAX_PANEL_WHERE_CLAUSES)) {
@@ -844,6 +861,11 @@ export function scanDatasetRows(name: ScanDatasetName, data: ResearchDataset): R
   if (name === "valuations") return data.valuationRows;
   if (name === "funding_history") return data.fundingRows;
   if (name === "macro") return data.macroRows;
+  // Sports datasets carry no holdout mask: their validation is prospective
+  // (sports-side evaluators on rows that do not exist yet), so the explorer
+  // seeing all settled history leaks nothing.
+  if (name === "weather") return data.weatherRows;
+  if (name === "softball") return data.softballRows;
   if (name === "trades") {
     return data.trades.map((t) => ({
       opened_at: String(t.openedAt ?? ""),
@@ -889,6 +911,8 @@ const SCAN_DEFAULT_METRIC: Partial<Record<ScanDatasetName, string>> = {
   spot_panel: "move_pct_3d",
   trades: "pnl_pct",
   shadows: "pnl_pct",
+  weather: "final_pnl_pct",
+  softball: "pnl_pct",
 };
 
 function datasetDateColumn(rows: Record<string, string>[]): string | null {
@@ -1092,8 +1116,9 @@ Available query kinds:
       Historical forward returns from the outcome panel (all listed contracts, not just shadow trades). Use this to pre-check a hypothesis idea — e.g. "when sell_yes_edge_pts >= 5 on BTC NO 7d, what was win rate vs the unfiltered base rate?" Rows must have mineable outcome_quality; entries are de-duplicated per contract so forward windows do not overlap. At most 4 where-clauses.
   - {"kind":"spot_panel", "side":"long"|"short", "horizonDays":1|3|7, "asset"?:"BTC|ETH|SOL|HYPE|GOLD|SILVER|OIL|AMZN|SPY", "where"?:[{"column":"<spot panel column>", "gte"?, "lte"?, "eq"?}]}
       Historical forward SPOT returns per asset-day (the non-Polymarket panel). Use this to pre-check a spot/perp thesis — e.g. "long BTC 3d when ret_24h_pct <= -2, how often did it beat the exam threshold vs base?" Columns: price, fund_ann, fund_z30, ret_24h_pct, pct_from_7d_high, pct_vs_30d_sma, pc_ratio, pc_pctile_30d, iv_term_spread_pts, realized_vol_30d_pct, day_of_week, is_weekend, macro_composite. Stale windows (closed markets) are excluded; entries de-duplicated per asset so forward windows do not overlap.
-  - {"kind":"dataset_scan", "dataset":"panel"|"spot_panel"|"trades"|"shadows"|"valuations"|"funding_history"|"macro", "where"?:[{"column", "gte"?, "lte"?, "eq"?}], "groupBy"?:"<any column>", "metric"?:"<any numeric column>", "topK"?:10}
-      Free-roaming scan over any dataset. With no groupBy/metric it returns the SCHEMA (columns, numeric columns, row count, date range) — use that first to learn what exists. With groupBy it buckets rows by that column (numeric columns are quintile-bucketed automatically) and reports n / win-share / mean / total of the metric per bucket, sorted by |mean|. Groups with n < ${MIN_SCAN_GROUP_N} are suppressed — patterns must repeat to be visible. Default metrics: panel=no_pnl_pct_7d, spot_panel=move_pct_3d, trades/shadows=pnl_pct. Note: panel and spot_panel scans exclude the most recent ~30% of days — that window is the miners' locked confirmation set, and ideas sourced from scans must be confirmable on data the scanner never saw.
+  - {"kind":"dataset_scan", "dataset":"panel"|"spot_panel"|"trades"|"shadows"|"valuations"|"funding_history"|"macro"|"weather"|"softball", "where"?:[{"column", "gte"?, "lte"?, "eq"?}], "groupBy"?:"<any column>", "metric"?:"<any numeric column>", "topK"?:10}
+      Free-roaming scan over any dataset. With no groupBy/metric it returns the SCHEMA (columns, numeric columns, row count, date range) — use that first to learn what exists. With groupBy it buckets rows by that column (numeric columns are quintile-bucketed automatically) and reports n / win-share / mean / total of the metric per bucket, sorted by |mean|. Groups with n < ${MIN_SCAN_GROUP_N} are suppressed — patterns must repeat to be visible. Default metrics: panel=no_pnl_pct_7d, spot_panel=move_pct_3d, trades/shadows=pnl_pct, weather=final_pnl_pct, softball=pnl_pct. Note: panel and spot_panel scans exclude the most recent ~30% of days — that window is the miners' locked confirmation set, and ideas sourced from scans must be confirmable on data the scanner never saw.
+      SPORTS DATASETS (weather, softball): settled cross-venue sports/weather outcomes from the sports-arb collectors. weather = one row per city-day from the high-temp predictor ledgers (open/final predicted bin vs Kalshi-settled high; filter "settled" eq 1 for scored rows; pnl columns are bin-buy returns at market-implied prices). softball = one row per MLB over-signal with settled over_hit/pnl_pct. The PM gauntlet CANNOT validate anything you find here — route sports observations to sportsProposals (see output spec), never to proposedStrats/proposedFeatures/hypotheses.
 
 Every result includes n, win rate, Wilson 95% lower bound, total and mean PnL, a one-sided t-test p-value that mean PnL is positive, optional group breakdowns, and up to ${MAX_SAMPLE_ROWS} example rows. Panel results also include meanPnlPct, stdPnlPct, and baseRate (win rate of all mineable rows for the same asset/side/horizon without where-filters). Spot-panel results additionally include examThresholdPct (the move the engine's scorer requires for a win at that horizon: 0.5%/1d, 1%/3d, 2%/7d), examWinRate and baseExamWinRate — compare those two to judge real edge on the exam the test will actually sit.
 If you do not need extra evidence, skip this and answer directly.`;

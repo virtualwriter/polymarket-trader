@@ -36,6 +36,7 @@ NIGHTLY_FILES=(
   data/nightly-explorer-advice.json
   data/miner-proposed-strats.json
   data/miner-proposed-features.json
+  data/sports-proposals.json
   data/representation-ledger.json
   data/research-yield-scoreboard.json
   data/nightly-research-report.json

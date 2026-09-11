@@ -7,7 +7,9 @@ import {
   EXPLORER_MAX_PROPOSED_HYPOTHESES,
   EXPLORER_MAX_PROPOSED_STRATS,
   explorerFocusForDate,
+  EXPLORER_MAX_SPORTS_PROPOSALS,
   sanitizeFeatureProposals,
+  sanitizeSportsProposals,
   sanitizeStratProposals,
 } from "./nightly-explorer.js";
 import type { ResearchDataset } from "./research-queries.js";
@@ -21,6 +23,8 @@ const emptyDataset: ResearchDataset = {
   spotPanelRows: [],
   fundingRows: [],
   macroRows: [],
+  weatherRows: [],
+  softballRows: [],
 };
 
 describe("buildExplorerPrompt", () => {
@@ -55,6 +59,60 @@ describe("buildExplorerPrompt", () => {
     expect(prompt).toContain("burn shared false-discovery budget");
     expect(prompt).toContain("pm_to_underlying_cap_ratio");
     expect(prompt).toContain("coverage-gap evidence");
+  });
+
+  it("routes sports findings to sportsProposals with the validation-venue rule", () => {
+    expect(prompt).toContain(`up to ${EXPLORER_MAX_SPORTS_PROPOSALS} objects`);
+    expect(prompt).toContain("DIFFERENT VALIDATION VENUE");
+    expect(prompt).toContain("sports-arb side evaluates it prospectively");
+    expect(prompt).toContain("may become a proposedHypothesis");
+  });
+});
+
+describe("sanitizeSportsProposals", () => {
+  it("accepts valid rules and drops junk", () => {
+    const out = sanitizeSportsProposals([
+      {
+        dataset: "weather",
+        where: [{ column: "city", eq: "nyc" }, { column: "settled", eq: 1 }],
+        metric: "final_pnl_pct",
+        direction: "positive",
+        rationale: "final snapshot beat implied in 12/15 settled days",
+      },
+      // Non-sports dataset: the PM panel must never route here.
+      { dataset: "panel", where: [{ column: "dte_days", lte: 30 }], metric: "no_pnl_pct_7d", direction: "positive" },
+      // No where-clauses: not a rule.
+      { dataset: "weather", where: [], metric: "final_pnl_pct", direction: "positive" },
+      // Bad direction.
+      { dataset: "softball", where: [{ column: "inning", lte: 4 }], metric: "pnl_pct", direction: "up" },
+      // Bad metric name.
+      { dataset: "softball", where: [{ column: "inning", lte: 4 }], metric: "PnL%; drop table", direction: "positive" },
+    ]);
+    expect(out).toHaveLength(1);
+    expect(out[0].dataset).toBe("weather");
+    expect(out[0].where).toHaveLength(2);
+    expect(out[0].direction).toBe("positive");
+  });
+
+  it("dedupes identical rules and enforces the cap", () => {
+    const rule = {
+      dataset: "softball",
+      where: [{ column: "ask", lte: 0.5 }],
+      metric: "pnl_pct",
+      direction: "positive",
+      rationale: "cheap overs",
+    };
+    const many = Array.from({ length: EXPLORER_MAX_SPORTS_PROPOSALS + 3 }, (_, i) => ({
+      ...rule,
+      where: [{ column: "ask", lte: 0.1 * (i + 1) }],
+    }));
+    expect(sanitizeSportsProposals([rule, rule])).toHaveLength(1);
+    expect(sanitizeSportsProposals(many)).toHaveLength(EXPLORER_MAX_SPORTS_PROPOSALS);
+  });
+
+  it("tolerates garbage input", () => {
+    expect(sanitizeSportsProposals(undefined)).toEqual([]);
+    expect(sanitizeSportsProposals("nope")).toEqual([]);
   });
 });
 

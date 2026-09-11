@@ -2,11 +2,15 @@
 """Mine the outcome panel (data/research-panel.csv) into FIND records.
 
 Statistics discipline, extending the shadow miner's:
-  1. one-sided Student-t on per-row P&L (the alpha claim) — discovery split
+  1. one-sided Student-t on per-row P&L (the alpha claim) — confirm split
   2. exact binomial on win rate vs the pool's own empirical base rate
      (never a 50% coin flip: a NO at 80c wins 80% of the time with no edge)
-  3. Benjamini-Hochberg q-values across ALL strata tested in the run
-  4. temporal holdout: the last ~30% of panel days are never mined; a
+  3. screen/confirm split of the discovery window: the earliest half of
+     discovery days is a free screening partition (search wide, pay nothing);
+     only screened winners are tested on the later confirm partition
+  4. Benjamini-Hochberg q-values across the CONFIRM-stage tests only —
+     screening never inflates the family
+  5. temporal holdout: the last ~30% of panel days are never mined; a
      candidate must independently show positive mean P&L there.
 
 Only candidates whose conditions translate fully into engine-evaluable
@@ -92,6 +96,23 @@ MIN_N_HOLDOUT = 10
 MAX_Q_VALUE = 0.10
 # Pools smaller than this fall back to the ALL-assets base rate.
 MIN_POOL_FOR_BASE_RATE = 60
+# Screen/confirm split inside the discovery window. The earliest days form an
+# UNBUDGETED screening partition: every stratum is evaluated there, but a weak
+# screen result costs nothing — the cell is simply dropped. Only cells that
+# look good on screen days (positive mean, nominal p <= SCREEN_MAX_P) are then
+# tested on the later confirm partition, and ONLY confirm-stage p-values enter
+# the Benjamini-Hochberg family. Because the two partitions share no days, the
+# screen selection does not bias the confirm p-values, and the family shrinks
+# from "everything we looked at" to "screened winners" — the piece that makes
+# wide search (more datasets, more proposed features) statistically cheap.
+# The temporal holdout (most recent 30% of days) stays untouched on top.
+CONFIRM_FRACTION_OF_DISCOVERY = 0.50  # most recent half of discovery days
+MIN_N_SCREEN = 20
+MIN_N_CONFIRM = 20
+SCREEN_MAX_P = 0.10
+# Below this many unique discovery days the split degenerates; fall back to
+# the original single-stage discovery testing (every cell billed to BH).
+MIN_DISCOVERY_DAYS_FOR_SPLIT = 8
 
 
 def load_panel(path: Path) -> list[dict[str, Any]]:
@@ -384,6 +405,12 @@ def mine_panel(
 
     tested: list[dict[str, Any]] = []
     seen_row_sets: set[frozenset] = set()
+    # Screening telemetry (also counts single-stage evaluations so the ratio
+    # "cells looked at" vs "tests billed" is always reportable).
+    cells_evaluated = 0
+    cells_passed_screen = 0
+    screening_any = False
+    screen_eval_counts: dict[str, int] = defaultdict(int)
 
     for horizon in HORIZONS:
         pnl_col = {"no": f"no_pnl_pct_{horizon}d", "yes": f"yes_pnl_pct_{horizon}d"}
@@ -400,6 +427,14 @@ def mine_panel(
         discovery_days, holdout_days = split_days(
             [str(r.get("entry_date")) for r in usable], HOLDOUT_FRACTION
         )
+        screening_active = len(discovery_days) >= MIN_DISCOVERY_DAYS_FOR_SPLIT
+        if screening_active:
+            screening_any = True
+            screen_days, confirm_days = split_days(
+                sorted(discovery_days), CONFIRM_FRACTION_OF_DISCOVERY
+            )
+        else:
+            screen_days, confirm_days = set(), set(discovery_days)
 
         for side in SIDES:
             col = pnl_col[side]
@@ -413,11 +448,19 @@ def mine_panel(
 
             disc_all = [(r, p) for r, p in rows if str(r.get("entry_date")) in discovery_days]
             hold_all = [(r, p) for r, p in rows if str(r.get("entry_date")) in holdout_days]
+            if screening_active:
+                screen_all = [(r, p) for r, p in disc_all if str(r.get("entry_date")) in screen_days]
+                confirm_all = [(r, p) for r, p in disc_all if str(r.get("entry_date")) in confirm_days]
+            else:
+                screen_all, confirm_all = [], disc_all
 
-            # Empirical base rates from the discovery pool only.
+            # Empirical base rates from the screening pool only — never from
+            # the partition whose p-value is billed to the BH family. In
+            # single-stage fallback the discovery pool is the only option.
+            base_pool = screen_all if screening_active else disc_all
             base_by_asset: dict[str, float] = {}
             pool_by_asset: dict[str, list[float]] = defaultdict(list)
-            for r, p in disc_all:
+            for r, p in base_pool:
                 pool_by_asset[str(r.get("asset"))].append(p)
                 pool_by_asset["ALL"].append(p)
             for asset, pnls in pool_by_asset.items():
@@ -439,9 +482,14 @@ def mine_panel(
                 strat_specs.append((combo, "+".join(combo)))
 
             for dims, _label in strat_specs:
-                disc_cells: dict[tuple[str, str], list[tuple[dict, float]]] = defaultdict(list)
+                screen_cells: dict[tuple[str, str], list[tuple[dict, float]]] = defaultdict(list)
+                confirm_cells: dict[tuple[str, str], list[tuple[dict, float]]] = defaultdict(list)
                 hold_cells: dict[tuple[str, str], list[tuple[dict, float]]] = defaultdict(list)
-                for target, cells in ((disc_all, disc_cells), (hold_all, hold_cells)):
+                for target, cells in (
+                    (screen_all, screen_cells),
+                    (confirm_all, confirm_cells),
+                    (hold_all, hold_cells),
+                ):
                     for r, p in target:
                         parts = []
                         ok = True
@@ -458,11 +506,18 @@ def mine_panel(
                         cells[(asset, bucket_label)].append((r, p))
                         cells[("ALL", bucket_label)].append((r, p))
 
-                for (asset, bucket_label), cell_rows in disc_cells.items():
-                    if len(cell_rows) < MIN_N_DISCOVERY:
-                        continue
+                for (asset, bucket_label), confirm_rows in confirm_cells.items():
+                    if screening_active:
+                        s_rows = screen_cells.get((asset, bucket_label), [])
+                        if len(s_rows) < MIN_N_SCREEN or len(confirm_rows) < MIN_N_CONFIRM:
+                            continue
+                    else:
+                        s_rows = []
+                        if len(confirm_rows) < MIN_N_DISCOVERY:
+                            continue
+                    all_cell_rows = [*s_rows, *confirm_rows]
                     row_ids = frozenset(
-                        f"{r.get('market_id')}@{r.get('entry_date')}" for r, _ in cell_rows
+                        f"{r.get('market_id')}@{r.get('entry_date')}" for r, _ in all_cell_rows
                     )
                     dedupe_key = (side, horizon, row_ids)
                     if dedupe_key in seen_row_sets:
@@ -470,7 +525,24 @@ def mine_panel(
                     seen_row_sets.add(dedupe_key)
 
                     base = base_by_asset.get(asset, all_base)
-                    disc_pnls = [p for _, p in cell_rows]
+                    cells_evaluated += 1
+                    for dim in dims:
+                        screen_eval_counts[dim] += 1
+
+                    screen_stats: dict[str, Any] | None = None
+                    if screening_active:
+                        s_pnls = [p for _, p in s_rows]
+                        s_wins = sum(1 for p in s_pnls if p > 0)
+                        screen_stats = stats_for(s_pnls, s_wins, base)
+                        s_p = screen_stats.get("tPValue")
+                        if s_p is None:
+                            s_p = screen_stats.get("binomPValue", 1.0)
+                        if (screen_stats.get("meanPnlPct") or 0) <= 0 or s_p > SCREEN_MAX_P:
+                            # Screened out: costs nothing — the whole point.
+                            continue
+                        cells_passed_screen += 1
+
+                    disc_pnls = [p for _, p in confirm_rows]
                     disc_wins = sum(1 for p in disc_pnls if p > 0)
                     disc = stats_for(disc_pnls, disc_wins, base)
 
@@ -488,14 +560,19 @@ def mine_panel(
                         "asset": asset,
                         "bucket": bucket_label,
                         "dims": list(dims),
+                        # "discovery" stays the name of the billed test stage
+                        # (the confirm partition when screening is active) so
+                        # every downstream consumer keeps working unchanged.
                         "discovery": disc,
+                        "screen": screen_stats,
+                        "screened": screening_active,
                         "holdout": hold,
                         "conditions": conditions,
                         "catalogCovered": covered,
                         "sampleIds": sorted(row_ids)[:5],
                         "inputWindow": {
-                            "start": min(str(r.get("entry_date")) for r, _ in cell_rows),
-                            "end": max(str(r.get("entry_date")) for r, _ in cell_rows),
+                            "start": min(str(r.get("entry_date")) for r, _ in all_cell_rows),
+                            "end": max(str(r.get("entry_date")) for r, _ in all_cell_rows),
                         },
                     })
 
@@ -512,7 +589,7 @@ def mine_panel(
     candidates = [
         item for item in tested
         if item["qValue"] <= MAX_Q_VALUE
-        and item["discovery"]["n"] >= MIN_N_DISCOVERY
+        and item["discovery"]["n"] >= (MIN_N_CONFIRM if item.get("screened") else MIN_N_DISCOVERY)
         and item["holdout"].get("n", 0) >= MIN_N_HOLDOUT
         and (item["holdout"].get("meanPnlPct") or 0) > 0
         and (item["discovery"].get("meanPnlPct") or 0) > 0
@@ -532,6 +609,10 @@ def mine_panel(
         qs = [t["qValue"] for t in involving if t.get("qValue") is not None]
         derived_stats.append({
             "name": f.name,
+            # Cells evaluated at the (free) screening stage vs tests actually
+            # billed to the BH family — the representation ledger keys its
+            # tests-spent budget off strataTested, which stays "billed tests".
+            "strataScreened": screen_eval_counts.get(f.name, 0),
             "strataTested": len(involving),
             "survivors": len(surviving),
             "bestQ": round(min(qs), 6) if qs else None,
@@ -543,6 +624,14 @@ def mine_panel(
         "covered": covered,
         "gaps": gaps,
         "derivedFeatureStats": derived_stats,
+        "screening": {
+            "active": screening_any,
+            "cellsEvaluated": cells_evaluated,
+            "cellsPassedScreen": cells_passed_screen,
+            "confirmFamilySize": len(tested),
+            "screenMaxP": SCREEN_MAX_P,
+            "confirmFractionOfDiscovery": CONFIRM_FRACTION_OF_DISCOVERY,
+        },
     }
 
 
@@ -565,11 +654,13 @@ def finding_title(candidate: dict[str, Any]) -> str:
 
 
 def combined_evidence(candidate: dict[str, Any]) -> dict[str, Any]:
-    """Full-window evidence for the FIND record (discovery + holdout)."""
+    """Full-window evidence for the FIND record (screen + confirm + holdout).
+    The statistical claim (pValue/qValue) stays confirm-stage only."""
     disc, hold = candidate["discovery"], candidate["holdout"]
-    n = disc["n"] + hold.get("n", 0)
-    wins = disc["wins"] + hold.get("wins", 0)
-    sum_pnl_pct = disc["sumPnlPct"] + hold.get("sumPnlPct", 0.0)
+    screen = candidate.get("screen") or {}
+    n = disc["n"] + hold.get("n", 0) + screen.get("n", 0)
+    wins = disc["wins"] + hold.get("wins", 0) + screen.get("wins", 0)
+    sum_pnl_pct = disc["sumPnlPct"] + hold.get("sumPnlPct", 0.0) + screen.get("sumPnlPct", 0.0)
     return {
         "n": n,
         "winRate": round(wins / n, 4) if n else 0.0,
@@ -601,6 +692,10 @@ def build_provenance(panel_path: Path, candidate: dict[str, Any], git_sha: str) 
             "holdoutFraction": HOLDOUT_FRACTION,
             "panelVersion": PANEL_VERSION,
             "nonOverlappingEntries": True,
+            "screenConfirmSplit": bool(candidate.get("screened")),
+            "minNScreen": MIN_N_SCREEN,
+            "minNConfirm": MIN_N_CONFIRM,
+            "screenMaxP": SCREEN_MAX_P,
         },
         "reproducibleCommand": (
             f"python3 scripts/mine_panel_findings.py --panel {panel_path}"
@@ -651,6 +746,7 @@ def main() -> int:
             "evidence": combined_evidence(candidate),
             "mineStats": {
                 "discovery": candidate["discovery"],
+                "screen": candidate.get("screen"),
                 "holdout": candidate["holdout"],
                 "qValue": candidate["qValue"],
                 "testsInFamily": result["tested"],
@@ -683,6 +779,7 @@ def main() -> int:
         "panel": str(args.panel),
         "testsRun": result["tested"],
         "candidates": len(result["candidates"]),
+        "screening": result.get("screening"),
         "proposedDerivedFeatures": [
             {"name": f.name, "transform": f.transform, "columns": f.columns, "edges": f.edges}
             for f in derived
@@ -711,8 +808,11 @@ def main() -> int:
         args.report.parent.mkdir(parents=True, exist_ok=True)
         args.report.write_text(json.dumps(report, indent=2) + "\n")
 
+    screening = result.get("screening") or {}
     print(
-        f"panel mine: tested={result['tested']} candidates={len(result['candidates'])} "
+        f"panel mine: screened={screening.get('cellsEvaluated', 0)} "
+        f"passed={screening.get('cellsPassedScreen', 0)} "
+        f"billed={result['tested']} candidates={len(result['candidates'])} "
         f"registered={len(registered)} (created={created} updated={updated}) "
         f"coverage_gaps={len(result['gaps'])}"
     )

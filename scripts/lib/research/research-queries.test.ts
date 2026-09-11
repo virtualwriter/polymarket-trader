@@ -52,6 +52,8 @@ const dataset: ResearchDataset = {
   spotPanelRows: [],
   fundingRows: [],
   macroRows: [],
+  weatherRows: [],
+  softballRows: [],
 };
 
 describe("parseDataRequests", () => {
