@@ -1,49 +1,10 @@
 {
-  "generatedAt": "2026-09-10T23:28:24.922Z",
+  "generatedAt": "2026-09-10T23:53:09.773Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [],
   "sizingPreviews": [],
   "portfolioExposurePreviews": [],
   "stagedQuantRules": [],
-  "llmCloseEligibility": [
-    {
-      "positionId": "T-1789054112407-n7k2",
-      "signalType": "PC_RATIO_EXTREME_HIGH",
-      "asset": "GOLD",
-      "venue": "spot",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
-        "gold_gc_spot",
-        "gold_gld_pc_ratio"
-      ],
-      "hoursOpen": 8,
-      "hoursToExpiry": 112,
-      "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.0666,
-      "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 8.0h, requires at least 12h."
-    },
-    {
-      "positionId": "T-1789075720480-f482",
-      "signalType": "FUNDING_EXTREME_LONG",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
-        "gold_gc_spot",
-        "gold_hl_funding_ann"
-      ],
-      "hoursOpen": 2,
-      "hoursToExpiry": 70,
-      "plannedHoldHours": 72,
-      "elapsedHoldPct": 0.0277,
-      "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 2.0h, requires at least 12h."
-    }
-  ]
+  "llmCloseEligibility": []
 }
