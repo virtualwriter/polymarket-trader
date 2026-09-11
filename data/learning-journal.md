@@ -1287,3 +1287,37 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-09-11 13:29 UTC
+
+**Portfolio:** $103.77 total | Cash $103.77 | 0 open | P&L $7.0130 | 64% win rate (951 trades)
+
+**Closed 1 trades:**
+- ❌ GOLD short via hyperliquid/hl_perp [HL GOLD perp] (FUNDING_EXTREME_LONG) → llm_decision: $-0.0139 (-1.4%, market -0.0141, funding 0.0002)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 26 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 4 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [divergence] BTC PM-Options IV gap moved wider by 6.2pp (was -9.6, now -3.4)
+- [anomaly] oil_hl_funding_ann = -338.68 is -4.0 std devs from mean since 2026-04-28 (-16.84 ± 81.23)
+
+**Blocked signal learning:**
+- Open blocked shadows: 32
+- Resolved blocked shadows: 1021 (524 wins / 497 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have expired (+7.30%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have expired (+154.38%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have expired (+83.09%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have closed with thesis validated profitably (+1.85%)
+
+**LLM analysis:**
+Closed the GOLD funding-extreme-long short on thesis invalidation: funding collapsed from ~69% to ~6.6% annualized, below the +15% entry gate, while spot gold moved higher. This is a funding-normalization failure rather than a mechanical stop/target exit. No new hypotheses or parameter changes.
+
+---
+
