@@ -1226,3 +1226,33 @@ Closed the GOLD Hyperliquid short on thesis invalidation: gold_hl_funding_ann ro
 
 ---
 
+### 2026-09-11 11:28 UTC
+
+**Portfolio:** $103.79 total | Cash $102.79 | 1 open | P&L $7.0269 | 64% win rate (950 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 28 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 4 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] oil_hl_funding_ann = -303.45 is -3.5 std devs from mean since 2026-04-28 (-16.61 ± 80.81)
+- [anomaly] btc_med_min = 68452 is 2.0 std devs from mean (54566.81 ± 6793.55)
+
+**Blocked signal learning:**
+- Open blocked shadows: 32
+- Resolved blocked shadows: 1020 (523 wins / 497 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have hit stop (-3.64%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have expired (+7.30%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have expired (+154.38%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have expired (+83.09%)
+
+**LLM analysis:**
+_LLM call skipped (no trigger fired; 1.0h since last call; daily budget 4/12; next scheduled 2026-09-11T13:28:17.086Z). Mechanical cycle ran normally._
+
+---
+
