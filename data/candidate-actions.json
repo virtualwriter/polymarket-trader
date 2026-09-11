@@ -1,32 +1,32 @@
 {
-  "generatedAt": "2026-09-11T15:28:26.494Z",
+  "generatedAt": "2026-09-11T16:28:20.725Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
     {
-      "type": "PC_RATIO_EXTREME_HIGH",
-      "asset": "GOLD",
+      "type": "PC_RATIO_EXTREME_LOW",
+      "asset": "BTC",
       "venue": "spot",
-      "direction": "long",
-      "strength": 0.15000000000000013,
-      "confidence": 0.07610288807884855,
-      "thesis": "GOLD P/C ratio 1.32 — heavy put buying → contrarian long.",
+      "direction": "short",
+      "strength": 0.5100000000000001,
+      "confidence": 0.26283628024470174,
+      "thesis": "BTC P/C ratio 0.35 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 4373,
-      "targetPct": 4,
+      "entryPrice": 77618,
+      "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
     },
     {
       "type": "PC_RATIO_EXTREME_HIGH",
-      "asset": "OIL",
+      "asset": "GOLD",
       "venue": "spot",
       "direction": "long",
-      "strength": 0.030000000000000027,
-      "confidence": 0.01522057761576971,
-      "thesis": "OIL P/C ratio 1.22 — heavy put buying → contrarian long.",
+      "strength": 0.021250000000000158,
+      "confidence": 0.010781242477836949,
+      "thesis": "GOLD P/C ratio 1.22 — heavy put buying → contrarian long.",
       "hypothesisId": null,
-      "entryPrice": 96.3,
+      "entryPrice": 4360,
       "targetPct": 4,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -34,14 +34,14 @@
   ],
   "sizingPreviews": [
     {
-      "signalType": "PC_RATIO_EXTREME_HIGH",
-      "asset": "GOLD",
+      "signalType": "PC_RATIO_EXTREME_LOW",
+      "asset": "BTC",
       "venue": "spot",
-      "direction": "long",
+      "direction": "short",
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 4373,
+      "entryPrice": 77618,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -56,13 +56,13 @@
     },
     {
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "asset": "OIL",
+      "asset": "GOLD",
       "venue": "spot",
       "direction": "long",
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 96.3,
+      "entryPrice": 4360,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -78,7 +78,49 @@
   ],
   "portfolioExposurePreviews": [
     {
-      "candidateId": "PC_RATIO_EXTREME_HIGH:GOLD:0",
+      "candidateId": "PC_RATIO_EXTREME_LOW:BTC:0",
+      "asset": "BTC",
+      "venue": "spot",
+      "direction": "short",
+      "signalType": "PC_RATIO_EXTREME_LOW",
+      "candidateSize": 0,
+      "riskClusters": [
+        "btc_delta",
+        "options_sentiment",
+        "risk_on",
+        "spot_venue"
+      ],
+      "current": {
+        "totalGross": 0,
+        "totalNet": 0,
+        "byAsset": {},
+        "bySignalType": {},
+        "byVenue": {},
+        "byCluster": {}
+      },
+      "afterCandidate": {
+        "totalGross": 0,
+        "totalNet": 0,
+        "byAsset": {
+          "BTC": 0
+        },
+        "bySignalType": {
+          "PC_RATIO_EXTREME_LOW": 0
+        },
+        "byVenue": {
+          "spot": 0
+        },
+        "byCluster": {
+          "btc_delta": 0,
+          "options_sentiment": 0,
+          "risk_on": 0,
+          "spot_venue": 0
+        }
+      },
+      "warnings": []
+    },
+    {
+      "candidateId": "PC_RATIO_EXTREME_HIGH:GOLD:1",
       "asset": "GOLD",
       "venue": "spot",
       "direction": "long",
@@ -118,55 +160,13 @@
         }
       },
       "warnings": []
-    },
-    {
-      "candidateId": "PC_RATIO_EXTREME_HIGH:OIL:1",
-      "asset": "OIL",
-      "venue": "spot",
-      "direction": "long",
-      "signalType": "PC_RATIO_EXTREME_HIGH",
-      "candidateSize": 0,
-      "riskClusters": [
-        "commodity",
-        "oil_delta",
-        "options_sentiment",
-        "spot_venue"
-      ],
-      "current": {
-        "totalGross": 0,
-        "totalNet": 0,
-        "byAsset": {},
-        "bySignalType": {},
-        "byVenue": {},
-        "byCluster": {}
-      },
-      "afterCandidate": {
-        "totalGross": 0,
-        "totalNet": 0,
-        "byAsset": {
-          "OIL": 0
-        },
-        "bySignalType": {
-          "PC_RATIO_EXTREME_HIGH": 0
-        },
-        "byVenue": {
-          "spot": 0
-        },
-        "byCluster": {
-          "commodity": 0,
-          "oil_delta": 0,
-          "options_sentiment": 0,
-          "spot_venue": 0
-        }
-      },
-      "warnings": []
     }
   ],
   "stagedQuantRules": [
     {
-      "candidateId": "PC_RATIO_EXTREME_HIGH:GOLD:0",
-      "signalType": "PC_RATIO_EXTREME_HIGH",
-      "asset": "GOLD",
+      "candidateId": "PC_RATIO_EXTREME_LOW:BTC:0",
+      "signalType": "PC_RATIO_EXTREME_LOW",
+      "asset": "BTC",
       "mode": "observe_uniform",
       "liveSizingEnabled": false,
       "currentFlatSize": 1,
@@ -180,9 +180,9 @@
       ]
     },
     {
-      "candidateId": "PC_RATIO_EXTREME_HIGH:OIL:1",
+      "candidateId": "PC_RATIO_EXTREME_HIGH:GOLD:1",
       "signalType": "PC_RATIO_EXTREME_HIGH",
-      "asset": "OIL",
+      "asset": "GOLD",
       "mode": "observe_uniform",
       "liveSizingEnabled": false,
       "currentFlatSize": 1,

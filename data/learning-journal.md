@@ -1350,3 +1350,35 @@ No open positions to review; ALLOWED ACTION SURFACE is empty. Noted the sharp in
 
 ---
 
+### 2026-09-11 16:28 UTC
+
+**Portfolio:** $103.77 total | Cash $102.77 | 1 open | P&L $7.0130 | 64% win rate (951 trades)
+
+**Opened 1 positions:**
+- BTC short @ $77618 via spot/spot [BTC spot] (PC_RATIO_EXTREME_LOW)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 27 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 4 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] oil_hl_funding_ann = -405.83 is -4.8 std devs from mean since 2026-04-28 (-17.11 ± 81.80)
+
+**Blocked signal learning:**
+- Open blocked shadows: 29
+- Resolved blocked shadows: 1026 (525 wins / 501 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have hit stop (-28.85%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-3.33%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-8.45%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-8.14%)
+
+**LLM analysis:**
+No open positions, so there are no eligible discretionary closes this run. Candidate entry count is 2, but no promoted signals are present in the current open position list, and I did not initiate entries. Recent one-touch NO edge shadow warnings remain for ETH, GOLD, and BTC with wide Polymarket spreads; I will continue to monitor only if those become eligible or promoted.
+
+---
+
