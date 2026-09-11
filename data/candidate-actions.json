@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-11T00:28:21.547Z",
+  "generatedAt": "2026-09-11T01:06:34.433Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -57,49 +57,30 @@
         "hyperliquid_venue"
       ],
       "current": {
-        "totalGross": 2,
+        "totalGross": 0,
         "totalNet": 0,
-        "byAsset": {
-          "GOLD": 0
-        },
-        "bySignalType": {
-          "PC_RATIO_EXTREME_HIGH": 1,
-          "FUNDING_EXTREME_LONG": -1
-        },
-        "byVenue": {
-          "spot": 1,
-          "hyperliquid": -1
-        },
-        "byCluster": {
-          "commodity": 0,
-          "gold_delta": 0,
-          "options_sentiment": 1,
-          "spot_venue": 1,
-          "funding_reversion": -1,
-          "hyperliquid_venue": -1
-        }
+        "byAsset": {},
+        "bySignalType": {},
+        "byVenue": {},
+        "byCluster": {}
       },
       "afterCandidate": {
-        "totalGross": 2,
+        "totalGross": 0,
         "totalNet": 0,
         "byAsset": {
           "GOLD": 0
         },
         "bySignalType": {
-          "PC_RATIO_EXTREME_HIGH": 1,
-          "FUNDING_EXTREME_LONG": -1
+          "FUNDING_EXTREME_LONG": 0
         },
         "byVenue": {
-          "spot": 1,
-          "hyperliquid": -1
+          "hyperliquid": 0
         },
         "byCluster": {
           "commodity": 0,
+          "funding_reversion": 0,
           "gold_delta": 0,
-          "options_sentiment": 1,
-          "spot_venue": 1,
-          "funding_reversion": -1,
-          "hyperliquid_venue": -1
+          "hyperliquid_venue": 0
         }
       },
       "warnings": []
@@ -123,44 +104,5 @@
       ]
     }
   ],
-  "llmCloseEligibility": [
-    {
-      "positionId": "T-1789054112407-n7k2",
-      "signalType": "PC_RATIO_EXTREME_HIGH",
-      "asset": "GOLD",
-      "venue": "spot",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
-        "gold_gc_spot",
-        "gold_gld_pc_ratio"
-      ],
-      "hoursOpen": 9,
-      "hoursToExpiry": 111,
-      "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.075,
-      "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 9.0h, requires at least 12h."
-    },
-    {
-      "positionId": "T-1789075720480-f482",
-      "signalType": "FUNDING_EXTREME_LONG",
-      "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [
-        "gold_gc_spot",
-        "gold_hl_funding_ann"
-      ],
-      "hoursOpen": 2.99,
-      "hoursToExpiry": 69.01,
-      "plannedHoldHours": 72,
-      "elapsedHoldPct": 0.0416,
-      "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 3.0h, requires at least 12h."
-    }
-  ]
+  "llmCloseEligibility": []
 }
