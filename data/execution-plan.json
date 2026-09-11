@@ -1,29 +1,44 @@
 {
-  "generatedAt": "2026-09-11T13:29:24.621Z",
+  "generatedAt": "2026-09-11T15:28:54.689Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [
+  "llmCloses": [],
+  "entrySignals": [
     {
-      "action": "close",
-      "positionId": "T-1789075720480-f482",
+      "type": "PC_RATIO_EXTREME_HIGH",
       "asset": "GOLD",
-      "venue": "hyperliquid",
-      "direction": "short",
-      "closeReasonCategory": "thesis_invalidated",
-      "evidenceColumns": [
-        "gold_hl_funding_ann",
-        "gold_gc_spot"
-      ],
-      "thesis": "FUNDING_EXTREME_LONG short entered on gold HL funding > +15% annualized. Since open, gold HL funding fell from 69.04% to 6.59%, crossing back below the entry threshold and signaling the crowded-long unwind has normalized. Spot gold also rose +1.41% against the short. The signal's own input has round-tripped past invalidation."
+      "venue": "spot",
+      "direction": "long",
+      "strength": 0.15000000000000013,
+      "confidence": 0.07610288807884855,
+      "thesis": "GOLD P/C ratio 1.32 — heavy put buying → contrarian long.",
+      "hypothesisId": null,
+      "entryPrice": 4373,
+      "targetPct": 4,
+      "stopPct": 1.5,
+      "expiryDays": 5
+    },
+    {
+      "type": "PC_RATIO_EXTREME_HIGH",
+      "asset": "OIL",
+      "venue": "spot",
+      "direction": "long",
+      "strength": 0.030000000000000027,
+      "confidence": 0.01522057761576971,
+      "thesis": "OIL P/C ratio 1.22 — heavy put buying → contrarian long.",
+      "hypothesisId": null,
+      "entryPrice": 96.3,
+      "targetPct": 4,
+      "stopPct": 1.5,
+      "expiryDays": 5
     }
   ],
-  "entrySignals": [],
   "rejectedLlmActions": [],
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
