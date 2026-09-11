@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-11T21:28:27.213Z",
+  "generatedAt": "2026-09-11T22:28:22.767Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,7 +12,7 @@
       "confidence": 0.15117380824531867,
       "thesis": "BTC P/C ratio 0.41 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 77356,
+      "entryPrice": 77178,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -27,7 +27,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 77356,
+      "entryPrice": 77178,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -56,19 +56,22 @@
         "spot_venue"
       ],
       "current": {
-        "totalGross": 6,
-        "totalNet": 4,
+        "totalGross": 21,
+        "totalNet": 19,
         "byAsset": {
           "BTC": -1,
-          "BX": 5
+          "BX": 5,
+          "CBRS": 5,
+          "DKNG": 5,
+          "EBAY": 5
         },
         "bySignalType": {
           "PC_RATIO_EXTREME_LOW": -1,
-          "WEEKEND_HL_FUNDING_REVERSION_LONG": 5
+          "WEEKEND_HL_FUNDING_REVERSION_LONG": 20
         },
         "byVenue": {
           "spot": -1,
-          "hyperliquid": 5
+          "hyperliquid": 20
         },
         "byCluster": {
           "btc_delta": -1,
@@ -76,24 +79,30 @@
           "risk_on": -1,
           "spot_venue": -1,
           "bx_delta": 5,
-          "funding_reversion": 5,
-          "hyperliquid_venue": 5
+          "funding_reversion": 20,
+          "hyperliquid_venue": 20,
+          "cbrs_delta": 5,
+          "dkng_delta": 5,
+          "ebay_delta": 5
         }
       },
       "afterCandidate": {
-        "totalGross": 6,
-        "totalNet": 4,
+        "totalGross": 21,
+        "totalNet": 19,
         "byAsset": {
           "BTC": -1,
-          "BX": 5
+          "BX": 5,
+          "CBRS": 5,
+          "DKNG": 5,
+          "EBAY": 5
         },
         "bySignalType": {
           "PC_RATIO_EXTREME_LOW": -1,
-          "WEEKEND_HL_FUNDING_REVERSION_LONG": 5
+          "WEEKEND_HL_FUNDING_REVERSION_LONG": 20
         },
         "byVenue": {
           "spot": -1,
-          "hyperliquid": 5
+          "hyperliquid": 20
         },
         "byCluster": {
           "btc_delta": -1,
@@ -101,8 +110,11 @@
           "risk_on": -1,
           "spot_venue": -1,
           "bx_delta": 5,
-          "funding_reversion": 5,
-          "hyperliquid_venue": 5
+          "funding_reversion": 20,
+          "hyperliquid_venue": 20,
+          "cbrs_delta": 5,
+          "dkng_delta": 5,
+          "ebay_delta": 5
         }
       },
       "warnings": []
@@ -120,7 +132,9 @@
       "enforcedLiveSize": 1,
       "wouldResize": true,
       "edgePts": null,
-      "alerts": [],
+      "alerts": [
+        "cluster exposure 20.00 > alert cap 5.00"
+      ],
       "notes": [
         "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
       ]
@@ -139,17 +153,65 @@
         "btc_spot",
         "btc_ibit_pc_ratio"
       ],
-      "hoursOpen": 5,
-      "hoursToExpiry": 115,
+      "hoursOpen": 6,
+      "hoursToExpiry": 114,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.0416,
+      "elapsedHoldPct": 0.05,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 5.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 6.0h, requires at least 12h."
     },
     {
       "positionId": "WF-1789162106033-BX-l766",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "asset": "BX",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [],
+      "hoursOpen": 1,
+      "hoursToExpiry": 23,
+      "plannedHoldHours": 24,
+      "elapsedHoldPct": 0.0416,
+      "minHoldHours": 12,
+      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+    },
+    {
+      "positionId": "WF-1789165701507-CBRS-2et4",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "asset": "CBRS",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [],
+      "hoursOpen": 0,
+      "hoursToExpiry": 24,
+      "plannedHoldHours": 24,
+      "elapsedHoldPct": 0,
+      "minHoldHours": 12,
+      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+    },
+    {
+      "positionId": "WF-1789165701510-DKNG-qi37",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "asset": "DKNG",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [],
+      "hoursOpen": 0,
+      "hoursToExpiry": 24,
+      "plannedHoldHours": 24,
+      "elapsedHoldPct": 0,
+      "minHoldHours": 12,
+      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+    },
+    {
+      "positionId": "WF-1789165701510-EBAY-qvu2",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "asset": "EBAY",
       "venue": "hyperliquid",
       "direction": "long",
       "allowed": false,
