@@ -1,47 +1,30 @@
 {
-  "generatedAt": "2026-09-11T06:28:31.581Z",
+  "generatedAt": "2026-09-11T07:28:19.587Z",
   "dataFreshness": {
-    "valuationRows": 2910,
-    "latestValuationAt": "2026-09-11T06",
-    "macroRows": 2908,
+    "valuationRows": 2911,
+    "latestValuationAt": "2026-09-11T07",
+    "macroRows": 2909,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-09-11T06"
+    "latestInstrumentSnapshotAt": "2026-09-11T07"
   },
   "portfolio": {
-    "cash": 101.7902,
-    "openPositions": 2,
-    "realizedPnl": 7.0299,
-    "totalTrades": 949,
-    "winRatePct": 64.4,
-    "unrealizedPnl": -0.0095
+    "cash": 102.7872,
+    "openPositions": 1,
+    "realizedPnl": 7.0269,
+    "totalTrades": 950,
+    "winRatePct": 64.3,
+    "unrealizedPnl": -0.0054
   },
   "openPositions": [
-    {
-      "positionId": "T-1789054112407-n7k2",
-      "asset": "GOLD",
-      "venue": "spot",
-      "direction": "long",
-      "signalType": "PC_RATIO_EXTREME_HIGH",
-      "pnlPct": -0.3,
-      "currentPrice": 4356,
-      "underlyingPrice": 4356,
-      "targetPct": 3,
-      "stopPct": 1.5,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": [
-        "gold_gc_spot",
-        "gold_gld_pc_ratio"
-      ]
-    },
     {
       "positionId": "T-1789075720480-f482",
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
       "signalType": "FUNDING_EXTREME_LONG",
-      "pnlPct": -0.66,
-      "currentPrice": 4356,
-      "underlyingPrice": 4356,
+      "pnlPct": -0.54,
+      "currentPrice": 4351,
+      "underlyingPrice": 4351,
       "targetPct": 5,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -150,10 +133,10 @@
     {
       "type": "PC_RATIO_EXTREME_HIGH",
       "enabled": true,
-      "weight": 0.507,
-      "trades": 52,
+      "weight": 0.5074,
+      "trades": 53,
       "wins": 27,
-      "avgPnlPct": 0.2117,
+      "avgPnlPct": 0.2021,
       "disabledAssets": [
         "BTC"
       ]
@@ -587,7 +570,7 @@
     "positiveMomentum24hPct": 1.5,
     "llmTradeExpiryDays": 14,
     "momentumLongExpiryDays": 21,
-    "weekendFundingEntryPct": -0.5,
+    "weekendFundingEntryPct": -0.45,
     "signalRisk": {
       "PM_IV_GT_OPT_IV": {
         "targetPct": null,
@@ -654,6 +637,6 @@
         "stopPct": 20
       }
     },
-    "updatedAt": "2026-08-29T07:28:27.098Z"
+    "updatedAt": "2026-09-11T07:28:19.099Z"
   }
 }

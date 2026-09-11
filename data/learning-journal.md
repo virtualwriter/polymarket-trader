@@ -1123,3 +1123,40 @@ Closed the GOLD spot PC_RATIO_EXTREME_HIGH long because the signal input (gold_g
 
 ---
 
+
+### Nightly research advice ingested (generatedAt=2026-09-11T07:11:08.262Z, model=deepseek-v4-pro)
+- Hypotheses added: 4 (rejected 6); reviews applied: 6; invalidated assumptions learned: 1; param updates: weekendFundingEntryPct: -0.5 -> -0.45.
+- Strategy review: The broad weekend HL funding reversion book is the main working system: 612 clean live trades at 69% wins and +0.18% avg, with 253 shadow trades at 74% wins and +0.99% avg. The Polymarket YES-overpricing edge also keeps validating: ONE_TOUCH_HIGH_EDGE_NO live is 4/4, gated FIND-0020 shadows are 116/187 at +2.23% avg, and manual IV-touch rich-NO shadows are 9/10. The failures are concentrated in static single-asset weekend funding variants, PM proxy shorts, and contract-edge setups misgraded as spot-directional bets; the open book is small but currently has offsetting GOLD long spot vs GOLD sho
+- Nightly journal: Allocation follows the yield scoreboard: mined FIND-authored hypotheses have materially lower cost per survivor than refinements (53.1 vs 144 tests per survivor), so tonight is weighted toward panel NO-edge siblings, plus only mechanical refinements for the worst static weekend funding shadows. The GOLD one-touch family is re-authored as a contract premium fade because the spot-decline grading was invalid. Weekend funding entry is raised one increment from -0.50 to -0.45 based on weekend-clustered shadow evidence: shadow weekends are 3/3 positive with mean +83.82%, and the digest says 188/253 
+### 2026-09-11 07:28 UTC
+
+**Portfolio:** $103.79 total | Cash $102.79 | 1 open | P&L $7.0269 | 64% win rate (950 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 27 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 4 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] oil_hl_funding_ann = -234.23 is -2.7 std devs from mean since 2026-04-28 (-16.33 ± 80.39)
+- [anomaly] hype_med_max = 122.2 is 2.3 std devs from mean (84.06 ± 16.77)
+- [anomaly] btc_med_min = 68333 is 2.0 std devs from mean (54552.59 ± 6782.61)
+
+**Blocked signal learning:**
+- Open blocked shadows: 31
+- Resolved blocked shadows: 1020 (523 wins / 497 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have hit stop (-3.64%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have expired (+7.30%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have expired (+154.38%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have expired (+83.09%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h since last call; daily budget 3/12; next scheduled 2026-09-11T09:28:19.733Z). Mechanical cycle ran normally._
+
+---
+

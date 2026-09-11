@@ -1,34 +1,21 @@
 {
-  "generatedAt": "2026-09-11T06:29:37.827Z",
+  "generatedAt": "2026-09-11T07:28:19.741Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [
-    {
-      "action": "close",
-      "positionId": "T-1789054112407-n7k2",
-      "asset": "GOLD",
-      "venue": "spot",
-      "direction": "long",
-      "closeReasonCategory": "thesis_invalidated",
-      "evidenceColumns": [
-        "gold_gld_pc_ratio"
-      ],
-      "thesis": "Entry relied on GLD P/C ratio at ~2.05 as an extreme contrarian long signal; P/C has collapsed to 1.128 and held there, no longer supporting the heavy-put-buying reversal thesis."
-    }
-  ],
+  "llmCloses": [],
   "entrySignals": [
     {
       "type": "FUNDING_EXTREME_LONG",
       "asset": "GOLD",
       "venue": "hyperliquid",
       "direction": "short",
-      "strength": 0.09828571428571432,
-      "confidence": 0.04779978355089163,
-      "thesis": "GOLD HL funding 18.4% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
+      "strength": 0.21885714285714286,
+      "confidence": 0.10643789011622957,
+      "thesis": "GOLD HL funding 22.7% annualized — crowded longs. Fade. (Entry trigger: funding > +15%; consider thesis-invalidated only when funding has been inside ±15% for ≥2 consecutive hourly snapshots OR has flipped sign.)",
       "hypothesisId": null,
-      "entryPrice": 4356,
+      "entryPrice": 4351,
       "targetPct": 5,
       "stopPct": 2,
       "expiryDays": 3,
@@ -39,6 +26,6 @@
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
