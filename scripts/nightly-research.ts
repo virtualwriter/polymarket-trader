@@ -7,6 +7,7 @@ import { runAdversarialReviewStep } from "./lib/research/adversarial-review.js";
 import { runNightlyExplorerStep } from "./lib/research/nightly-explorer.js";
 import { runNightlyLlmStep } from "./lib/research/nightly-llm.js";
 import { appendYieldScoreboard } from "./lib/research/yield-scoreboard.js";
+import { updateRepresentationLedger } from "./lib/research/representation-ledger.js";
 
 /**
  * Nightly research orchestrator (July 2026 infrastructure plan, Phase 4-5).
@@ -108,6 +109,19 @@ async function stepAdversarialReview(): Promise<void> {
   console.log(`[nightly-research] adversarial-review: ${result.reviewed}/${result.candidates} candidate group(s) reviewed${result.skipped ? " (skipped)" : ""}`);
 }
 
+// Lifecycle ledger for explorer-invented representations: proposals, miner
+// acceptance/rejection, and cumulative FDR budget vs holdout-confirmed
+// survivors. Runs before the scoreboard so today's row sees today's ledger.
+function stepRepresentationLedger(): void {
+  const result = updateRepresentationLedger(DATA_DIR);
+  const s = result.summary;
+  console.log(
+    `[nightly-research] representation-ledger: ${result.entries} representation(s) tracked `
+    + `(accepted=${s.accepted}, rejected=${s.rejectedValidation}, holdoutConfirmed=${s.holdoutConfirmed}, `
+    + `testsSpent=${s.testsSpentTotal}, survivors=${s.survivorsTotal})`,
+  );
+}
+
 // One row per day of per-origin discovery yield (mined vs refinement vs
 // explorer): the running evidence for the explorer-vs-pipeline comparison.
 function stepYieldScoreboard(): void {
@@ -131,6 +145,7 @@ async function main(): Promise<void> {
     ["nightly-llm", stepNightlyLlm],
     ["nightly-explorer", stepNightlyExplorer],
     ["adversarial-review", stepAdversarialReview],
+    ["representation-ledger", stepRepresentationLedger],
     ["yield-scoreboard", stepYieldScoreboard],
   ] as const) {
     const failure = await runStep(name, fn);

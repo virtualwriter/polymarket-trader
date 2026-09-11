@@ -23,6 +23,7 @@
 
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { summarizeLedger, type RepresentationLedger, type RepresentationSummary } from "./representation-ledger.js";
 
 export type OriginCohort = "mined" | "refinement" | "explorer" | "legacy";
 
@@ -86,6 +87,9 @@ export interface YieldSnapshot {
   /** Kept for continuity with early rows; superseded by explorerNovelty. */
   explorerNovelConditionKeys: string[];
   explorerNovelty: ExplorerNovelty;
+  /** The second learning-to-learn axis: is representation INVENTION itself
+   * productive? Summarized from data/representation-ledger.json when present. */
+  representations?: RepresentationSummary;
 }
 
 export function cohortForHypothesis(h: ScoreboardHypothesis): OriginCohort {
@@ -201,6 +205,14 @@ export function appendYieldScoreboard(dataDir: string, now: Date = new Date()): 
 
   const date = now.toISOString().slice(0, 10);
   const snapshot = buildYieldSnapshot(hypotheses, date);
+
+  const ledgerPath = join(dataDir, "representation-ledger.json");
+  if (existsSync(ledgerPath)) {
+    try {
+      const ledger = JSON.parse(readFileSync(ledgerPath, "utf-8")) as RepresentationLedger;
+      if (Array.isArray(ledger?.entries)) snapshot.representations = summarizeLedger(ledger.entries);
+    } catch { /* scoreboard row simply omits the block */ }
+  }
 
   const scoreboardPath = join(dataDir, "research-yield-scoreboard.json");
   let rows: YieldSnapshot[] = [];

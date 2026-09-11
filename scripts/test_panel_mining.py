@@ -432,6 +432,13 @@ class DerivedFeaturesTest(unittest.TestCase):
         self.assertTrue(all(not c["catalogCovered"] for c in derived_hits))
         covered_via_derived = [c for c in result["covered"] if "x_turnover" in c["dims"]]
         self.assertEqual(covered_via_derived, [])
+        # Lifecycle stats feed the representation ledger: budget consumed and
+        # holdout-confirmed survivors, per feature.
+        stats = {s["name"]: s for s in result["derivedFeatureStats"]}
+        self.assertIn("x_turnover", stats)
+        self.assertGreater(stats["x_turnover"]["strataTested"], 0)
+        self.assertEqual(stats["x_turnover"]["survivors"], len(derived_hits))
+        self.assertIsNotNone(stats["x_turnover"]["bestQ"])
 
     def test_proposed_combo_may_reference_derived_feature(self) -> None:
         import tempfile

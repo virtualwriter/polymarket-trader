@@ -308,6 +308,31 @@ def load_proposed_features(
     return out
 
 
+def proposed_feature_names(path: Path) -> list[str]:
+    """Normalized x_ names of every entry in the proposals file, valid or not,
+    so the representation ledger can mark validation rejections explicitly."""
+    if not path.is_file():
+        return []
+    try:
+        raw = json.loads(path.read_text())
+    except (json.JSONDecodeError, OSError):
+        return []
+    proposals = raw.get("proposals") if isinstance(raw, dict) else None
+    if not isinstance(proposals, list):
+        return []
+    names: list[str] = []
+    for item in proposals:
+        if not isinstance(item, dict):
+            continue
+        name = str(item.get("name") or "").strip().lower()
+        if not name:
+            continue
+        full = name if name.startswith("x_") else f"x_{name}"
+        if full not in names:
+            names.append(full)
+    return names
+
+
 def load_proposed_stratifications(
     path: Path, feature_names: set[str]
 ) -> list[tuple[str, ...]]:
@@ -496,11 +521,28 @@ def mine_panel(
 
     covered = [c for c in candidates if c["catalogCovered"]][:max_findings]
     gaps = [c for c in candidates if not c["catalogCovered"]]
+
+    # Per-derived-feature lifecycle stats: how much statistical budget each
+    # invented representation consumed and what it earned. Feeds the
+    # representation ledger ("tests spent per confirmed representation").
+    derived_stats = []
+    for f in extra_features or []:
+        involving = [t for t in tested if f.name in t["dims"]]
+        surviving = [c for c in candidates if f.name in c["dims"]]
+        qs = [t["qValue"] for t in involving if t.get("qValue") is not None]
+        derived_stats.append({
+            "name": f.name,
+            "strataTested": len(involving),
+            "survivors": len(surviving),
+            "bestQ": round(min(qs), 6) if qs else None,
+        })
+
     return {
         "tested": len(tested),
         "candidates": candidates,
         "covered": covered,
         "gaps": gaps,
+        "derivedFeatureStats": derived_stats,
     }
 
 
@@ -645,6 +687,10 @@ def main() -> int:
             {"name": f.name, "transform": f.transform, "columns": f.columns, "edges": f.edges}
             for f in derived
         ],
+        "rejectedDerivedFeatures": sorted(
+            set(proposed_feature_names(DEFAULT_PROPOSED_FEATURES)) - {f.name for f in derived}
+        ),
+        "derivedFeatureStats": result.get("derivedFeatureStats", []),
         "registered": registered,
         "created": created,
         "updated": updated,
