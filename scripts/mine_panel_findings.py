@@ -19,6 +19,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import re
 import subprocess
 import sys
 from collections import defaultdict
@@ -55,6 +56,30 @@ DEFAULT_REPORT = REPO / "data" / "panel-mine-report.json"
 # accepted combos run through the identical stats pipeline as built-ins.
 DEFAULT_PROPOSED_STRATS = REPO / "data" / "miner-proposed-strats.json"
 MAX_PROPOSED_STRATS = 10
+# Derived features proposed by the nightly explorer: new panel columns as
+# transforms of raw numeric columns ("new representations"). Materialized at
+# load, bucketed, and mined under the identical holdout/BH pipeline. They
+# carry no catalog key, so anything they find routes to coverage gaps — the
+# evidence trail for adding a real key — never straight to a FIND.
+DEFAULT_PROPOSED_FEATURES = REPO / "data" / "miner-proposed-features.json"
+MAX_PROPOSED_FEATURES = 4
+DERIVED_TRANSFORM_ARITY = {"ratio": 2, "diff": 2, "product": 2, "abs": 1, "log10": 1}
+# Raw numeric panel columns a derived feature may read. Mirrors the numeric
+# subset of PANEL_FEATURE_COLUMNS; the explorer-side sanitizer keeps a copy.
+DERIVABLE_NUMERIC_COLUMNS = frozenset({
+    "strike", "spot", "dte_days", "yes_ask", "yes_bid", "pm_spread",
+    "liquidity", "volume", "sell_yes_edge_pts", "buy_yes_edge_pts",
+    "adjusted_no_gap_pts", "pm_iv", "option_iv", "pm_iv_minus_opt_iv_pts",
+    "edge_pts_per_dte", "pm_to_underlying_cap_ratio", "settlement_overround",
+    "settlement_skew_yes", "smart_flow_net_yes", "perp_funding_ann",
+    "perp_basis_pct", "moneyness_pct", "btc_funding_ann", "spot_ret_24h_pct",
+    "macro_composite", "macro_coverage", "fed_score", "iran_score",
+    "oil_macro_score",
+})
+DERIVED_NAME_RE = re.compile(r"^[a-z][a-z0-9_]{0,24}$")
+# A derived feature must produce this many non-null values on the current
+# panel to be minable at all (mirrors MIN_N_DISCOVERY).
+MIN_DERIVED_COVERAGE = 30
 MODEL = "panel_miner_v1"
 FEATURE_SET = "outcome_panel_v1"
 SCORING_VERSION = "panel_mine_v1"
@@ -140,6 +165,149 @@ def render_condition(conditions: dict[str, Any] | None) -> str:
     return " AND ".join(f"{key} {expr}" for key, expr in conditions.items())
 
 
+def _derived_value(transform: str, columns: list[str], row: dict[str, Any]) -> float | None:
+    a = fnum(row.get(columns[0]))
+    if a is None:
+        return None
+    if transform == "abs":
+        return abs(a)
+    if transform == "log10":
+        return math.log10(a) if a > 0 else None
+    b = fnum(row.get(columns[1]))
+    if b is None:
+        return None
+    if transform == "ratio":
+        return a / b if abs(b) > 1e-12 else None
+    if transform == "diff":
+        return a - b
+    if transform == "product":
+        return a * b
+    return None
+
+
+class DerivedPanelFeature:
+    """Duck-types PanelFeature (name / bucket(row) / condition_for_bucket /
+    catalog_key) but computes its value from raw columns instead of reading
+    one. catalog_key is always None: findings through derived features are
+    coverage-gap evidence for a new representation, never directly authorable.
+    """
+
+    catalog_key = None
+
+    def __init__(self, name: str, transform: str, columns: list[str], edges: list[float]) -> None:
+        self.name = name
+        self.transform = transform
+        self.columns = list(columns)
+        self.edges = list(edges)
+        self.labels = self._labels_for_edges(edges)
+
+    @staticmethod
+    def _labels_for_edges(edges: list[float]) -> list[str]:
+        def fmt(x: float) -> str:
+            return f"{x:.4g}"
+        labels = [f"<{fmt(edges[0])}"]
+        labels.extend(f"{fmt(lo)}-{fmt(hi)}" for lo, hi in zip(edges, edges[1:]))
+        labels.append(f">={fmt(edges[-1])}")
+        return labels
+
+    def value(self, row: dict[str, Any]) -> float | None:
+        return _derived_value(self.transform, self.columns, row)
+
+    def bucket(self, row: dict[str, Any]) -> str | None:
+        value = self.value(row)
+        if value is None:
+            return None
+        for edge, label in zip(self.edges, self.labels):
+            if value < edge:
+                return label
+        return self.labels[-1]
+
+    def condition_for_bucket(self, bucket: str) -> None:
+        return None
+
+
+def _tercile_edges(values: list[float]) -> list[float] | None:
+    """Data-driven default bucketing when the explorer supplies no edges."""
+    if len(values) < MIN_DERIVED_COVERAGE:
+        return None
+    ordered = sorted(values)
+    lo = ordered[len(ordered) // 3]
+    hi = ordered[(len(ordered) * 2) // 3]
+    if not (lo < hi):  # degenerate distribution — nothing to stratify
+        return None
+    return [lo, hi]
+
+
+def load_proposed_features(
+    path: Path, panel_rows: list[dict[str, Any]]
+) -> list[DerivedPanelFeature]:
+    """Explorer-proposed derived features, validated hard: known transform,
+    correct arity, whitelisted raw columns, sane name, workable bucket edges,
+    and enough non-null coverage on the actual panel to be minable. Bad
+    entries drop silently — the explorer is advisory, never load-bearing.
+    """
+    if not path.is_file():
+        return []
+    try:
+        raw = json.loads(path.read_text())
+    except (json.JSONDecodeError, OSError):
+        return []
+    proposals = raw.get("proposals") if isinstance(raw, dict) else None
+    if not isinstance(proposals, list):
+        return []
+    built_in_names = {f.name for f in panel_features()}
+    out: list[DerivedPanelFeature] = []
+    seen: set[tuple[str, tuple[str, ...]]] = set()
+    for item in proposals:
+        if len(out) >= MAX_PROPOSED_FEATURES:
+            break
+        if not isinstance(item, dict):
+            continue
+        transform = str(item.get("transform") or "")
+        arity = DERIVED_TRANSFORM_ARITY.get(transform)
+        columns = item.get("columns")
+        if arity is None or not isinstance(columns, list) or len(columns) != arity:
+            continue
+        if not all(isinstance(c, str) and c in DERIVABLE_NUMERIC_COLUMNS for c in columns):
+            continue
+        name = str(item.get("name") or "").strip().lower()
+        if not DERIVED_NAME_RE.match(name):
+            continue
+        # Prefix keeps explorer-named features from colliding with built-ins
+        # (and makes their origin obvious in cluster keys and reports).
+        full_name = f"x_{name}" if not name.startswith("x_") else name
+        if full_name in built_in_names:
+            continue
+        key = (transform, tuple(columns))
+        if key in seen or any(f.name == full_name for f in out):
+            continue
+        edges_raw = item.get("edges")
+        edges: list[float] | None = None
+        if isinstance(edges_raw, list) and 1 <= len(edges_raw) <= 4:
+            try:
+                candidate = [float(e) for e in edges_raw]
+            except (TypeError, ValueError):
+                candidate = []
+            if candidate and all(x < y for x, y in zip(candidate, candidate[1:])) \
+                    and all(math.isfinite(e) for e in candidate):
+                edges = candidate
+        if edges is None:
+            values = [
+                v for r in panel_rows
+                if (v := _derived_value(transform, [str(c) for c in columns], r)) is not None
+            ]
+            edges = _tercile_edges(values)
+            if edges is None:
+                continue
+        feature = DerivedPanelFeature(full_name, transform, [str(c) for c in columns], edges)
+        coverage = sum(1 for r in panel_rows if feature.value(r) is not None)
+        if coverage < MIN_DERIVED_COVERAGE:
+            continue
+        seen.add(key)
+        out.append(feature)
+    return out
+
+
 def load_proposed_stratifications(
     path: Path, feature_names: set[str]
 ) -> list[tuple[str, ...]]:
@@ -181,8 +349,12 @@ def mine_panel(
     panel_rows: list[dict[str, Any]],
     max_findings: int,
     proposed_strats: list[tuple[str, ...]] | None = None,
+    extra_features: list[DerivedPanelFeature] | None = None,
 ) -> dict[str, Any]:
-    features = panel_features()
+    # Explorer-proposed derived features join the registry as first-class
+    # features: mined as single strata automatically, referencable in proposed
+    # combos, and corrected by the same BH family as every built-in test.
+    features = panel_features() + list(extra_features or [])
     feature_by_name = {f.name: f for f in features}
 
     tested: list[dict[str, Any]] = []
@@ -409,12 +581,17 @@ def main() -> int:
         return 0
 
     panel_rows = load_panel(args.panel)
-    proposed = load_proposed_stratifications(
-        DEFAULT_PROPOSED_STRATS, {f.name for f in panel_features()}
-    )
+    derived = load_proposed_features(DEFAULT_PROPOSED_FEATURES, panel_rows)
+    if derived:
+        described = [f.name + "=" + f.transform + "(" + ",".join(f.columns) + ")" for f in derived]
+        print(f"explorer-proposed derived features accepted: {described}")
+    # Proposed combos may reference derived features, so validate against the
+    # extended registry.
+    feature_names = {f.name for f in panel_features()} | {f.name for f in derived}
+    proposed = load_proposed_stratifications(DEFAULT_PROPOSED_STRATS, feature_names)
     if proposed:
         print(f"explorer-proposed stratifications accepted: {['+'.join(c) for c in proposed]}")
-    result = mine_panel(panel_rows, args.max_findings, proposed)
+    result = mine_panel(panel_rows, args.max_findings, proposed, derived)
     git_sha = git_sha_short()
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
@@ -464,6 +641,10 @@ def main() -> int:
         "panel": str(args.panel),
         "testsRun": result["tested"],
         "candidates": len(result["candidates"]),
+        "proposedDerivedFeatures": [
+            {"name": f.name, "transform": f.transform, "columns": f.columns, "edges": f.edges}
+            for f in derived
+        ],
         "registered": registered,
         "created": created,
         "updated": updated,

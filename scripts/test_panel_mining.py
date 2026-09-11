@@ -312,5 +312,141 @@ class ProposedStratificationsTest(unittest.TestCase):
             self.assertEqual(miner.load_proposed_stratifications(path, feature_names), [])
 
 
+class DerivedFeaturesTest(unittest.TestCase):
+    """Explorer-proposed derived features: validated, materialized, mined
+    through the identical pipeline, always coverage-gap (no catalog key)."""
+
+    def _write(self, tmp_path: Path, payload) -> Path:
+        import json
+
+        path = tmp_path / "miner-proposed-features.json"
+        path.write_text(json.dumps(payload))
+        return path
+
+    def _rows(self, n_days: int = 20) -> list[dict]:
+        rows = []
+        for d in range(1, n_days + 1):
+            day_str = date.fromordinal(date(2026, 6, 1).toordinal() + d - 1).isoformat()
+            for k in range(3):
+                rows.append(
+                    panel_row(
+                        day_str, f"m{k}-{d}", 1.0,
+                        liquidity=str(1000.0 * (k + 1)),
+                        volume=str(500.0 * (d % 5 + 1)),
+                    )
+                )
+        return rows
+
+    def test_accepts_valid_and_drops_junk(self) -> None:
+        import tempfile
+
+        rows = self._rows()
+        with tempfile.TemporaryDirectory() as tmp:
+            path = self._write(
+                Path(tmp),
+                {
+                    "proposals": [
+                        {"name": "turnover", "transform": "ratio",
+                         "columns": ["volume", "liquidity"], "rationale": "turnover proxy"},
+                        {"name": "dup", "transform": "ratio",
+                         "columns": ["volume", "liquidity"], "rationale": "same transform+cols"},
+                        {"name": "bad_col", "transform": "ratio",
+                         "columns": ["volume", "not_a_column"], "rationale": ""},
+                        {"name": "bad_arity", "transform": "abs",
+                         "columns": ["volume", "liquidity"], "rationale": ""},
+                        {"name": "bad transform", "transform": "sqrt",
+                         "columns": ["volume"], "rationale": ""},
+                        {"name": "UPPER NAME!!", "transform": "abs",
+                         "columns": ["moneyness_pct"], "rationale": "dropped: bad name"},
+                        {"name": "with_edges", "transform": "diff",
+                         "columns": ["liquidity", "volume"],
+                         "edges": [0.0, 1500.0], "rationale": "explicit edges"},
+                    ]
+                },
+            )
+            feats = miner.load_proposed_features(path, rows)
+        names = [f.name for f in feats]
+        self.assertEqual(names, ["x_turnover", "x_with_edges"])
+        self.assertEqual(feats[1].edges, [0.0, 1500.0])
+        # Tercile edges were derived from the data for the ratio feature.
+        self.assertEqual(len(feats[0].edges), 2)
+        self.assertLess(feats[0].edges[0], feats[0].edges[1])
+
+    def test_derived_bucketing_and_values(self) -> None:
+        feat = miner.DerivedPanelFeature("x_turnover", "ratio", ["volume", "liquidity"], [0.5, 1.5])
+        self.assertAlmostEqual(feat.value({"volume": "1000", "liquidity": "2000"}), 0.5)
+        self.assertEqual(feat.bucket({"volume": "100", "liquidity": "2000"}), "<0.5")
+        self.assertEqual(feat.bucket({"volume": "2000", "liquidity": "2000"}), "0.5-1.5")
+        self.assertEqual(feat.bucket({"volume": "4000", "liquidity": "2000"}), ">=1.5")
+        self.assertIsNone(feat.bucket({"volume": "1000", "liquidity": "0"}))  # div by zero
+        self.assertIsNone(feat.bucket({"volume": "", "liquidity": "2000"}))
+        self.assertIsNone(feat.condition_for_bucket("<0.5"))
+        self.assertIsNone(feat.catalog_key)
+
+    def test_low_coverage_or_degenerate_features_dropped(self) -> None:
+        import tempfile
+
+        # Rows where 'volume' is always empty: no coverage; and where the
+        # derived value is constant: degenerate terciles.
+        rows = [panel_row("2026-06-01", f"m{i}", 1.0, liquidity="1000", volume="")
+                for i in range(60)]
+        const_rows = [panel_row("2026-06-01", f"c{i}", 1.0, liquidity="1000", volume="1000")
+                      for i in range(60)]
+        with tempfile.TemporaryDirectory() as tmp:
+            path = self._write(
+                Path(tmp),
+                {"proposals": [{"name": "t", "transform": "ratio",
+                                "columns": ["volume", "liquidity"], "rationale": ""}]},
+            )
+            self.assertEqual(miner.load_proposed_features(path, rows), [])
+            self.assertEqual(miner.load_proposed_features(path, const_rows), [])
+
+    def test_mined_strata_via_derived_feature_are_coverage_gaps(self) -> None:
+        """A planted edge visible only through a derived feature must be found
+        — and must land in gaps (catalogCovered=False), never covered."""
+        import random
+
+        rng = random.Random(3)
+        rows = []
+        for d in range(1, 61):
+            day_str = date.fromordinal(date(2026, 6, 1).toordinal() + d - 1).isoformat()
+            for k in range(4):
+                hot = k % 2 == 0  # high-turnover contracts carry the edge
+                rows.append(
+                    panel_row(
+                        day_str, f"m{k}-{d}",
+                        (4.0 if hot else 0.0) + rng.gauss(0, 4.0),
+                        # Same edge bucket everywhere so raw features can't cut it.
+                        sell_yes_edge_pts="5.0",
+                        liquidity="10000",
+                        volume="30000" if hot else "1000",
+                    )
+                )
+        feat = miner.DerivedPanelFeature("x_turnover", "ratio", ["volume", "liquidity"], [1.0])
+        result = miner.mine_panel(rows, max_findings=10, extra_features=[feat])
+        derived_hits = [
+            c for c in (result["candidates"])
+            if "x_turnover" in c["dims"]
+        ]
+        self.assertTrue(derived_hits, "planted turnover edge should surface")
+        self.assertTrue(all(not c["catalogCovered"] for c in derived_hits))
+        covered_via_derived = [c for c in result["covered"] if "x_turnover" in c["dims"]]
+        self.assertEqual(covered_via_derived, [])
+
+    def test_proposed_combo_may_reference_derived_feature(self) -> None:
+        import tempfile
+
+        derived_names = {"x_turnover"}
+        feature_names = {f.name for f in panel_features()} | derived_names
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / "miner-proposed-strats.json"
+            import json
+            path.write_text(json.dumps(
+                {"proposals": [{"features": ["x_turnover", "price"], "rationale": "turnover x price"}]}
+            ))
+            combos = miner.load_proposed_stratifications(path, feature_names)
+        self.assertEqual(combos, [("x_turnover", "price")])
+
+
 if __name__ == "__main__":
     unittest.main()

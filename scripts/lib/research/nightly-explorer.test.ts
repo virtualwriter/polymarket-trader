@@ -3,9 +3,11 @@ import {
   buildDatasetInventory,
   buildExplorerPrompt,
   EXPLORER_FOCUS_ROTATION,
+  EXPLORER_MAX_PROPOSED_FEATURES,
   EXPLORER_MAX_PROPOSED_HYPOTHESES,
   EXPLORER_MAX_PROPOSED_STRATS,
   explorerFocusForDate,
+  sanitizeFeatureProposals,
   sanitizeStratProposals,
 } from "./nightly-explorer.js";
 import type { ResearchDataset } from "./research-queries.js";
@@ -46,6 +48,14 @@ describe("buildExplorerPrompt", () => {
     expect(prompt).toContain("ivgap");
     expect(prompt).toContain("spotret");
   });
+
+  it("invites derived-feature proposals with the FDR warning and column whitelist", () => {
+    expect(prompt).toContain(`up to ${EXPLORER_MAX_PROPOSED_FEATURES} objects`);
+    expect(prompt).toContain("NEW REPRESENTATIONS");
+    expect(prompt).toContain("burn shared false-discovery budget");
+    expect(prompt).toContain("pm_to_underlying_cap_ratio");
+    expect(prompt).toContain("coverage-gap evidence");
+  });
 });
 
 describe("sanitizeStratProposals", () => {
@@ -79,6 +89,56 @@ describe("sanitizeStratProposals", () => {
   it("returns empty on non-array input", () => {
     expect(sanitizeStratProposals(undefined)).toEqual([]);
     expect(sanitizeStratProposals({})).toEqual([]);
+  });
+
+  it("accepts combos referencing proposed derived features by x_ name", () => {
+    const out = sanitizeStratProposals([
+      { features: ["x_turnover", "price"], rationale: "derived x price" },
+      { features: ["x_BadName!", "price"], rationale: "malformed derived name -> too short" },
+    ]);
+    expect(out).toEqual([{ features: ["x_turnover", "price"], rationale: "derived x price" }]);
+  });
+});
+
+describe("sanitizeFeatureProposals", () => {
+  it("keeps valid transforms, drops bad columns/arity/transform/name, dedupes", () => {
+    const out = sanitizeFeatureProposals([
+      { name: "turnover", transform: "ratio", columns: ["volume", "liquidity"], rationale: "turnover proxy" },
+      { name: "dup", transform: "ratio", columns: ["volume", "liquidity"], rationale: "same transform+cols" },
+      { name: "bad_col", transform: "ratio", columns: ["volume", "made_up"], rationale: "" },
+      { name: "bad_arity", transform: "abs", columns: ["volume", "liquidity"], rationale: "" },
+      { name: "bad_transform", transform: "sqrt", columns: ["volume"], rationale: "" },
+      { name: "  9starts_with_digit", transform: "abs", columns: ["moneyness_pct"], rationale: "" },
+      "junk",
+    ]);
+    expect(out).toEqual([
+      { name: "turnover", transform: "ratio", columns: ["volume", "liquidity"], rationale: "turnover proxy" },
+    ]);
+  });
+
+  it("validates optional edges: ascending and finite, else dropped from the proposal", () => {
+    const out = sanitizeFeatureProposals([
+      { name: "spread_abs", transform: "diff", columns: ["yes_ask", "yes_bid"], edges: [0.005, 0.02], rationale: "" },
+      { name: "bad_edges", transform: "diff", columns: ["pm_iv", "option_iv"], edges: [3, 1], rationale: "" },
+    ]);
+    expect(out).toHaveLength(2);
+    expect(out[0].edges).toEqual([0.005, 0.02]);
+    expect(out[1].edges).toBeUndefined();
+  });
+
+  it("caps at the feature budget and sanitizes names", () => {
+    const columns = ["strike", "spot", "dte_days", "yes_ask", "yes_bid", "pm_spread", "liquidity"];
+    const proposals = columns.map((c, i) => ({
+      name: `Feat ${i} Name`, transform: "abs", columns: [c], rationale: "x",
+    }));
+    const out = sanitizeFeatureProposals(proposals);
+    expect(out).toHaveLength(EXPLORER_MAX_PROPOSED_FEATURES);
+    expect(out[0].name).toBe("feat_0_name");
+  });
+
+  it("returns empty on non-array input", () => {
+    expect(sanitizeFeatureProposals(undefined)).toEqual([]);
+    expect(sanitizeFeatureProposals("nope")).toEqual([]);
   });
 });
 

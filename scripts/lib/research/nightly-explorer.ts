@@ -45,6 +45,28 @@ export const EXPLORER_MAX_ROUNDS = 4;
 export const EXPLORER_MAX_QUERIES_PER_ROUND = 8;
 export const EXPLORER_MAX_PROPOSED_HYPOTHESES = 3;
 export const EXPLORER_MAX_PROPOSED_STRATS = 8;
+export const EXPLORER_MAX_PROPOSED_FEATURES = 4;
+
+/** transform name → number of input columns (mirror of
+ * DERIVED_TRANSFORM_ARITY in scripts/mine_panel_findings.py). */
+const DERIVED_TRANSFORM_ARITY: Record<string, number> = {
+  ratio: 2, diff: 2, product: 2, abs: 1, log10: 1,
+};
+
+/** Raw numeric panel columns a derived feature may read (mirror of
+ * DERIVABLE_NUMERIC_COLUMNS in scripts/mine_panel_findings.py, which is the
+ * enforcing side — this copy pre-filters junk and feeds the prompt). */
+const DERIVABLE_PANEL_COLUMNS = [
+  "strike", "spot", "dte_days", "yes_ask", "yes_bid", "pm_spread",
+  "liquidity", "volume", "sell_yes_edge_pts", "buy_yes_edge_pts",
+  "adjusted_no_gap_pts", "pm_iv", "option_iv", "pm_iv_minus_opt_iv_pts",
+  "edge_pts_per_dte", "pm_to_underlying_cap_ratio", "settlement_overround",
+  "settlement_skew_yes", "smart_flow_net_yes", "perp_funding_ann",
+  "perp_basis_pct", "moneyness_pct", "btc_funding_ann", "spot_ret_24h_pct",
+  "macro_composite", "macro_coverage", "fed_score", "iran_score",
+  "oil_macro_score",
+] as const;
+const DERIVABLE_PANEL_COLUMN_SET = new Set<string>(DERIVABLE_PANEL_COLUMNS);
 
 /**
  * Nightly focus rotation: each night one under-explored territory gets a
@@ -90,6 +112,15 @@ export interface ExplorerAdvice {
   observations: Array<{ finding: string; evidence: string }>;
   proposedHypotheses: unknown[];
   proposedStratifications: Array<{ features: string[]; rationale: string }>;
+  proposedFeatures: FeatureProposal[];
+}
+
+export interface FeatureProposal {
+  name: string;
+  transform: string;
+  columns: string[];
+  edges?: number[];
+  rationale: string;
 }
 
 export function buildExplorerPrompt(
@@ -122,7 +153,8 @@ WHAT YOU MAY PROPOSE (final response):
 {
   "observations": [ {"finding": "<one-sentence pattern>", "evidence": "<the group stats that support it, with n>"} ],
   "proposedHypotheses": [ up to ${EXPLORER_MAX_PROPOSED_HYPOTHESES} objects: {"description", "prediction", "conditions": {<catalog keys only>}, "timeframeDays": <1-7>, "direction": "long"|"short"|"neutral", "confidence": <0.6-1>, "source": "llm"} ],
-  "proposedStratifications": [ up to ${EXPLORER_MAX_PROPOSED_STRATS} objects: {"features": [2-3 of: dir, edge, dte, price, spread, liq, stance, ivgap, nogap, dow, fund, money, macro, spotret], "rationale": "<why this combo>"} ]
+  "proposedStratifications": [ up to ${EXPLORER_MAX_PROPOSED_STRATS} objects: {"features": [2-3 of: dir, edge, dte, price, spread, liq, stance, ivgap, nogap, dow, fund, money, macro, spotret — or the x_<name> of a derived feature you propose below], "rationale": "<why this combo>"} ],
+  "proposedFeatures": [ up to ${EXPLORER_MAX_PROPOSED_FEATURES} objects: {"name": "<short_snake_case>", "transform": "ratio"|"diff"|"product"|"abs"|"log10", "columns": [1-2 raw panel columns], "edges": [optional 1-4 ascending bucket edges], "rationale": "<why this representation should carry signal>"} ]
 }
 
 Rules for proposedHypotheses:
@@ -133,6 +165,12 @@ Rules for proposedHypotheses:
 - Your hypotheses are tagged origin=explorer and face the full shadow-test gauntlet. Propose your best 0-${EXPLORER_MAX_PROPOSED_HYPOTHESES}, not a quota.
 
 Rules for proposedStratifications: they extend the panel miner's search space and are tested with the same holdout + false-discovery correction as built-in cuts. Propose combos your scans suggest are informative, not exhaustive lists.
+
+Rules for proposedFeatures (NEW REPRESENTATIONS — the strongest thing you can propose):
+- A derived feature is a NEW column over the PM panel computed from raw columns, e.g. ratio(volume, liquidity) as a turnover proxy, or diff(pm_iv, option_iv) scaled differently than the built-in gap. The miner materializes it, buckets it (your edges, or terciles if you omit them), and stratifies it — alone and in any combo you propose referencing its x_<name> — under the identical holdout + BH rigor as every built-in feature.
+- Allowed raw columns: ${DERIVABLE_PANEL_COLUMNS.join(", ")}.
+- Propose a feature only when your scans give a REASON to believe the combination carries signal the raw columns miss (a ratio that normalizes scale, an interaction your grouped scans showed). Speculative features burn shared false-discovery budget: every extra representation makes every other finding's q-value worse.
+- Derived features have no engine catalog key yet, so their findings surface as coverage-gap evidence in the mine report rather than instantly authorable FINDs. That is the point: prove the representation matters first.
 
 ${buildConditionCatalogPromptSection(valuationColumns)}
 
@@ -165,13 +203,54 @@ export function sanitizeStratProposals(raw: unknown): Array<{ features: string[]
     if (out.length >= EXPLORER_MAX_PROPOSED_STRATS) break;
     if (!item || typeof item !== "object") continue;
     const features = Array.isArray((item as any).features)
-      ? ((item as any).features as unknown[]).filter((f): f is string => typeof f === "string" && KNOWN_PANEL_FEATURES.has(f))
+      ? ((item as any).features as unknown[]).filter((f): f is string =>
+          typeof f === "string" && (KNOWN_PANEL_FEATURES.has(f) || /^x_[a-z][a-z0-9_]*$/.test(f)))
       : [];
     if (features.length < 2 || features.length > 3) continue;
     const key = [...features].sort().join("|");
     if (seen.has(key)) continue;
     seen.add(key);
     out.push({ features, rationale: String((item as any).rationale ?? "").slice(0, 240) });
+  }
+  return out;
+}
+
+export function sanitizeFeatureProposals(raw: unknown): FeatureProposal[] {
+  if (!Array.isArray(raw)) return [];
+  const out: FeatureProposal[] = [];
+  const seen = new Set<string>();
+  for (const item of raw) {
+    if (out.length >= EXPLORER_MAX_PROPOSED_FEATURES) break;
+    if (!item || typeof item !== "object") continue;
+    const rec = item as Record<string, unknown>;
+    const transform = String(rec.transform ?? "");
+    const arity = DERIVED_TRANSFORM_ARITY[transform];
+    if (arity === undefined) continue;
+    const columns = Array.isArray(rec.columns)
+      ? (rec.columns as unknown[]).filter((c): c is string => typeof c === "string" && DERIVABLE_PANEL_COLUMN_SET.has(c))
+      : [];
+    if (columns.length !== arity) continue;
+    const name = String(rec.name ?? "")
+      .toLowerCase()
+      .replace(/[^a-z0-9_]+/g, "_")
+      .replace(/^_+|_+$/g, "")
+      .slice(0, 25);
+    if (!/^[a-z][a-z0-9_]*$/.test(name)) continue;
+    const key = `${transform}|${columns.join(",")}`;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    let edges: number[] | undefined;
+    if (Array.isArray(rec.edges)) {
+      const parsed = (rec.edges as unknown[]).map(Number).filter((n) => Number.isFinite(n));
+      if (
+        parsed.length >= 1 && parsed.length <= 4 &&
+        parsed.length === (rec.edges as unknown[]).length &&
+        parsed.every((v, i) => i === 0 || parsed[i - 1] < v)
+      ) {
+        edges = parsed;
+      }
+    }
+    out.push({ name, transform, columns, ...(edges ? { edges } : {}), rationale: String(rec.rationale ?? "").slice(0, 240) });
   }
   return out;
 }
@@ -290,6 +369,7 @@ export async function runNightlyExplorerStep(opts: { dataDir: string }): Promise
       ? parsed.proposedHypotheses.slice(0, EXPLORER_MAX_PROPOSED_HYPOTHESES)
       : [];
     const proposedStratifications = sanitizeStratProposals(parsed.proposedStratifications);
+    const proposedFeatures = sanitizeFeatureProposals(parsed.proposedFeatures);
 
     const advice: ExplorerAdvice = {
       generatedAt: new Date().toISOString(),
@@ -299,6 +379,7 @@ export async function runNightlyExplorerStep(opts: { dataDir: string }): Promise
       observations,
       proposedHypotheses,
       proposedStratifications,
+      proposedFeatures,
     };
     writeFileSync(join(opts.dataDir, "nightly-explorer-advice.json"), JSON.stringify(advice, null, 2) + "\n");
     if (proposedStratifications.length > 0) {
@@ -307,7 +388,13 @@ export async function runNightlyExplorerStep(opts: { dataDir: string }): Promise
         JSON.stringify({ proposedAt: advice.generatedAt, proposals: proposedStratifications }, null, 2) + "\n",
       );
     }
-    log(`wrote nightly-explorer-advice.json (observations=${observations.length}, hypotheses=${proposedHypotheses.length}, strats=${proposedStratifications.length}, rounds=${rounds}, queries=${queriesRun})`);
+    if (proposedFeatures.length > 0) {
+      writeFileSync(
+        join(opts.dataDir, "miner-proposed-features.json"),
+        JSON.stringify({ proposedAt: advice.generatedAt, proposals: proposedFeatures }, null, 2) + "\n",
+      );
+    }
+    log(`wrote nightly-explorer-advice.json (observations=${observations.length}, hypotheses=${proposedHypotheses.length}, strats=${proposedStratifications.length}, features=${proposedFeatures.length}, rounds=${rounds}, queries=${queriesRun})`);
     return { skipped: false, wrote: true };
   } catch (e: any) {
     log(`failed: ${e?.message ?? e}`);
