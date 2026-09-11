@@ -149,61 +149,112 @@ export function loadWeatherRows(dir: string = sportsExportsDir()): Record<string
   return rows;
 }
 
-/**
- * One row per settled softball signal/order, from the outcome join that
- * sports-arb produces (mlb-over-softball-outcomes.jsonl in the exports dir).
- * Until that file exists the dataset is simply empty — the scan reports it
- * honestly and nothing downstream breaks.
- */
-export function loadSoftballRows(dir: string = sportsExportsDir()): Record<string, string>[] {
-  const path = join(dir, "mlb-over-softball-outcomes.jsonl");
+function recStr(rec: Record<string, unknown>, k: string): string {
+  const v = rec[k];
+  if (v === null || v === undefined) return "";
+  if (Array.isArray(v)) return v.map(String).join("|");
+  if (typeof v === "boolean") return v ? "1" : "0";
+  return String(v);
+}
+
+function readJsonlRecords(path: string): Record<string, unknown>[] {
   if (!existsSync(path)) return [];
-  const rows: Record<string, string>[] = [];
+  const out: Record<string, unknown>[] = [];
   for (const line of readFileSync(path, "utf-8").split("\n")) {
     const trimmed = line.trim();
     if (!trimmed) continue;
-    let rec: Record<string, unknown>;
     try {
-      rec = JSON.parse(trimmed);
+      const rec = JSON.parse(trimmed);
+      if (rec && typeof rec === "object" && !Array.isArray(rec)) out.push(rec);
     } catch {
       continue;
     }
+  }
+  return out;
+}
+
+/**
+ * Softball rows come from two sources in the exports dir, tagged by `origin`:
+ *
+ * - mlb-softball-samples.jsonl (origin=backtest_sample): the nightly
+ *   collector's settled would-fire samples — over and middle configs with
+ *   won/pnl/fee and final scores. The deep population (thousands of rows).
+ * - mlb-over-softball-outcomes.jsonl (origin=order_flow): the live signal /
+ *   order records joined to final scores (produced by sports-arb; optional).
+ *
+ * Missing files degrade to an empty or partial dataset — nothing breaks.
+ */
+export function loadSoftballRows(dir: string = sportsExportsDir()): Record<string, string>[] {
+  const rows: Record<string, string>[] = [];
+
+  for (const rec of readJsonlRecords(join(dir, "mlb-softball-samples.jsonl"))) {
+    const date = String(rec.day ?? "").slice(0, 10);
+    if (!date) continue;
+    const won = rec.won === true ? "1" : rec.won === false ? "0" : "";
+    const pnl = Number(rec.pnl);
+    const finalAway = Number(rec.finalAway);
+    const finalHome = Number(rec.finalHome);
+    rows.push({
+      origin: "backtest_sample",
+      date,
+      day_of_week: dayOfWeekName(`${date}T12:00:00Z`),
+      kind: recStr(rec, "kind"),
+      slug: recStr(rec, "slug"),
+      source: "",
+      inning: recStr(rec, "inning"),
+      half: recStr(rec, "half"),
+      score_away: recStr(rec, "scoreAway"),
+      score_home: recStr(rec, "scoreHome"),
+      cur_total: recStr(rec, "curTotal"),
+      runs_delta: recStr(rec, "runsDelta"),
+      runs_needed: "",
+      line: recStr(rec, "line"),
+      ask: recStr(rec, "ask"),
+      ask_size: recStr(rec, "askSize"),
+      cats: recStr(rec, "cats"),
+      fee: recStr(rec, "fee"),
+      live: "",
+      settled: won === "" ? "0" : "1",
+      final_total: Number.isFinite(finalAway) && Number.isFinite(finalHome)
+        ? String(finalAway + finalHome)
+        : "",
+      over_hit: won,
+      // pnl in the samples file is per-$1 fractional return.
+      pnl_pct: Number.isFinite(pnl) ? (pnl * 100).toFixed(2) : "",
+    });
+  }
+
+  for (const rec of readJsonlRecords(join(dir, "mlb-over-softball-outcomes.jsonl"))) {
     const observedAt = String(rec.observedAt ?? rec.date ?? "");
     const date = observedAt.slice(0, 10);
     if (!date) continue;
-    const str = (k: string) => {
-      const v = rec[k];
-      if (v === null || v === undefined) return "";
-      if (Array.isArray(v)) return v.map(String).join("|");
-      if (typeof v === "boolean") return v ? "1" : "0";
-      return String(v);
-    };
     rows.push({
+      origin: "order_flow",
       date,
       day_of_week: dayOfWeekName(observedAt),
-      kind: str("kind"),
-      slug: str("slug"),
-      source: str("source"),
-      inning: str("inning"),
-      score_away: str("scoreAway"),
-      score_home: str("scoreHome"),
-      cur_total: str("curTotal"),
-      runs_delta: str("runsDelta"),
-      runs_needed: str("runsNeeded"),
-      line: str("line"),
-      ask: str("ask"),
-      ask_size: str("askSize"),
-      contracts: str("contracts"),
-      live: str("live"),
-      cats: str("cats"),
-      model_edge: str("modelEdge"),
-      sized_usd: str("sizedUsd"),
-      settled: str("settled"),
-      final_total: str("finalTotal"),
-      over_hit: str("overHit"),
-      pnl_pct: str("pnlPct"),
+      kind: recStr(rec, "kind"),
+      slug: recStr(rec, "slug"),
+      source: recStr(rec, "source"),
+      inning: recStr(rec, "inning"),
+      half: "",
+      score_away: recStr(rec, "scoreAway"),
+      score_home: recStr(rec, "scoreHome"),
+      cur_total: recStr(rec, "curTotal"),
+      runs_delta: recStr(rec, "runsDelta"),
+      runs_needed: recStr(rec, "runsNeeded"),
+      line: recStr(rec, "line"),
+      ask: recStr(rec, "ask"),
+      ask_size: recStr(rec, "askSize"),
+      cats: recStr(rec, "cats"),
+      fee: "",
+      live: recStr(rec, "live"),
+      settled: recStr(rec, "settled"),
+      final_total: recStr(rec, "finalTotal"),
+      over_hit: recStr(rec, "overHit"),
+      pnl_pct: recStr(rec, "pnlPct"),
     });
   }
+
   rows.sort((a, b) => a.date.localeCompare(b.date));
   return rows;
 }

@@ -90,6 +90,39 @@ describe("loadWeatherRows", () => {
 });
 
 describe("loadSoftballRows", () => {
+  it("flattens settled backtest samples with per-dollar pnl scaled to pct", () => {
+    const dir = makeDir();
+    const sample = {
+      day: "2026-07-20",
+      slug: "mlb-min-cle-2026-07-20",
+      kind: "over",
+      inning: 2,
+      half: null,
+      runsDelta: 2,
+      scoreAway: 2,
+      scoreHome: 5,
+      curTotal: 7,
+      line: 7.5,
+      ask: 0.91,
+      cats: ["multi_run_early"],
+      won: true,
+      fee: 0.0057,
+      pnl: 0.0843,
+      finalAway: 4,
+      finalHome: 13,
+    };
+    writeFileSync(join(dir, "mlb-softball-samples.jsonl"), JSON.stringify(sample) + "\n");
+    const rows = loadSoftballRows(dir);
+    expect(rows).toHaveLength(1);
+    expect(rows[0].origin).toBe("backtest_sample");
+    expect(rows[0].date).toBe("2026-07-20");
+    expect(rows[0].kind).toBe("over");
+    expect(rows[0].settled).toBe("1");
+    expect(rows[0].over_hit).toBe("1");
+    expect(rows[0].pnl_pct).toBe("8.43");
+    expect(rows[0].final_total).toBe("17");
+  });
+
   it("flattens outcome rows and tolerates a missing file", () => {
     const dir = makeDir();
     expect(loadSoftballRows(dir)).toEqual([]);
@@ -110,6 +143,7 @@ describe("loadSoftballRows", () => {
     writeFileSync(join(dir, "mlb-over-softball-outcomes.jsonl"), JSON.stringify(rec) + "\n\nnot-json\n");
     const rows = loadSoftballRows(dir);
     expect(rows).toHaveLength(1);
+    expect(rows[0].origin).toBe("order_flow");
     expect(rows[0].date).toBe("2026-08-03");
     expect(rows[0].cats).toBe("multi_run_early|cheap_over_early");
     expect(rows[0].live).toBe("0");
