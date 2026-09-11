@@ -905,3 +905,35 @@ _LLM call skipped (no trigger fired; 2.0h since last call; daily budget 8/12; ne
 
 ---
 
+### 2026-09-11 00:28 UTC
+
+**Portfolio:** $103.79 total | Cash $101.79 | 2 open | P&L $7.0299 | 64% win rate (949 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 4 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 24 active families did not trigger; 0 later families waiting.
+- 🧪 Opened 1 shadow_mined setup-family shadow tests (active cap 80, maxPending/family 4).
+- 🧪 shadow_mined retest queue: 4 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [anomaly] oil_hl_funding_ann = -201.42 is -2.3 std devs from mean since 2026-04-28 (-15.80 ± 79.80)
+- [anomaly] btc_med_min = 68780 is 2.1 std devs from mean (54518.54 ± 6755.25)
+
+**Blocked signal learning:**
+- Open blocked shadows: 33
+- Resolved blocked shadows: 1018 (521 wins / 497 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-1.89%)
+- ❌ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have edge compressed but trade lost money (-3.64%)
+- ❌ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have hit stop (-3.64%)
+- ✅ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO OIL short via polymarket would have expired (+7.30%)
+
+**LLM analysis:**
+Both open GOLD positions are still below the 12-hour LLM discretionary close gate, so no close instructions are permitted this run even though both signal inputs are normalizing. GOLD long P/C-ratio thesis has weakened materially: gold_gld_pc_ratio fell from 2.046 to 1.128 and spot is near its stop at -1.03%, but the position is only 9h old. GOLD short funding thesis has cooled with HL funding dropping from 69.0% to 18.7% annualized, still above the +15% entry trigger but no longer extreme; price is only +0.07%. Will re-evaluate at the next eligible review.
+
+---
+
