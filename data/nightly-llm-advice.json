@@ -1,207 +1,207 @@
 {
-  "generatedAt": "2026-09-11T07:11:08.262Z",
+  "generatedAt": "2026-09-12T07:09:57.787Z",
   "provider": "deepseek",
   "model": "deepseek-v4-pro",
-  "strategyReview": "The broad weekend HL funding reversion book is the main working system: 612 clean live trades at 69% wins and +0.18% avg, with 253 shadow trades at 74% wins and +0.99% avg. The Polymarket YES-overpricing edge also keeps validating: ONE_TOUCH_HIGH_EDGE_NO live is 4/4, gated FIND-0020 shadows are 116/187 at +2.23% avg, and manual IV-touch rich-NO shadows are 9/10. The failures are concentrated in static single-asset weekend funding variants, PM proxy shorts, and contract-edge setups misgraded as spot-directional bets; the open book is small but currently has offsetting GOLD long spot vs GOLD short perp exposure that nets to noise.",
+  "strategyReview": "The direct Polymarket YES-overpricing edge remains the strongest part of the book: clean ONE_TOUCH_HIGH_EDGE_NO live sits at 4/4 with +18.42% average trade, the gated upside-barrier cousin is 116/191 shadows with +1.93% average, and the PANEL_NO_7D findings show holdout-confirmed near-dated/mid-priced NO edge. Weekend HL funding reversion still wins per trade (70%) but its weekend-clustered evidence is only marginally positive, while the shadow-mined static-threshold variants are failing. The biggest drags are: static funding triggers that catch worsening funding rather than normalization, one-touch/no-bias edges being scored as spot-direction bets instead of contract premium decay, Polymarket proxy shorts transmitting almost no edge, and the HYPE-confirms-BTC cross-asset family failing. Tonight I allocate five slots to sharpening the NO-edge panel families and five to mechanical refinements of the diagnosed failures, and I am not opening any new proxy or HYPE/BTC confirmation tests.",
   "failureClusters": [
     {
-      "theme": "Static single-asset weekend funding shadows",
-      "evidence": "CBRS 47% on 16/34, AAPL 48% on 13/27, MU 38% on 8/21. Losses repeatedly show funding moving deeper negative or oscillating after a simple < -10 trigger, not normalizing enough to deliver >2% spot in 2 days.",
-      "recommendation": "Stop spending tests on static < -10 spot-move variants. Refinements must require weekend-only regime-relative panic plus a normalization inflection, or the family should be allowed to die."
+      "theme": "Static weekend funding triggers without confirmation",
+      "evidence": "CBRS shadow variant H-539 is 16/34 (47%), AAPL H-537 is 13/27 (48%), and MU H-535 is 8/21 (38%). Losses repeatedly show funding moving from already-negative readings to much more negative values, e.g. CBRS -1.0% to -98.5%, MU 5.5% to -28.6%, and AAPL -5.9% to -17.7%.",
+      "recommendation": "Do not treat a single raw funding < -10% observation as a reversion trigger. Require weekend scope, a relative extreme within the asset's recent distribution, and evidence that funding has already begun turning higher before taking the long reversion trade."
     },
     {
-      "theme": "Polymarket proxy shorts on real funding/PC signals",
-      "evidence": "FUNDING_EXTREME_LONG_PM_PROXY_SHORT is 3/24 shadow wins at avg -2.97%; PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT is 1/18 at avg -6.19%. Live FUNDING_EXTREME_LONG is also slightly negative overall, with AMZN 29% and HYPE 33% win rates.",
-      "recommendation": "Keep these proxy shadows blocked and do not promote them. The PM contract payoff is different from the perp short and the proxy is not capturing the intended edge."
+      "theme": "Contract edge scored as spot prediction",
+      "evidence": "GOLD no-bias rich-tail H-532 is 53% scorable with 7 burned unscorable tests, and GOLD one-touch heatmap H-534 is 35% scorable with 7 burned unscorable tests. Their wins are recorded as contract P&L, e.g. NO on GOLD above 5000 0.495 to 0.530, while the primary prediction asks for spot declines greater than 2%.",
+      "recommendation": "Re-author these as contract premium decay trades on above-strike NO positions, not spot-move bets. Stop adding spot-direction tests to what is really a rich-YES premium fade."
     },
     {
-      "theme": "Contract edge misauthored as spot directional",
-      "evidence": "GOLD one-touch cap-edge H-534 scores only 35% on scorable tests when graded on >2% spot decline, but its NO contract examples show positive contract premium decay. No-bias gap shadow likewise shows negative avg when forced into spot-move grading.",
-      "recommendation": "Re-author these as contract P&L theses with neutral direction, days-to-expiry, edge, spread, and liquidity conditions. Do not forecast spot travel from premium edges."
+      "theme": "Polymarket proxy short shadows without edge",
+      "evidence": "FUNDING_EXTREME_LONG_PM_PROXY_SHORT is 3/24 (12.5%) with -2.97% avg, PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT is 1/19 (5.3%) with -6.14% avg, and OPT_IV_GT_PM_IV_DOWNSIDE is 2/16 (12.5%) with -9.95% avg.",
+      "recommendation": "Do not promote proxy shorts. The real edge is selling overpriced Polymarket YES directly; using spot/perp signals as a proxy for buying NO on analogous contracts weakens or inverts the edge."
     },
     {
-      "theme": "Vol-compression and HYPE-confirmation spot predictors",
-      "evidence": "cross_asset_iv_compression_vol_expansion is 9/25 at 36% win; btc_iv_compression_vol_reversion is 5/18 at 28% win. Most losses are small absolute moves under the exam threshold or late-stage confirmation failures.",
-      "recommendation": "Treat both as low priority. Either require actual inflection such as a positive 24h PM IV change, or let current tests resolve and kill if win rates remain below base."
+      "theme": "HYPE/BTC cross-asset confirmation",
+      "evidence": "cross_asset_iv_compression_vol_expansion is only 9/25 (36%) across many variants. Example losses show BTC falling -3.47% or rising only 0.70% despite HYPE spot above its 24h SMA and stable OI.",
+      "recommendation": "Treat HYPE spot/OI stability as coincident risk-on behavior, not independent confirmation of durable BTC upside. Freeze this family and reallocate test capacity to the richer NO-edge panel cuts."
     }
   ],
   "newHypotheses": [
     {
-      "created": "2026-09-11",
-      "description": "Panel NO edge, broad near-dated with tight spread and liquidity guard: buy NO/sell YES across all assets when the nearest contract expires within 30 days, at least one scoped contract has YES spread <= 2c, and liquidity >= 10k USD.",
+      "created": "2026-09-12",
+      "description": "Refinement of H-539: the failing trigger was a static CBRS funding reading below -10% on any day. This version requires a true weekend, a recent relative funding extreme, and confirmation that funding has already begun turning higher.",
       "conditions": {
-        "days_to_expiry": "< 30",
-        "yesSpread": "<= 0.02",
-        "liquidity": ">= 10000"
+        "day_of_week": "in [sat, sun]",
+        "cbrs_hl_funding_ann": "< -10",
+        "cbrs_hl_funding_ann_percentile_7d": "< 20",
+        "cbrs_hl_funding_ann_change_pct_24h": "> 0"
       },
-      "prediction": "Buying NO / selling YES on these contracts is profitable over 7 days as near-dated YES premium decays.",
-      "timeframeDays": 7,
-      "confidence": 0.7,
-      "direction": "neutral",
-      "originFindingId": "FIND-0072",
-      "themeId": "THEME-0007",
+      "prediction": "CBRS funding normalizes upward within 2 days from a weekend extreme after it has already begun turning higher.",
+      "timeframeDays": 2,
+      "confidence": 0.48,
+      "direction": "long",
+      "refinesHypothesisId": "H-539",
       "source": "llm"
     },
     {
-      "created": "2026-09-11",
-      "description": "Panel NO edge, sub-point model edge in the mid-price band with a tight spread guard.",
+      "created": "2026-09-12",
+      "description": "Refinement of H-537: the failing trigger was a static AAPL funding reading below -10% on any weekday. This version requires weekend scope, a relative extreme, and a current 24h turn higher.",
+      "conditions": {
+        "day_of_week": "in [sat, sun]",
+        "aapl_hl_funding_ann": "< -10",
+        "aapl_hl_funding_ann_percentile_7d": "< 20",
+        "aapl_hl_funding_ann_change_pct_24h": "> 0"
+      },
+      "prediction": "AAPL funding normalizes upward within 2 days from a weekend extreme after it has already begun turning higher.",
+      "timeframeDays": 2,
+      "confidence": 0.48,
+      "direction": "long",
+      "refinesHypothesisId": "H-537",
+      "source": "llm"
+    },
+    {
+      "created": "2026-09-12",
+      "description": "Refinement of H-535: the failing trigger was a static MU funding reading below -10% without weekend or turning confirmation. This version requires weekend scope, a relative extreme, and a 24h turn higher.",
+      "conditions": {
+        "day_of_week": "in [sat, sun]",
+        "mu_hl_funding_ann": "< -10",
+        "mu_hl_funding_ann_percentile_7d": "< 20",
+        "mu_hl_funding_ann_change_pct_24h": "> 0"
+      },
+      "prediction": "MU funding normalizes upward within 2 days from a weekend extreme after it has already begun turning higher.",
+      "timeframeDays": 2,
+      "confidence": 0.48,
+      "direction": "long",
+      "refinesHypothesisId": "H-535",
+      "source": "llm"
+    },
+    {
+      "created": "2026-09-12",
+      "description": "Refinement of H-532: the failed variant predicted a GOLD spot decline when its actual wins were NO contract price appreciation. This version re-authors the signal as an above-strike GOLD one-touch NO premium fade.",
+      "conditions": {
+        "asset": "GOLD",
+        "touch_direction": ">= 1",
+        "gold_pm_underlying_cap_edge_pts_max": ">= 12.3",
+        "days_to_expiry": "< 30"
+      },
+      "prediction": "Buying NO / selling YES on above-strike GOLD one-touch contracts is profitable over 7 days as NO premium appreciates and YES premium decays.",
+      "timeframeDays": 7,
+      "confidence": 0.52,
+      "direction": "neutral",
+      "refinesHypothesisId": "H-532",
+      "source": "llm"
+    },
+    {
+      "created": "2026-09-12",
+      "description": "Refinement of H-534: the failed variant predicted a GOLD spot decline when the trade was actually a rich-YES one-touch NO premium fade. This version restricts to above-strike contracts and re-authors the outcome as contract P&L.",
+      "conditions": {
+        "asset": "GOLD",
+        "touch_direction": ">= 1",
+        "gold_pm_underlying_cap_edge_pts_max": ">= 10",
+        "days_to_expiry": "< 30"
+      },
+      "prediction": "Buying NO / selling YES on above-strike GOLD one-touch contracts is profitable over 7 days as YES premium decays or the contract settles NO.",
+      "timeframeDays": 7,
+      "confidence": 0.52,
+      "direction": "neutral",
+      "refinesHypothesisId": "H-534",
+      "source": "llm"
+    },
+    {
+      "created": "2026-09-12",
+      "description": "Panel NO edge sharpest cut with a liquidity guard: sub-point sell-YES model edge, mid-priced YES ask, near expiry, and at least one liquid market.",
       "conditions": {
         "sell_yes_edge_pts": "< 1",
         "yesAsk": "between 0.35 and 0.65",
-        "yesSpread": "<= 0.02"
+        "days_to_expiry": "< 30",
+        "liquidity": ">= 5000"
       },
-      "prediction": "Buying NO / selling YES on these contracts is profitable over 7 days as the YES premium decays.",
+      "prediction": "Buying NO / selling YES on contracts meeting these conditions is profitable over 7 days as the mid-priced near-dated NO position appreciates.",
       "timeframeDays": 7,
-      "confidence": 0.65,
+      "confidence": 0.68,
       "direction": "neutral",
-      "originFindingId": "FIND-0065",
+      "originFindingId": "FIND-0070",
       "themeId": "THEME-0007",
       "source": "llm"
     },
     {
-      "created": "2026-09-11",
-      "description": "Panel NO edge on above-strike one-touch contracts, mid-price, near-dated, and tight-spread.",
+      "created": "2026-09-12",
+      "description": "Panel NO edge above-strike variant with tight spread: above-strike one-touch contracts, mid-priced YES ask, and a tight bid-ask spread.",
       "conditions": {
         "touch_direction": ">= 1",
         "yesAsk": "between 0.35 and 0.65",
-        "days_to_expiry": "< 30",
-        "yesSpread": "<= 0.02"
+        "yesSpread": "< 0.02"
       },
-      "prediction": "Buying NO / selling YES on above-strike one-touch contracts is profitable over 7 days as overpriced YES premium decays.",
+      "prediction": "Buying NO / selling YES on above-strike one-touch contracts meeting these conditions is profitable over 7 days as YES premium decays.",
       "timeframeDays": 7,
-      "confidence": 0.65,
+      "confidence": 0.66,
       "direction": "neutral",
       "originFindingId": "FIND-0068",
       "themeId": "THEME-0007",
       "source": "llm"
     },
     {
-      "created": "2026-09-11",
-      "description": "BTC-specific one-touch NO edge from shadow FIND-0043, tightened to liquid tight-spread above-strike contracts with 3-8pt sell-YES edge.",
+      "created": "2026-09-12",
+      "description": "Panel NO edge broad mid-price variant with liquidity guard: mid-priced YES contracts with at least one liquid market.",
       "conditions": {
-        "asset": "BTC",
-        "touch_direction": ">= 1",
-        "sell_yes_edge_pts": "between 3 and 8",
-        "yesSpread": "<= 0.02"
+        "yesAsk": "between 0.35 and 0.65",
+        "liquidity": ">= 5000"
       },
-      "prediction": "Selling YES / buying NO on BTC above-strike one-touch contracts is profitable within 3 days as the premium fades.",
-      "timeframeDays": 3,
-      "confidence": 0.6,
+      "prediction": "Buying NO / selling YES on mid-priced contracts with sufficient liquidity is profitable over 7 days as YES premium decays.",
+      "timeframeDays": 7,
+      "confidence": 0.65,
       "direction": "neutral",
-      "originFindingId": "FIND-0043",
-      "themeId": "THEME-0001",
+      "originFindingId": "FIND-0066",
+      "themeId": "THEME-0007",
       "source": "llm"
     },
     {
-      "created": "2026-09-11",
-      "description": "Refinement of H-539: replace the static CBRS funding < -10 trigger with a weekend-only regime-relative panic plus confirmation that funding has started to normalize.",
+      "created": "2026-09-12",
+      "description": "Panel NO edge near-dated mid-price variant with a tighter spread guard than the parent finding.",
       "conditions": {
-        "day_of_week": "in [sat, sun]",
-        "cbrs_hl_funding_ann_percentile_30d": "< 15",
-        "cbrs_hl_funding_ann_change_pct_24h": "> 0"
+        "yesAsk": "between 0.35 and 0.65",
+        "days_to_expiry": "< 30",
+        "yesSpread": "< 0.01"
       },
-      "prediction": "CBRS spot/perp moves >2% within 3 days as extreme weekend funding begins to normalize.",
-      "timeframeDays": 3,
-      "confidence": 0.4,
-      "direction": "long",
-      "refinesHypothesisId": "H-539",
-      "source": "llm"
-    },
-    {
-      "created": "2026-09-11",
-      "description": "Refinement of H-537: replace the static AAPL funding < -10 trigger with a weekend-only regime-relative panic plus confirmation that funding has started to normalize.",
-      "conditions": {
-        "day_of_week": "in [sat, sun]",
-        "aapl_hl_funding_ann_percentile_30d": "< 15",
-        "aapl_hl_funding_ann_change_pct_24h": "> 0"
-      },
-      "prediction": "AAPL spot/perp moves >2% within 3 days as extreme weekend funding begins to normalize.",
-      "timeframeDays": 3,
-      "confidence": 0.4,
-      "direction": "long",
-      "refinesHypothesisId": "H-537",
-      "source": "llm"
-    },
-    {
-      "created": "2026-09-11",
-      "description": "Refinement of H-535: replace the static MU funding < -10 trigger with a weekend-only regime-relative panic plus confirmation that funding has started to normalize.",
-      "conditions": {
-        "day_of_week": "in [sat, sun]",
-        "mu_hl_funding_ann_percentile_30d": "< 15",
-        "mu_hl_funding_ann_change_pct_24h": "> 0"
-      },
-      "prediction": "MU spot/perp moves >2% within 3 days as extreme weekend funding begins to normalize.",
-      "timeframeDays": 3,
-      "confidence": 0.4,
-      "direction": "long",
-      "refinesHypothesisId": "H-535",
-      "source": "llm"
-    },
-    {
-      "created": "2026-09-11",
-      "description": "Refinement of H-534: re-author the GOLD one-touch cap-edge as a contract-premium fade instead of a spot-decline bet. Sell YES/buy NO on near-dated above-strike GOLD one-touch contracts when the max underlying-cap edge is >=10pt.",
-      "conditions": {
-        "asset": "GOLD",
-        "touch_direction": ">= 1",
-        "gold_pm_underlying_cap_edge_pts_max": ">= 10.0",
-        "days_to_expiry": "<= 30"
-      },
-      "prediction": "Selling YES / buying NO on these GOLD above-strike one-touch contracts is profitable within 3 days as the cap premium decays.",
-      "timeframeDays": 3,
-      "confidence": 0.5,
+      "prediction": "Buying NO / selling YES on near-dated mid-priced contracts with a sub-1c spread is profitable over 7 days as YES premium decays.",
+      "timeframeDays": 7,
+      "confidence": 0.67,
       "direction": "neutral",
-      "refinesHypothesisId": "H-534",
-      "source": "llm"
-    },
-    {
-      "created": "2026-09-11",
-      "description": "Refinement of H-638: require PM IV to begin rebounding from extreme compression before betting on a volatility snapback, instead of treating z-score alone as a trigger.",
-      "conditions": {
-        "btc_pm_iv_zscore_30d": "< -1.5",
-        "btc_pm_iv_change_pct_24h": "> 0"
-      },
-      "prediction": "BTC spot makes a >2% absolute move within 3 days as compressed PM IV starts to rebound.",
-      "timeframeDays": 3,
-      "confidence": 0.35,
-      "direction": "neutral",
-      "refinesHypothesisId": "H-638",
+      "originFindingId": "FIND-0069",
+      "themeId": "THEME-0007",
       "source": "llm"
     }
   ],
   "hypothesisReviews": [
     {
       "id": "H-539",
-      "observation": "16/34 scorable tests at 47% win. The static cbrs_hl_funding_ann < -10 trigger catches funding that continues to -33.6%, -98.5%, and -23.2% instead of normalizing, so the entry is not a timing trigger for a >2% CBRS spot move within 2 days.",
+      "observation": "The static cbrs_hl_funding_ann < -10 trigger produces roughly coin-flip outcomes because funding can keep falling after entry, e.g. -1.0% to -98.5% and 14.4% to -23.2%. The signal is catching extreme prints, not actual normalization.",
       "invalidatedAssumption": "A static cbrs_hl_funding_ann below -10% is a sufficient timing trigger for >2% CBRS spot move within 2 days."
     },
     {
       "id": "H-537",
-      "observation": "13/27 scorable tests at 48% win. AAPL funding below -10% on any day frequently fails to normalize enough or produces no >2% spot follow-through, with several tests showing only 0.6% to 5.5% funding oscillation.",
+      "observation": "AAPL tests show the same pattern: funding readings below -10% on non-weekend and weekend-like observations frequently continue lower, e.g. 5.5% to 5.5% no normalization and -5.9% to -17.7% deterioration.",
       "invalidatedAssumption": "AAPL funding below -10% on any day reliably normalizes and yields a >2% spot gain within 2 days."
     },
     {
       "id": "H-535",
-      "observation": "8/21 scorable tests at 38% win. MU funding below -10% often continues lower or spikes only after missing the 2-day spot window; the single static threshold does not isolate true weekend funding panics.",
-      "invalidatedAssumption": "A single MU funding reading below -10% reliably normalizes and produces a >2% spot gain within 2 days."
+      "observation": "MU funding below -10% produced inconsistent normalization, with 5.5% to -28.6% and post-spike 183.7% to 30.2% losses. The single static threshold is not equivalent to a weekend funding capitulation signal.",
+      "invalidatedAssumption": "A single MU funding reading below -10% reliably normalizes and produces >2% MU spot gain within 2 days."
+    },
+    {
+      "id": "H-532",
+      "observation": "The scorable tests show the actual P&L is NO contract appreciation, e.g. NO on GOLD above 5000 0.495 to 0.530, while the primary prediction demanded spot declines. Several tests were burned unscorable by this mismatch.",
+      "invalidatedAssumption": "A large no-bias adjusted gap on rich GOLD tail NO contracts reliably predicts a >2% spot decline within 2 days."
     },
     {
       "id": "H-534",
-      "observation": "8/23 scorable tests at 35% win, plus 7 unscorable tests. The contract P&L examples show NO premium decay working while the spot-decline prediction fails, confirming the signal is a contract edge, not a spot directional edge.",
+      "observation": "The one-touch GOLD heatmap signal wins when evaluated on NO contract premium decay, not when predicted as a GOLD spot decline. The spot-move formulation caused a low scorable win rate and burned 7 tests.",
       "invalidatedAssumption": "A large gold underlying-cap edge on upside one-touch NO contracts reliably predicts a >2% GOLD spot decline within 2 days."
     },
     {
       "id": "H-108",
-      "observation": "9/25 scorable tests at 36% win. HYPE risk-on participation confirms BTC trend after it is already extended, not before continuation; repeated losses come from BTC being near highs and rolling over despite stable HYPE OI.",
+      "observation": "HYPE spot above its 24h SMA with stable OI did not independently confirm BTC upside. BTC still fell -3.47% in one test and only rose +0.70% in another, leaving the family well below a useful edge on the long-BTC exam.",
       "invalidatedAssumption": "HYPE spot above its 24h SMA with stable OI independently confirms durable BTC upside rather than late-stage FOMO/overextension."
-    },
-    {
-      "id": "H-638",
-      "observation": "17% win over 6 completed tests before family aggregation. BTC PM IV z-score below -1.5 frequently precedes moves under the >2% absolute exam threshold, meaning the compression signal alone does not reliably produce a large snapback within 3 days.",
-      "invalidatedAssumption": "BTC PM IV below its 30-day mean by more than 1.5 standard deviations reliably leads to a >2% absolute spot move within 3 days."
     }
   ],
-  "parameterUpdates": {
-    "weekendFundingEntryPct": -0.45
-  },
-  "journalEntry": "Allocation follows the yield scoreboard: mined FIND-authored hypotheses have materially lower cost per survivor than refinements (53.1 vs 144 tests per survivor), so tonight is weighted toward panel NO-edge siblings, plus only mechanical refinements for the worst static weekend funding shadows. The GOLD one-touch family is re-authored as a contract premium fade because the spot-decline grading was invalid. Weekend funding entry is raised one increment from -0.50 to -0.45 based on weekend-clustered shadow evidence: shadow weekends are 3/3 positive with mean +83.82%, and the digest says 188/253 blocked trades would have won, suggesting the entry band is too strict on the margin. No signalRisk changes are made; payoff-shape evidence is not yet strong enough."
+  "journalEntry": "Tonight's review returns the book to the proven Polymarket YES-overpricing edge. The panel NO evidence is strong and holdout-confirmed, especially in mid-priced, near-dated bands, so five authored hypotheses sharpen that family. Five refinements fix diagnosed mechanical failures: weekend funding reversion now requires weekend scope plus relative extreme plus a turn higher; the two GOLD shadow families are re-authored as contract premium decay trades instead of impossible spot predictions. I made no parameter updates because weekend-clustered live evidence is not statistically positive enough to move the funding entry band, and the one-touch risk is locked."
 }
