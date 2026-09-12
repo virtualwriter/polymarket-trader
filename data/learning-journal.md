@@ -2041,3 +2041,32 @@ No eligible discretionary closes this run. BTC PC_RATIO_EXTREME_LOW short is bel
 
 ---
 
+### 2026-09-12 17:28 UTC
+
+**Portfolio:** $103.91 total | Cash $98.91 | 5 open | P&L $7.1459 | 65% win rate (970 trades)
+
+**Closed 1 trades:**
+- ✅ BIRD long via hyperliquid/hl_perp [HL BIRD Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0128 (1.3%, market 0.0128, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 28 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 4 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Blocked signal learning:**
+- Open blocked shadows: 29
+- Resolved blocked shadows: 1029 (527 wins / 502 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-8.14%)
+- ❌ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT BTC short via polymarket would have hit stop (-5.26%)
+- ✅ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have hit target (+5.45%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have closed with thesis validated profitably (+0.00%)
+
+**LLM analysis:**
+_LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h since last call; daily budget 6/12; next scheduled 2026-09-12T19:28:23.811Z). Mechanical cycle ran normally._
+
+---
+
