@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-11T23:28:22.424Z",
+  "generatedAt": "2026-09-12T00:28:20.704Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,7 +12,7 @@
       "confidence": 0.15117380824531867,
       "thesis": "BTC P/C ratio 0.41 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 77153,
+      "entryPrice": 77254,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -27,7 +27,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 77153,
+      "entryPrice": 77254,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -61,8 +61,8 @@
         "byAsset": {
           "BTC": -1,
           "BX": 5,
-          "CBRS": 5,
-          "DKNG": 5
+          "DKNG": 5,
+          "RIVN": 5
         },
         "bySignalType": {
           "PC_RATIO_EXTREME_LOW": -1,
@@ -80,8 +80,8 @@
           "bx_delta": 5,
           "funding_reversion": 15,
           "hyperliquid_venue": 15,
-          "cbrs_delta": 5,
-          "dkng_delta": 5
+          "dkng_delta": 5,
+          "rivn_delta": 5
         }
       },
       "afterCandidate": {
@@ -90,8 +90,8 @@
         "byAsset": {
           "BTC": -1,
           "BX": 5,
-          "CBRS": 5,
-          "DKNG": 5
+          "DKNG": 5,
+          "RIVN": 5
         },
         "bySignalType": {
           "PC_RATIO_EXTREME_LOW": -1,
@@ -109,8 +109,8 @@
           "bx_delta": 5,
           "funding_reversion": 15,
           "hyperliquid_venue": 15,
-          "cbrs_delta": 5,
-          "dkng_delta": 5
+          "dkng_delta": 5,
+          "rivn_delta": 5
         }
       },
       "warnings": []
@@ -149,17 +149,33 @@
         "btc_spot",
         "btc_ibit_pc_ratio"
       ],
-      "hoursOpen": 7,
-      "hoursToExpiry": 113,
+      "hoursOpen": 8,
+      "hoursToExpiry": 112,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.0583,
+      "elapsedHoldPct": 0.0666,
       "minHoldHours": 12,
-      "reason": "Too new for discretionary LLM close: open 7.0h, requires at least 12h."
+      "reason": "Too new for discretionary LLM close: open 8.0h, requires at least 12h."
     },
     {
       "positionId": "WF-1789162106033-BX-l766",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "asset": "BX",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [],
+      "hoursOpen": 3,
+      "hoursToExpiry": 21,
+      "plannedHoldHours": 24,
+      "elapsedHoldPct": 0.1249,
+      "minHoldHours": 12,
+      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+    },
+    {
+      "positionId": "WF-1789165701510-DKNG-qi37",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "asset": "DKNG",
       "venue": "hyperliquid",
       "direction": "long",
       "allowed": false,
@@ -173,34 +189,18 @@
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
     {
-      "positionId": "WF-1789165701507-CBRS-2et4",
+      "positionId": "WF-1789172898899-RIVN-xgu9",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "asset": "CBRS",
+      "asset": "RIVN",
       "venue": "hyperliquid",
       "direction": "long",
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 1,
-      "hoursToExpiry": 23,
+      "hoursOpen": 0,
+      "hoursToExpiry": 24,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.0417,
-      "minHoldHours": 12,
-      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
-    },
-    {
-      "positionId": "WF-1789165701510-DKNG-qi37",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "asset": "DKNG",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "allowed": false,
-      "allowedCategories": [],
-      "evidenceColumns": [],
-      "hoursOpen": 1,
-      "hoursToExpiry": 23,
-      "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.0417,
+      "elapsedHoldPct": 0,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     }
