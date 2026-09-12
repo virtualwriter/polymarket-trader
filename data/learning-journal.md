@@ -2191,3 +2191,29 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-09-12 22:28 UTC
+
+**Portfolio:** $103.90 total | Cash $92.90 | 11 open | P&L $7.1393 | 65% win rate (976 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 28 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 4 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Blocked signal learning:**
+- Open blocked shadows: 29
+- Resolved blocked shadows: 1030 (528 wins / 502 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT BTC short via polymarket would have hit stop (-5.26%)
+- ✅ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have hit target (+5.45%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT BTC short via polymarket would have hit target (+3.51%)
+
+**LLM analysis:**
+No discretionary closes emitted this run. The only LLM-eligible position, BTC PC_RATIO_EXTREME_LOW short T-1789198160685-y7kn, remains thesis-valid: btc_ibit_pc_ratio is unchanged at 0.412 vs entry and BTC spot is slightly lower, so no inversion/data-quality/hard-risk close trigger exists. Weekend funding-reversion longs are policy-gated to mechanical exits; SKHX -9.87% and DKNG -6.27% bear watching but do not qualify for LLM close. No hard portfolio risk breach observed.
+
+---
+
