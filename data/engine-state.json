@@ -1,19 +1,19 @@
 {
-  "generatedAt": "2026-09-12T17:28:23.473Z",
+  "generatedAt": "2026-09-12T18:28:16.146Z",
   "dataFreshness": {
-    "valuationRows": 2941,
-    "latestValuationAt": "2026-09-12T17",
-    "macroRows": 2939,
+    "valuationRows": 2942,
+    "latestValuationAt": "2026-09-12T18",
+    "macroRows": 2940,
     "instrumentSnapshots": 12,
-    "latestInstrumentSnapshotAt": "2026-09-12T17"
+    "latestInstrumentSnapshotAt": "2026-09-12T18"
   },
   "portfolio": {
-    "cash": 98.9062,
-    "openPositions": 5,
-    "realizedPnl": 7.1459,
-    "totalTrades": 970,
+    "cash": 97.9004,
+    "openPositions": 6,
+    "realizedPnl": 7.1402,
+    "totalTrades": 972,
     "winRatePct": 64.7,
-    "unrealizedPnl": -0.0976
+    "unrealizedPnl": -0.0949
   },
   "openPositions": [
     {
@@ -22,22 +22,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -2.51,
-      "currentPrice": 128.2,
-      "underlyingPrice": null,
-      "targetPct": 3,
-      "stopPct": 100,
-      "closeReasonIfMechanical": null,
-      "evidenceColumns": []
-    },
-    {
-      "positionId": "WF-1789190903048-INTC-khdf",
-      "asset": "INTC",
-      "venue": "hyperliquid",
-      "direction": "long",
-      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -0.97,
-      "currentPrice": 103,
+      "pnlPct": -2.7,
+      "currentPrice": 128.16,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -50,8 +36,8 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "pnlPct": -6.3,
-      "currentPrice": 24.376,
+      "pnlPct": -6.76,
+      "currentPrice": 24.35,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -64,9 +50,9 @@
       "venue": "spot",
       "direction": "short",
       "signalType": "PC_RATIO_EXTREME_LOW",
-      "pnlPct": 0.03,
-      "currentPrice": 77254,
-      "underlyingPrice": 77254,
+      "pnlPct": 0.19,
+      "currentPrice": 77130,
+      "underlyingPrice": 77130,
       "targetPct": 3,
       "stopPct": 2,
       "closeReasonIfMechanical": null,
@@ -81,8 +67,36 @@
       "venue": "hyperliquid",
       "direction": "long",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "pnlPct": -0.22,
+      "currentPrice": 1364.4,
+      "underlyingPrice": null,
+      "targetPct": 3,
+      "stopPct": 100,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": []
+    },
+    {
+      "positionId": "WF-1789237695314-CRCL-i6j7",
+      "asset": "CRCL",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "pnlPct": 0,
-      "currentPrice": 1365,
+      "currentPrice": 91.228,
+      "underlyingPrice": null,
+      "targetPct": 3,
+      "stopPct": 100,
+      "closeReasonIfMechanical": null,
+      "evidenceColumns": []
+    },
+    {
+      "positionId": "WF-1789237695315-ORCL-px0x",
+      "asset": "ORCL",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "pnlPct": 0,
+      "currentPrice": 149.41,
       "underlyingPrice": null,
       "targetPct": 3,
       "stopPct": 100,
@@ -233,10 +247,10 @@
     {
       "type": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "enabled": true,
-      "weight": 0.689,
-      "trades": 277,
-      "wins": 192,
-      "avgPnlPct": -0.0376,
+      "weight": 0.6896,
+      "trades": 279,
+      "wins": 193,
+      "avgPnlPct": -0.0394,
       "disabledAssets": [
         "COIN",
         "ZM",
@@ -255,9 +269,9 @@
     }
   ],
   "blockedSummary": {
-    "openCount": 29,
-    "resolvedCount": 1029,
-    "wouldHaveWon": 527,
+    "openCount": 28,
+    "resolvedCount": 1030,
+    "wouldHaveWon": 528,
     "wouldHaveLost": 502,
     "bySignal": [
       {
@@ -326,21 +340,6 @@
       }
     ],
     "recentResolved": [
-      {
-        "signalType": "PM_EV_ABOVE_SPOT",
-        "asset": "HYPE",
-        "venue": "spot",
-        "direction": "long",
-        "blockedReason": "live_entry_not_promoted",
-        "outcome": "win",
-        "closeReason": "target",
-        "pnlPct": 5.39,
-        "resolvedAt": "2026-09-11T15:28:25.600Z",
-        "trendMetrics": {
-          "aboveTrendPct": -5.35,
-          "momentumPct": -7.11
-        }
-      },
       {
         "signalType": "ONE_TOUCH_HIGH_EDGE_NO",
         "asset": "ETH",
@@ -492,6 +491,26 @@
             "wide_pm_spread"
           ]
         }
+      },
+      {
+        "signalType": "PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT",
+        "asset": "BTC",
+        "venue": "polymarket",
+        "direction": "short",
+        "blockedReason": "polymarket_proxy_short",
+        "outcome": "win",
+        "closeReason": "target",
+        "pnlPct": 3.51,
+        "resolvedAt": "2026-09-12T18:28:15.281Z",
+        "marketQuality": {
+          "yesBid": 0.43,
+          "yesAsk": 0.44,
+          "yesSpread": 0.01,
+          "liquidity": 71779.03,
+          "flags": [
+            "wide_pm_spread"
+          ]
+        }
       }
     ],
     "openQualityWarnings": [
@@ -606,22 +625,6 @@
           ]
         },
         "thesis": "[ONE-TOUCH NO EDGE SHADOW] NO-only touch-market shadow: sell-YES edge 4.0pt on ETH, spread 2.0c, liquidity 30319. FIND-0020 gate: upside barriers only, sell_yes_edge_pts >= 3 at entry (the 1-3pt band does not pay); exit when the edge decays below 1pt so the trade has room to work."
-      },
-      {
-        "signalType": "PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT",
-        "asset": "BTC",
-        "blockedReason": "polymarket_proxy_short",
-        "instrumentLabel": "what-price-will-bitcoin-hit-before-2027 — NO — Will Bitcoin reach $90,000 by December 31, 2026?",
-        "marketQuality": {
-          "yesBid": 0.43,
-          "yesAsk": 0.44,
-          "yesSpread": 0.01,
-          "liquidity": 71779.03,
-          "flags": [
-            "wide_pm_spread"
-          ]
-        },
-        "thesis": "[PM PROXY SHORT SHADOW] Real BTC short via spot/spot (PC_RATIO_EXTREME_LOW). Track buying NO on the comparable Polymarket upside contract."
       }
     ]
   },
