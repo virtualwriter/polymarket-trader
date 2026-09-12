@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-12T05:28:24.217Z",
+  "generatedAt": "2026-09-12T06:28:22.154Z",
   "mechanicalExits": [],
   "signalKillExits": [],
   "entryCandidates": [
@@ -12,7 +12,7 @@
       "confidence": 0.15117380824531867,
       "thesis": "BTC P/C ratio 0.41 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 77179,
+      "entryPrice": 77199,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -27,7 +27,7 @@
       "currentFlatSize": 1,
       "previewSize": 0,
       "reason": "unsupported_signal",
-      "entryPrice": 77179,
+      "entryPrice": 77199,
       "probabilitySource": "unsupported",
       "winProbability": null,
       "probabilitySampleSize": null,
@@ -56,8 +56,8 @@
         "spot_venue"
       ],
       "current": {
-        "totalGross": 31,
-        "totalNet": 29,
+        "totalGross": 36,
+        "totalNet": 34,
         "byAsset": {
           "BTC": -1,
           "BX": 5,
@@ -65,15 +65,16 @@
           "CBRS": 5,
           "GME": 5,
           "EBAY": 5,
-          "INTC": 5
+          "INTC": 5,
+          "SKHX": 5
         },
         "bySignalType": {
           "PC_RATIO_EXTREME_LOW": -1,
-          "WEEKEND_HL_FUNDING_REVERSION_LONG": 30
+          "WEEKEND_HL_FUNDING_REVERSION_LONG": 35
         },
         "byVenue": {
           "spot": -1,
-          "hyperliquid": 30
+          "hyperliquid": 35
         },
         "byCluster": {
           "btc_delta": -1,
@@ -81,18 +82,19 @@
           "risk_on": -1,
           "spot_venue": -1,
           "bx_delta": 5,
-          "funding_reversion": 30,
-          "hyperliquid_venue": 30,
+          "funding_reversion": 35,
+          "hyperliquid_venue": 35,
           "bird_delta": 5,
           "cbrs_delta": 5,
           "gme_delta": 5,
           "ebay_delta": 5,
-          "intc_delta": 5
+          "intc_delta": 5,
+          "skhx_delta": 5
         }
       },
       "afterCandidate": {
-        "totalGross": 31,
-        "totalNet": 29,
+        "totalGross": 36,
+        "totalNet": 34,
         "byAsset": {
           "BTC": -1,
           "BX": 5,
@@ -100,15 +102,16 @@
           "CBRS": 5,
           "GME": 5,
           "EBAY": 5,
-          "INTC": 5
+          "INTC": 5,
+          "SKHX": 5
         },
         "bySignalType": {
           "PC_RATIO_EXTREME_LOW": -1,
-          "WEEKEND_HL_FUNDING_REVERSION_LONG": 30
+          "WEEKEND_HL_FUNDING_REVERSION_LONG": 35
         },
         "byVenue": {
           "spot": -1,
-          "hyperliquid": 30
+          "hyperliquid": 35
         },
         "byCluster": {
           "btc_delta": -1,
@@ -116,13 +119,14 @@
           "risk_on": -1,
           "spot_venue": -1,
           "bx_delta": 5,
-          "funding_reversion": 30,
-          "hyperliquid_venue": 30,
+          "funding_reversion": 35,
+          "hyperliquid_venue": 35,
           "bird_delta": 5,
           "cbrs_delta": 5,
           "gme_delta": 5,
           "ebay_delta": 5,
-          "intc_delta": 5
+          "intc_delta": 5,
+          "skhx_delta": 5
         }
       },
       "warnings": []
@@ -141,7 +145,7 @@
       "wouldResize": true,
       "edgePts": null,
       "alerts": [
-        "cluster exposure 30.00 > alert cap 5.00"
+        "cluster exposure 35.00 > alert cap 5.00"
       ],
       "notes": [
         "Live sizing switch is disabled; entries remain uniform at TRADE_SIZE while previews are observed."
@@ -165,10 +169,10 @@
         "btc_spot",
         "btc_ibit_pc_ratio"
       ],
-      "hoursOpen": 13,
-      "hoursToExpiry": 107,
+      "hoursOpen": 14,
+      "hoursToExpiry": 106,
       "plannedHoldHours": 120,
-      "elapsedHoldPct": 0.1083,
+      "elapsedHoldPct": 0.1166,
       "minHoldHours": 12,
       "reason": "Mechanical PC_RATIO_EXTREME_LOW setup may be closed after 12h only when the signal's own input has reversed (thesis_invalidated), or for hard portfolio risk / data quality. Profit-taking remains mechanical."
     },
@@ -181,10 +185,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 8,
-      "hoursToExpiry": 16,
+      "hoursOpen": 9,
+      "hoursToExpiry": 15,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.3333,
+      "elapsedHoldPct": 0.375,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -197,10 +201,10 @@
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 2,
-      "hoursToExpiry": 22,
+      "hoursOpen": 3,
+      "hoursToExpiry": 21,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0.0834,
+      "elapsedHoldPct": 0.125,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
@@ -208,6 +212,22 @@
       "positionId": "WF-1789183702092-CBRS-76uu",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
       "asset": "CBRS",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "allowed": false,
+      "allowedCategories": [],
+      "evidenceColumns": [],
+      "hoursOpen": 3,
+      "hoursToExpiry": 21,
+      "plannedHoldHours": 24,
+      "elapsedHoldPct": 0.125,
+      "minHoldHours": 12,
+      "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
+    },
+    {
+      "positionId": "WF-1789187300212-GME-y3yd",
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "asset": "GME",
       "venue": "hyperliquid",
       "direction": "long",
       "allowed": false,
@@ -221,9 +241,9 @@
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
     {
-      "positionId": "WF-1789187300212-GME-y3yd",
+      "positionId": "WF-1789190903048-EBAY-pudj",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "asset": "GME",
+      "asset": "EBAY",
       "venue": "hyperliquid",
       "direction": "long",
       "allowed": false,
@@ -237,25 +257,25 @@
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
     {
-      "positionId": "WF-1789190903048-EBAY-pudj",
+      "positionId": "WF-1789190903048-INTC-khdf",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "asset": "EBAY",
+      "asset": "INTC",
       "venue": "hyperliquid",
       "direction": "long",
       "allowed": false,
       "allowedCategories": [],
       "evidenceColumns": [],
-      "hoursOpen": 0,
-      "hoursToExpiry": 24,
+      "hoursOpen": 1,
+      "hoursToExpiry": 23,
       "plannedHoldHours": 24,
-      "elapsedHoldPct": 0,
+      "elapsedHoldPct": 0.0417,
       "minHoldHours": 12,
       "reason": "Rule-based signal exits remain mechanical; LLM closes are not allowed."
     },
     {
-      "positionId": "WF-1789190903048-INTC-khdf",
+      "positionId": "WF-1789194500876-SKHX-vs3m",
       "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
-      "asset": "INTC",
+      "asset": "SKHX",
       "venue": "hyperliquid",
       "direction": "long",
       "allowed": false,

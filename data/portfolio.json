@@ -1,5 +1,5 @@
 {
-  "cash": 96.81505982589329,
+  "cash": 95.81505982589329,
   "positions": [
     {
       "id": "T-1789144117852-z7fi",
@@ -8,8 +8,8 @@
       "venue": "spot",
       "direction": "short",
       "entryPrice": 77618,
-      "currentPrice": 77179,
-      "currentUnderlyingPrice": 77179,
+      "currentPrice": 77199,
+      "currentUnderlyingPrice": 77199,
       "entryUnderlyingPrice": 77618,
       "size": 1,
       "leverage": 1,
@@ -32,7 +32,7 @@
       "venue": "hyperliquid",
       "direction": "long",
       "entryPrice": 128.86,
-      "currentPrice": 128.09,
+      "currentPrice": 128.12,
       "entryUnderlyingPrice": 128.86,
       "size": 1,
       "leverage": 5,
@@ -45,7 +45,7 @@
       "instrumentType": "hl_perp",
       "instrumentId": "BX",
       "instrumentLabel": "HL BX Builder DEX stock perp",
-      "fundingPnlAccrued": 0.0012185599315068492,
+      "fundingPnlAccrued": 0.0014865827625570776,
       "entryConfidence": 0.5,
       "peakPnlPct": -0.43760685273468036
     },
@@ -69,9 +69,9 @@
       "instrumentType": "hl_perp",
       "instrumentId": "BIRD",
       "instrumentLabel": "HL BIRD Builder DEX stock perp",
-      "fundingPnlAccrued": 0.0005260884703196347,
+      "fundingPnlAccrued": 0.0013215308219178081,
       "entryConfidence": 0.5,
-      "peakPnlPct": 0.43459517594229985
+      "peakPnlPct": 0.5141394111021171
     },
     {
       "id": "WF-1789183702092-CBRS-76uu",
@@ -80,7 +80,7 @@
       "venue": "hyperliquid",
       "direction": "long",
       "entryPrice": 191.89,
-      "currentPrice": 191.74,
+      "currentPrice": 191.59,
       "entryUnderlyingPrice": 191.89,
       "size": 1,
       "leverage": 5,
@@ -93,7 +93,7 @@
       "instrumentType": "hl_perp",
       "instrumentId": "CBRS",
       "instrumentLabel": "HL CBRS Builder DEX stock perp",
-      "fundingPnlAccrued": -0.0000026712328767123286,
+      "fundingPnlAccrued": 0.000023738013698630137,
       "entryConfidence": 0.5,
       "peakPnlPct": -0.07816978477245484
     },
@@ -104,7 +104,7 @@
       "venue": "hyperliquid",
       "direction": "long",
       "entryPrice": 21.055,
-      "currentPrice": 21.109,
+      "currentPrice": 21.08,
       "entryUnderlyingPrice": 21.055,
       "size": 1,
       "leverage": 5,
@@ -117,7 +117,7 @@
       "instrumentType": "hl_perp",
       "instrumentId": "GME",
       "instrumentLabel": "HL GME Builder DEX stock perp",
-      "fundingPnlAccrued": 0,
+      "fundingPnlAccrued": -0.000035743150684931506,
       "entryConfidence": 0.5,
       "peakPnlPct": 1.2823557349798633
     },
@@ -128,8 +128,7 @@
       "venue": "hyperliquid",
       "direction": "long",
       "entryPrice": 107.31,
-      "currentPrice": 107.31,
-      "currentUnderlyingPrice": 107.31,
+      "currentPrice": 107.35,
       "entryUnderlyingPrice": 107.31,
       "size": 1,
       "leverage": 5,
@@ -143,7 +142,8 @@
       "instrumentId": "EBAY",
       "instrumentLabel": "HL EBAY Builder DEX stock perp",
       "fundingPnlAccrued": 0,
-      "entryConfidence": 0.5
+      "entryConfidence": 0.5,
+      "peakPnlPct": 0.18637592023106908
     },
     {
       "id": "WF-1789190903048-INTC-khdf",
@@ -152,8 +152,7 @@
       "venue": "hyperliquid",
       "direction": "long",
       "entryPrice": 103.2,
-      "currentPrice": 103.2,
-      "currentUnderlyingPrice": 103.2,
+      "currentPrice": 103.01,
       "entryUnderlyingPrice": 103.2,
       "size": 1,
       "leverage": 5,
@@ -167,12 +166,37 @@
       "instrumentId": "INTC",
       "instrumentLabel": "HL INTC Builder DEX stock perp",
       "fundingPnlAccrued": 0,
+      "entryConfidence": 0.5,
+      "peakPnlPct": -0.9205426356589037
+    },
+    {
+      "id": "WF-1789194500876-SKHX-vs3m",
+      "openedAt": "2026-09-12T06:28:20.876Z",
+      "asset": "SKHX",
+      "venue": "hyperliquid",
+      "direction": "long",
+      "entryPrice": 1368.7,
+      "currentPrice": 1368.7,
+      "currentUnderlyingPrice": 1368.7,
+      "entryUnderlyingPrice": 1368.7,
+      "size": 1,
+      "leverage": 5,
+      "signalType": "WEEKEND_HL_FUNDING_REVERSION_LONG",
+      "hypothesisId": null,
+      "thesis": "[WEEKEND HL FUNDING LIVE] SKHX Builder DEX stock perp funding -64.1% annualized in mid band [-100%, -45%] during US-equity-closed entry window (Fri 4:00pm ET → Sun; no Mon pre-open entries). Live tracked long at 5x; exit when margin P&L >= 3%, funding >= 10%, Mon 9:30am ET window close, or held 24h.",
+      "targetPct": 3,
+      "stopPct": 100,
+      "expiryDate": "2026-09-13T06:28:20.876Z",
+      "instrumentType": "hl_perp",
+      "instrumentId": "SKHX",
+      "instrumentLabel": "HL SKHX Builder DEX stock perp",
+      "fundingPnlAccrued": 0,
       "entryConfidence": 0.5
     }
   ],
-  "totalRealizedPnl": 7.054732792025629,
-  "totalTrades": 956,
-  "winCount": 615,
+  "totalRealizedPnl": 7.054799999999991,
+  "totalTrades": 957,
+  "winCount": 616,
   "lossCount": 341,
-  "lastUpdated": "2026-09-12T05:28:24.252Z"
+  "lastUpdated": "2026-09-12T06:28:22.194Z"
 }
