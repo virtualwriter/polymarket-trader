@@ -19446,9 +19446,17 @@
         "actualMove": "[historical-backfill] BTC moved 2.79% (77962 → 80136) [neutral abs needs ≥ 2%] (resolved 2026-09-06 from 2026-08-30; method=spot_abs_move)",
         "magnitude": 0.7885380056950826,
         "magnitudeUnit": "pct_return"
+      },
+      {
+        "date": "2026-08-31",
+        "triggered": true,
+        "outcome": "loss",
+        "actualMove": "[historical-backfill] BTC moved 0.53% (78556 → 78973) [neutral abs needs ≥ 2%] (resolved 2026-09-07 from 2026-08-31; method=spot_abs_move)",
+        "magnitude": -1.4691684912673761,
+        "magnitudeUnit": "pct_return"
       }
     ],
-    "winRate": 0.5384615384615384,
+    "winRate": 0.5,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "BTC PM IV regime-relative compression signal (using percentile-based conditions) is showing promise with a 67% win rate over 16 tests, supporting the shift away from absolute thresholds. | BTC PM IV regime-relative compression (H-523) using z-score bottom 20% has 67% win rate over 16 tests, a significant improvement over absolute threshold variants. The regime-relative approach is proving much more reliable and should replace H-001 entirely. | This regime‑relative compression variant (PM IV in bottom 20% of 30d range) is performing well at 67% win, supporting the idea that percentile‑based compression triggers are more reliable than absolute IV thresholds for BTC vol expansion. | H‑523 (BTC PM IV regime‑relative compression) is working: 67% win rate (4/6) in recent tests, successfully capturing large absolute moves when PM IV is in the bottom 20th percentile. This validates regime‑relative over static thresholds and should become the primary BTC vol expansion signal.",
