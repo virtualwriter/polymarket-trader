@@ -1827,3 +1827,38 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h s
 
 ---
 
+### 2026-09-12 09:28 UTC
+
+**Portfolio:** $103.87 total | Cash $94.87 | 9 open | P&L $7.1092 | 65% win rate (963 trades)
+
+**Closed 3 trades:**
+- ✅ BIRD long via hyperliquid/hl_perp [HL BIRD Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → target: +$0.0387 (3.9%, market 0.0336, funding 0.0051)
+- ✅ AMD long via hyperliquid/hl_perp [HL AMD Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0113 (1.1%, market 0.0113, funding 0.0000)
+- ✅ ZM long via hyperliquid/hl_perp [HL ZM Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → signal_killed: +$0.0000 (0.0%, market 0.0000, funding 0.0000)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 28 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 4 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Statistical observations:**
+- [divergence] OIL PM-Options IV gap moved narrower by 6.3pp (was -24.7, now -31.0)
+- [anomaly] btc_hl_funding_ann = -17.17 is -3.3 std devs from mean (6.20 ± 6.99)
+
+**Blocked signal learning:**
+- Open blocked shadows: 30
+- Resolved blocked shadows: 1027 (525 wins / 502 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-3.33%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-8.45%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-8.14%)
+- ❌ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT BTC short via polymarket would have hit stop (-5.26%)
+
+**LLM analysis:**
+Reviewed 9 open positions. Eight WEEKEND_HL_FUNDING_REVERSION_LONG positions are mechanical-only and LLM closes are policy-gated off. BTC PC_RATIO_EXTREME_LOW short is only 2h old, below the 12h min hold, and btc_ibit_pc_ratio remains unchanged at 0.412, so no thesis invalidation. No discretionary close action this run.
+
+---
+
