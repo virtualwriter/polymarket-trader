@@ -1760,3 +1760,41 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+
+### Nightly research advice ingested (generatedAt=2026-09-12T07:09:57.787Z, model=deepseek-v4-pro)
+- Hypotheses added: 4 (rejected 6); reviews applied: 6; invalidated assumptions learned: 0; param updates: none.
+- Strategy review: The direct Polymarket YES-overpricing edge remains the strongest part of the book: clean ONE_TOUCH_HIGH_EDGE_NO live sits at 4/4 with +18.42% average trade, the gated upside-barrier cousin is 116/191 shadows with +1.93% average, and the PANEL_NO_7D findings show holdout-confirmed near-dated/mid-priced NO edge. Weekend HL funding reversion still wins per trade (70%) but its weekend-clustered evidence is only marginally positive, while the shadow-mined static-threshold variants are failing. The biggest drags are: static funding triggers that catch worsening funding rather than normalization, one
+- Nightly journal: Tonight's review returns the book to the proven Polymarket YES-overpricing edge. The panel NO evidence is strong and holdout-confirmed, especially in mid-priced, near-dated bands, so five authored hypotheses sharpen that family. Five refinements fix diagnosed mechanical failures: weekend funding reversion now requires weekend scope plus relative extreme plus a turn higher; the two GOLD shadow families are re-authored as contract premium decay trades instead of impossible spot predictions. I made no parameter updates because weekend-clustered live evidence is not statistically positive enough t
+### 2026-09-12 07:29 UTC
+
+**Portfolio:** $103.82 total | Cash $93.82 | 10 open | P&L $7.0592 | 64% win rate (959 trades)
+
+**Closed 2 trades:**
+- ✅ ZM long via hyperliquid/hl_perp [HL ZM Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → signal_killed: +$0.0000 (0.0%, market 0.0000, funding 0.0000)
+- ✅ BTC short via spot/spot [BTC spot] (PC_RATIO_EXTREME_LOW) → llm_decision: +$0.0044 (0.4%, market 0.0044, funding 0.0000)
+
+**Opened 1 positions:**
+- BTC short @ $77274 via spot/spot [BTC spot] (PC_RATIO_EXTREME_LOW)
+
+**Hypothesis lifecycle:**
+- 🧪 LLM retest queue: 28 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 4 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Blocked signal learning:**
+- Open blocked shadows: 29
+- Resolved blocked shadows: 1027 (525 wins / 502 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-3.33%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO BTC short via polymarket would have edge compressed but trade lost money (-8.45%)
+- ❌ One-touch high-edge: ONE_TOUCH_HIGH_EDGE_NO ETH short via polymarket would have edge compressed but trade lost money (-8.14%)
+- ❌ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT BTC short via polymarket would have hit stop (-5.26%)
+
+**LLM analysis:**
+Reviewed all open positions. The BTC short PC_RATIO_EXTREME_LOW is closed on thesis invalidation since btc_ibit_pc_ratio round-tripped from 0.347 to 0.412 and remained there. All weekend HL funding-reversion longs remain mechanical-only; no LLM close action is permitted, though BX is underwater (-2.4%) and will be watched via mechanical stops. Macro stays bearish but no hard portfolio risk breach beyond normal signal risk.
+
+---
+
