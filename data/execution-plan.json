@@ -1,23 +1,10 @@
 {
-  "generatedAt": "2026-09-12T07:29:20.662Z",
+  "generatedAt": "2026-09-12T08:28:16.283Z",
   "dryRun": false,
   "llmDryRun": false,
   "mechanicalExits": [],
   "signalKillExits": [],
-  "llmCloses": [
-    {
-      "action": "close",
-      "positionId": "T-1789144117852-z7fi",
-      "asset": "BTC",
-      "venue": "spot",
-      "direction": "short",
-      "closeReasonCategory": "thesis_invalidated",
-      "evidenceColumns": [
-        "btc_ibit_pc_ratio"
-      ],
-      "thesis": "BTC P/C ratio rose from 0.347 at entry to 0.412 (+18.7%) and has held above the extreme-low trigger, normalizing past the signal's own entry condition and invalidating the contrarian short premise."
-    }
-  ],
+  "llmCloses": [],
   "entrySignals": [
     {
       "type": "PC_RATIO_EXTREME_LOW",
@@ -25,10 +12,10 @@
       "venue": "spot",
       "direction": "short",
       "strength": 0.29333333333333345,
-      "confidence": 0.15117380824531867,
+      "confidence": 0.15049773700852087,
       "thesis": "BTC P/C ratio 0.41 — heavy call buying → contrarian short.",
       "hypothesisId": null,
-      "entryPrice": 77274,
+      "entryPrice": 77259,
       "targetPct": 5,
       "stopPct": 1.5,
       "expiryDays": 5
@@ -38,6 +25,6 @@
   "skippedLlmActions": [],
   "notes": [
     "Executor mutations enabled.",
-    "1 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
+    "0 LLM closes accepted; 0 rejected; 0 non-close instructions skipped."
   ]
 }
