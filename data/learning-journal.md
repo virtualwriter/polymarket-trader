@@ -2247,3 +2247,35 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 1.0h s
 
 ---
 
+### 2026-09-13 01:28 UTC
+
+**Portfolio:** $103.84 total | Cash $97.84 | 6 open | P&L $7.0798 | 65% win rate (981 trades)
+
+**Closed 3 trades:**
+- ❌ SKHX long via hyperliquid/hl_perp [HL SKHX Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.0856 (-8.6%, market -0.0875, funding 0.0019)
+- ❌ MSTR long via hyperliquid/hl_perp [HL MSTR Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_compressed_loss: $-0.0008 (-0.1%, market -0.0008, funding -0.0001)
+- ✅ ORCL long via hyperliquid/hl_perp [HL ORCL Builder DEX stock perp] (WEEKEND_HL_FUNDING_REVERSION_LONG) → thesis_validated_profitable: +$0.0195 (1.9%, market 0.0194, funding 0.0001)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 1 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 29 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Blocked signal learning:**
+- Open blocked shadows: 30
+- Resolved blocked shadows: 1030 (528 wins / 502 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT BTC short via polymarket would have hit stop (-5.26%)
+- ✅ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have hit target (+5.45%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT BTC short via polymarket would have hit target (+3.51%)
+
+**LLM analysis:**
+No eligible discretionary closes. The only LLM-close-eligible position is the BTC PC_RATIO_EXTREME_LOW short; btc_ibit_pc_ratio is unchanged at 0.412 and btc_spot is essentially flat since entry, so no thesis_invalidated, data_quality_issue, or hard_portfolio_risk trigger is present. Weekend HL funding-reversion positions remain policy-gated to mechanical exits; DKNG is -6.88% with roughly 6h to expiry and no override is warranted. Structural note: DKNG's negative funding has intensified rather than normalized while price moved sharply against the long, which may be worth nightly review of tail behavior in this signal family.
+
+---
+

@@ -19228,11 +19228,13 @@
       {
         "date": "2026-09-06",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup hype_relative_oi_breakout_continuation shadow test 13/20 opened via H-521 after current row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "HYPE moved -7.05% (85.451 → 79.424) [long needs ≥ +2%] (method=spot_directional_long)",
+        "magnitude": -7.053164971738174,
+        "magnitudeUnit": "pct_return"
       }
     ],
-    "winRate": 0.8181818181818182,
+    "winRate": 0.75,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "HYPE breakout continuation showing early signs but needs more shadow tests. HYPE OI stable above 1.4B, funding normalized, price near 65.4; hypothesis holds. | Current HYPE conditions: spot 65.9 (within 6% of 7d high ~66), OI at record levels, funding at 10.95% (normalized from recent highs). The breakout continuation thesis is holding, but no clear acceleration yet. Shadow tests needed for the promoted family, but conditions are being recorded. | Hypothesis triggered a HYPE long (current open position) and is -0.39%. The thesis of breakout continuation after OI record is plausible, but the family win-rate is only 43% and recent sub-tests have been weak. No immediate invalidation, but the edge is thin. | HYPE relative OI breakout continuation remains viable in its own family: 12 active tests at 75% win and the setup-family has 19/45 live trades with positive average PnL. Keep it as a HYPE-specific continuation signal, not as a cross-asset BTC confirmation.",
@@ -20755,8 +20757,8 @@
       {
         "date": "2026-09-11",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup shadow_no_bias_adjusted_gap_shadow_gold_short_rich_tail_no shadow test 33/20 opened via H-532 after current row satisfied variant conditions.",
+        "outcome": "win",
+        "actualMove": "NO on GOLD above 5000 0.545 → 0.555 (+1.8% on the contract) (method=pm_contract_pnl)",
         "contractEntry": {
           "marketId": "3224927",
           "eventSlug": "what-will-gold-gc-hit-by-end-of-december",
@@ -20770,7 +20772,9 @@
           "vol": "mid",
           "funding": "baseline",
           "macro": "risk_off"
-        }
+        },
+        "magnitude": 1.8348623853211028,
+        "magnitudeUnit": "pct_return"
       },
       {
         "date": "2026-09-12",
@@ -20833,7 +20837,7 @@
         }
       }
     ],
-    "winRate": 0.5333333333333333,
+    "winRate": 0.5483870967741935,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "H-532 was scored as a GOLD spot-decline call, but the actual examples are pm_contract_pnl outcomes with small gains/losses on the NO contract. The setup is a rich premium fade and loses test power by being attached to a 2% spot move criterion. | Refined by H-725 (2026-09-10): Refinement of H-532: re-author the GOLD no-bias rich-tail signal as a contract p | Tests are 15/28 scorable and 5 unscorable because the prediction is written as a >2% GOLD spot decline while the signal is a NO-contract edge; realized contract moves are a few cents and do not correspond to spot declines. | The scorable tests show the actual P&L is NO contract appreciation, e.g. NO on GOLD above 5000 0.495 to 0.530, while the primary prediction demanded spot declines. Several tests were burned unscorable by this mismatch.",
@@ -22045,16 +22049,18 @@
       {
         "date": "2026-09-11",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup shadow_weekend_hl_funding_reversion_long_aapl_weekend_hl_funding_shadow_long shadow test 28/20 opened via H-537 after current row satisfied variant conditions.",
+        "outcome": "win",
+        "actualMove": "Funding moved -17.7% → 5.5% (long reversion needs increase) (method=funding_normalize_up)",
         "regime": {
           "vol": "mid",
           "funding": "baseline",
           "macro": "risk_off"
-        }
+        },
+        "magnitude": 23.17,
+        "magnitudeUnit": "funding_pts"
       }
     ],
-    "winRate": 0.48148148148148145,
+    "winRate": 0.5,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "AAPL variant barely beats coin flip, and many triggers occur when funding is already mild. Losses cluster when funding stays flat or falls. | The static AAPL funding < -10 test is coin-flip; examples show flat 5.5% and small moves, and wins are inconsistent. The single 24h threshold does not isolate weekend panic events. | 13/27 scorable tests at 48% win. AAPL funding below -10% on any day frequently fails to normalize enough or produces no >2% spot follow-through, with several tests showing only 0.6% to 5.5% funding oscillation. | AAPL tests show the same pattern: funding readings below -10% on non-weekend and weekend-like observations frequently continue lower, e.g. 5.5% to 5.5% no normalization and -5.9% to -17.7% deterioration.",
@@ -22461,16 +22467,18 @@
       {
         "date": "2026-09-11",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup shadow_weekend_hl_funding_reversion_long_cbrs_weekend_hl_funding_shadow_long shadow test 35/20 opened via H-539 after current row satisfied variant conditions.",
+        "outcome": "win",
+        "actualMove": "Funding moved -6.2% → 5.5% (long reversion needs increase) (method=funding_normalize_up)",
         "regime": {
           "vol": "mid",
           "funding": "baseline",
           "macro": "risk_off"
-        }
+        },
+        "magnitude": 11.690000000000001,
+        "magnitudeUnit": "funding_pts"
       }
     ],
-    "winRate": 0.47058823529411764,
+    "winRate": 0.4857142857142857,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": "Refined by H-724 (2026-09-10): Refinement of H-539: replace the single static threshold with a regime-relative | Single cbrs_hl_funding_ann < -10 triggers both noise and genuine panics; test outcomes show funding oscillating around -10% to +14% with multiple false signals, and the family is 15/33 (45%) with no stable normalization edge. | 16/34 scorable tests at 47% win. The static cbrs_hl_funding_ann < -10 trigger catches funding that continues to -33.6%, -98.5%, and -23.2% instead of normalizing, so the entry is not a timing trigger for a >2% CBRS spot move within 2 days. | The static cbrs_hl_funding_ann < -10 trigger produces roughly coin-flip outcomes because funding can keep falling after entry, e.g. -1.0% to -98.5% and 14.4% to -23.2%. The signal is catching extreme prints, not actual normalization.",
@@ -24506,8 +24514,8 @@
       {
         "date": "2026-08-30",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup find_0026 shadow test 4/20 opened via H-558 after current row satisfied variant conditions.",
+        "outcome": "loss",
+        "actualMove": "UNSCORABLE: contract 3975968 has no exit quote at the horizon (vanished mid-range at YES 0.70) (method=contract_exit_unavailable)",
         "contractEntry": {
           "marketId": "3975968",
           "eventSlug": "what-price-will-bitcoin-hit-in-august-2026",
@@ -24516,7 +24524,9 @@
           "strike": 77500,
           "entryPrice": 0.29500000000000004,
           "side": "no"
-        }
+        },
+        "excludedFromSetupStats": true,
+        "exclusionReason": "unscorable_scorer_v2:contract_exit_unavailable"
       },
       {
         "date": "2026-09-10",
@@ -24570,6 +24580,26 @@
         "regime": {
           "vol": "low",
           "funding": "low",
+          "macro": "risk_off"
+        }
+      },
+      {
+        "date": "2026-09-13",
+        "triggered": true,
+        "outcome": "pending",
+        "actualMove": "Setup find_0026 shadow test 6/20 opened via H-558 after current row satisfied variant conditions.",
+        "contractEntry": {
+          "marketId": "4472226",
+          "eventSlug": "what-price-will-xauusd-hit-in-september-2026",
+          "asset": "GOLD",
+          "direction": "below",
+          "strike": 4300,
+          "entryPrice": 0.19499999999999995,
+          "side": "no"
+        },
+        "regime": {
+          "vol": "mid",
+          "funding": "baseline",
           "macro": "risk_off"
         }
       }
@@ -25395,8 +25425,10 @@
       {
         "date": "2026-08-23",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "[historical-backfill] Setup find_0021 shadow test 7/20 opened via H-570 after historical row satisfied variant conditions."
+        "outcome": "loss",
+        "actualMove": "UNSCORABLE: no matching contract quote at trigger (method=contract_entry_unavailable)",
+        "excludedFromSetupStats": true,
+        "exclusionReason": "unscorable_scorer_v2:contract_entry_unavailable"
       }
     ],
     "winRate": 0,
@@ -26149,8 +26181,8 @@
       {
         "date": "2026-08-30",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup find_0036 shadow test 8/20 opened via H-582 after current row satisfied variant conditions.",
+        "outcome": "loss",
+        "actualMove": "UNSCORABLE: contract 3954331 has no exit quote at the horizon (vanished mid-range at YES 0.04) (method=contract_exit_unavailable)",
         "contractEntry": {
           "marketId": "3954331",
           "eventSlug": "what-price-will-xauusd-hit-in-august-2026",
@@ -26159,7 +26191,9 @@
           "strike": 4600,
           "entryPrice": 0.87,
           "side": "no"
-        }
+        },
+        "excludedFromSetupStats": true,
+        "exclusionReason": "unscorable_scorer_v2:contract_exit_unavailable"
       },
       {
         "date": "2026-08-31",
@@ -28337,16 +28371,18 @@
       {
         "date": "2026-09-11",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup other_mixed shadow test 46/20 opened via H-611 after current row satisfied variant conditions.",
+        "outcome": "win",
+        "actualMove": "Funding moved -6.2% → 5.5% (long reversion needs increase) (method=funding_normalize_up)",
         "regime": {
           "vol": "mid",
           "funding": "baseline",
           "macro": "risk_off"
-        }
+        },
+        "magnitude": 11.690000000000001,
+        "magnitudeUnit": "funding_pts"
       }
     ],
-    "winRate": 0.6153846153846154,
+    "winRate": 0.6428571428571429,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": null,
@@ -30130,8 +30166,8 @@
       {
         "date": "2026-08-14",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "[historical-backfill] Setup find_0043 shadow test 4/20 opened via H-642 after historical row satisfied variant conditions.",
+        "outcome": "loss",
+        "actualMove": "NO on BTC above 70000 0.345 → 0.000 resolved terminal (last YES 1.00) (-100.0% on the contract) (method=pm_contract_terminal)",
         "contractEntry": {
           "marketId": "2467210",
           "eventSlug": "what-price-will-bitcoin-hit-before-2027",
@@ -30140,7 +30176,9 @@
           "strike": 70000,
           "entryPrice": 0.345,
           "side": "no"
-        }
+        },
+        "magnitude": -100,
+        "magnitudeUnit": "pct_return"
       },
       {
         "date": "2026-08-30",
@@ -30771,8 +30809,8 @@
       {
         "date": "2026-09-10",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup gold_pm_premium_futures_spread_mean_reversion shadow test 43/20 opened via H-652 after current row satisfied variant conditions.",
+        "outcome": "loss",
+        "actualMove": "YES on GOLD above 7000 0.055 → 0.050 (-9.1% on the contract) (method=pm_contract_pnl)",
         "contractEntry": {
           "marketId": "1294367",
           "eventSlug": "what-will-gold-gc-hit-by-end-of-december",
@@ -30781,7 +30819,9 @@
           "strike": 7000,
           "entryPrice": 0.055,
           "side": "yes"
-        }
+        },
+        "magnitude": -9.090909090909086,
+        "magnitudeUnit": "pct_return"
       }
     ],
     "winRate": 0,
@@ -33236,8 +33276,8 @@
       {
         "date": "2026-09-10",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Setup find_0055 shadow test 3/20 opened via H-703 after current row satisfied variant conditions.",
+        "outcome": "win",
+        "actualMove": "NO on BTC above 97500 0.954 → 0.976 (+2.3% on the contract) (method=pm_contract_pnl)",
         "contractEntry": {
           "marketId": "4052414",
           "eventSlug": "what-price-will-bitcoin-hit-in-september-2026",
@@ -33246,7 +33286,9 @@
           "strike": 97500,
           "entryPrice": 0.9535,
           "side": "no"
-        }
+        },
+        "magnitude": 2.3072889355007886,
+        "magnitudeUnit": "pct_return"
       },
       {
         "date": "2026-09-11",
@@ -33529,8 +33571,8 @@
       {
         "date": "2026-09-06",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Shadow test 1/20 opened for initial validation.",
+        "outcome": "win",
+        "actualMove": "NO on BTC above 85000 0.485 → 0.765 (+57.7% on the contract) (method=pm_contract_pnl)",
         "contractEntry": {
           "marketId": "4052419",
           "eventSlug": "what-price-will-bitcoin-hit-in-september-2026",
@@ -33539,10 +33581,12 @@
           "strike": 85000,
           "entryPrice": 0.485,
           "side": "no"
-        }
+        },
+        "magnitude": 57.731958762886606,
+        "magnitudeUnit": "pct_return"
       }
     ],
-    "winRate": 0,
+    "winRate": 1,
     "status": "active",
     "promotedToSignal": false,
     "postMortem": null,
@@ -33614,8 +33658,8 @@
       {
         "date": "2026-09-06",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Shadow test 1/20 opened for initial validation.",
+        "outcome": "loss",
+        "actualMove": "UNSCORABLE: contract 4149412 has no exit quote at the horizon (vanished mid-range at YES 0.65) (method=contract_exit_unavailable)",
         "contractEntry": {
           "marketId": "4149412",
           "eventSlug": "what-price-will-xauusd-hit-in-september-2026",
@@ -33624,7 +33668,9 @@
           "strike": 4300,
           "entryPrice": 0.405,
           "side": "no"
-        }
+        },
+        "excludedFromSetupStats": true,
+        "exclusionReason": "unscorable_scorer_v2:contract_exit_unavailable"
       }
     ],
     "winRate": 0,
@@ -34134,8 +34180,8 @@
       {
         "date": "2026-09-10",
         "triggered": true,
-        "outcome": "pending",
-        "actualMove": "Shadow test 1/20 opened for initial validation.",
+        "outcome": "loss",
+        "actualMove": "UNSCORABLE: contract 4149412 has no exit quote at the horizon (vanished mid-range at YES 0.65) (method=contract_exit_unavailable)",
         "contractEntry": {
           "marketId": "4149412",
           "eventSlug": "what-price-will-xauusd-hit-in-september-2026",
@@ -34144,7 +34190,9 @@
           "strike": 4300,
           "entryPrice": 0.37,
           "side": "no"
-        }
+        },
+        "excludedFromSetupStats": true,
+        "exclusionReason": "unscorable_scorer_v2:contract_exit_unavailable"
       }
     ],
     "winRate": 0,
