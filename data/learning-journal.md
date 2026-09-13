@@ -2333,3 +2333,30 @@ _LLM call skipped (duplicate-signals (1 recurring signal seen within 6h); 2.0h s
 
 ---
 
+### 2026-09-13 04:28 UTC
+
+**Portfolio:** $103.84 total | Cash $94.84 | 9 open | P&L $7.0799 | 65% win rate (981 trades)
+
+**Hypothesis lifecycle:**
+- 🧪 Opened 2 LLM setup-family shadow tests (active cap 200, maxPending/family 8).
+- 🧪 LLM retest queue: 28 active families did not trigger; 0 later families waiting.
+- 🧪 shadow_mined retest queue: 5 active families did not trigger; 0 later families waiting.
+- 🧪 informed_flow retest queue: 1 active families did not trigger; 0 later families waiting.
+
+**Blocked signal learning:**
+- Open blocked shadows: 30
+- Resolved blocked shadows: 1030 (528 wins / 502 losses)
+- WEEKEND_HL_FUNDING_REVERSION_LONG trend filter may be too strict: 188/253 blocked trades would have won.
+- USER_PM_IV_TOUCH_RICH_NO manual shadow signal is promising: 9/10 shadows would have won, avg P&L 5.86%.
+- USER_PM_APR_XAU_TAIL_NO manual shadow signal is promising: 8/11 shadows would have won, avg P&L 0.70%.
+- PM_IV_GT_OPT_IV missing downside leg is inconclusive (2W/1L across 3 resolved shadows, avg P&L 8.41%).
+- ❌ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT BTC short via polymarket would have hit stop (-5.26%)
+- ✅ PM proxy short: FUNDING_EXTREME_LONG_PM_PROXY_SHORT GOLD short via polymarket would have hit target (+5.45%)
+- ✅ Blocked: NO_BIAS_ADJUSTED_GAP_SHADOW GOLD short via polymarket would have closed with thesis validated profitably (+0.00%)
+- ✅ PM proxy short: PC_RATIO_EXTREME_LOW_PM_PROXY_SHORT BTC short via polymarket would have hit target (+3.51%)
+
+**LLM analysis:**
+Reviewed 9 open positions. Eight are WEEKEND_HL_FUNDING_REVERSION_LONG and are policy-gated to mechanical exits, so no LLM close is allowed; DKNG is -8.51% with only 3h to expiry, but target/stop/expiry remain mechanical. The BTC PC_RATIO_EXTREME_LOW short is the only discretionary-close-eligible position, but its signal evidence has not invalidated: BTC P/C ratio is unchanged at 0.412 and spot is slightly lower since entry (-0.09%), which is consistent with the still-live contrarian short thesis. No data quality issue or hard portfolio risk trigger. No discretionary closes taken.
+
+---
+
